@@ -1,0 +1,35 @@
+# Reviewed 2026-10-14. Paths relative to games/. Applied with:
+#   python3 scripts/audit_assets.py --apply packaging/approved_deletions.txt
+# castledefenders: old/archived art (game only uses assets/bg_sideview.png etc.)
+castledefenders/assets/Archived/bg.png
+castledefenders/assets/Archived/castle_sprite_1783681994903.png
+castledefenders/assets/Archived/farm_sprite_1783682004900.png
+castledefenders/assets/Archived/gold_mine.png
+castledefenders/assets/Archived/gold_mine_sprite_1783682023202.png
+castledefenders/assets/Archived/iron_mine.png
+castledefenders/assets/Archived/iron_mine_sprite_1783682034422.png
+castledefenders/assets/Archived/media__1783681470902.png
+castledefenders/assets/Archived/media__1783681704845.png
+castledefenders/assets/Archived/media__1783681850498.png
+castledefenders/assets/Archived/room_archer_old.png
+castledefenders/assets/Archived/room_cannon_old.png
+castledefenders/assets/Archived/tile_corner_turret_1783686128820.png
+castledefenders/assets/Archived/tile_floor_1783686147224.png
+castledefenders/assets/Archived/tile_gate_1783686097876.png
+castledefenders/assets/Archived/tile_wall_1783686107025.png
+castledefenders/assets/bg_landscape_1783681987528.png
+castledefenders/assets/tile_archer_turret_1783686139393.png
+# buzzbee: bee.png not referenced anywhere
+buzzbee/static/assets/images/bee.png
+# zombie_apocalypse: superseded by sounds/bmg-Level.wav (all 3 levels use it)
+zombie_apocalypse/sounds/bgm_level1.ogg
+zombie_apocalypse/sounds/bgm_level1.wav
+zombie_apocalypse/sounds/bgm_level2.ogg
+zombie_apocalypse/sounds/bgm_level2.wav
+zombie_apocalypse/sounds/bgm_level3.ogg
+zombie_apocalypse/sounds/bgm_level3.wav
+zombie_apocalypse/sounds/sfx_zombie_hit.ogg
+zombie_apocalypse/sounds/sfx_zombie_hit.wav
+# leozap: Pyre type-checker leftovers
+leozap/.pyre/pyre.stderr
+leozap/.pyre_configuration

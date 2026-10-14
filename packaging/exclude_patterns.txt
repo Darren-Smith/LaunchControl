@@ -1,0 +1,46 @@
+# Files/folders NEVER shipped to friends (case-insensitive glob, matched per path component).
+# Used by scripts/sync_games.sh, scripts/audit_assets.py and the PyInstaller spec.
+
+# --- environments / caches / logs
+.venv
+venv
+env
+__pycache__
+*.pyc
+node_modules
+.git
+.idea
+.vscode
+*.log
+.DS_Store
+
+# --- ideas / concepts / design notes
+concept
+concepts
+design
+designs
+idea
+ideas
+*idea*.md
+*concept*
+*.md
+
+# --- art / audio source files
+*.psd
+*.xcf
+*.kra
+*.blend
+*.aup3
+audio_src
+
+# --- dev / test / debug scripts
+test_*.py
+*_test.py
+debug_*.js
+*_debug.js
+check_*.py
+generate_*.py
+pyrightconfig.json
+run.sh
+.pyre
+.pyre_configuration

@@ -1,0 +1,21 @@
+# Python / envs
+.venv/
+venv/
+__pycache__/
+*.pyc
+# Build outputs (released as GitHub assets, never committed)
+build/
+dist/
+release/
+*.spec.bak
+# Runtime / user data
+*.log
+games/*/leaderboard.json
+games/*/highscores.json
+user/
+# Editors
+.vscode/
+.idea/
+.pyre/
+# Games are committed only after Phase 0 clean-up
+games/
