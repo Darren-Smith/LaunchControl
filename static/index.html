@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Launch Control</title>
+    <meta name="description" content="Central hub to manage and launch all local games in development.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-animation">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="glow-orb orb-3"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Top Navigation -->
+        <header class="top-bar glass-panel">
+            <div class="top-bar-left">
+                <h1><span class="logo-chevron">&gt;</span><span class="logo-launch">LAUNCH</span><span class="logo-control">control</span><span class="logo-cursor blink">_</span></h1>
+            </div>
+            <div class="top-bar-right">
+                <button class="btn btn-outline" id="btn-architect">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                    Game Architect
+                </button>
+                <button class="btn btn-outline" id="btn-admin">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                    Add Game
+                </button>
+                <button class="btn btn-danger" id="btn-stop-all" aria-label="Emergency Stop All">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg>
+                    Stop All
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Persistent Terminal Deck -->
+            <section class="terminal-deck glass-panel" id="terminal-deck">
+                <div class="terminal-screen-container">
+                    <div class="terminal-screen">
+                        <div class="crt-scanlines"></div>
+                        <div class="crt-flicker"></div>
+                        
+                        <div class="terminal-content" id="terminal-content">
+                            <div class="terminal-empty-state" id="terminal-empty-state">
+                                > SYSTEM ONLINE.<br>
+                                > PLEASE LOAD A MODULE FROM THE DECK BELOW. <span class="blink">_</span>
+                            </div>
+                            
+                            <div class="terminal-boot-text hidden" id="terminal-boot-text">
+                                > INITIALIZING SECURE CONNECTION...<br>
+                                > LINK ESTABLISHED.<br>
+                                > FETCHING MODULE DATA...
+                            </div>
+                            
+                            <div class="terminal-game-info hidden" id="terminal-game-info">
+                                <div class="terminal-header">
+                                    <div class="terminal-icon" id="terminal-icon">🎮</div>
+                                    <h2 id="terminal-title">GAME TITLE</h2>
+                                </div>
+                                <div class="terminal-details">
+                                    <p id="terminal-desc" class="terminal-desc">Game description goes here.</p>
+                                    <p class="terminal-port">> PORT IDENTIFIER: <span id="terminal-port-val">8000</span></p>
+                                    <p class="terminal-status">> CURRENT STATUS: <span id="terminal-status-val">OFFLINE</span></p>
+                                </div>
+                            </div>
+                            
+                            <div class="terminal-loading hidden" id="terminal-loading">
+                                > PROCESSING COMMAND... PLEASE WAIT <span class="blink">_</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="terminal-controls">
+                    <h3 class="control-header">TERMINAL CONTROLS</h3>
+                    <div class="terminal-actions" id="terminal-actions">
+                        <button class="btn-retro" id="btn-terminal-launch" disabled>
+                            <span class="prompt">></span> EXECUTE LAUNCH_SEQUENCE <span class="blink">_</span>
+                        </button>
+                        <button class="btn-retro btn-retro-danger hidden" id="btn-terminal-stop">
+                            <span class="prompt">></span> INITIATE KILL_PROCESS <span class="blink">_</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <div class="game-grid" id="game-grid">
+                <!-- Populated by JS -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Native Dialog for Admin (Kept modern) -->
+    <dialog id="admin-modal" class="glass-dialog">
+        <div class="dialog-header">
+            <h2 id="admin-modal-title">Add New Game</h2>
+            <button id="btn-close-modal" class="btn-close">&times;</button>
+        </div>
+        <form id="add-game-form">
+            <input type="hidden" id="game-id">
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" id="game-title" required placeholder="My Awesome Game">
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <input type="text" id="game-desc" required placeholder="Short description of the game">
+            </div>
+            <div class="form-group">
+                <label for="game-dir">Directory Path</label>
+                <div class="input-action-wrapper">
+                    <input type="text" id="game-dir" required placeholder="/absolute/path/to/game" autocomplete="off">
+                    <button type="button" id="btn-browse-dir" class="btn btn-browse" title="Choose game folder">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        <span>Browse...</span>
+                    </button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Launch Command</label>
+                <input type="text" id="game-cmd" required placeholder="python3 server.py">
+            </div>
+            <div class="form-row">
+                <div class="form-group half">
+                    <div class="label-with-hint">
+                        <label for="game-port">Port</label>
+                        <span class="port-rec-badge" id="port-rec-badge" title="Recommended free port">Rec: 8012</span>
+                    </div>
+                    <div class="port-stepper-wrapper">
+                        <button type="button" class="btn-stepper" id="btn-port-dec" aria-label="Decrease port" title="Decrease port">−</button>
+                        <input type="number" id="game-port" required min="1024" max="65535" step="1" placeholder="8012">
+                        <button type="button" class="btn-stepper" id="btn-port-inc" aria-label="Increase port" title="Increase port">+</button>
+                    </div>
+                    <div class="port-status-msg" id="port-status-msg"></div>
+                </div>
+                <div class="form-group half">
+                    <label>Theme Color</label>
+                    <input type="color" id="game-color" value="#3b82f6">
+                </div>
+            </div>
+            <div class="form-group emoji-group">
+                <label>Icon (Emoji)</label>
+                <div class="emoji-input-wrapper">
+                    <input type="text" id="game-icon" required placeholder="🎮" maxlength="2">
+                    <button type="button" id="btn-emoji-picker" class="btn-emoji">😀</button>
+                    <div id="emoji-picker-container" class="emoji-picker-container hidden">
+                        <emoji-picker></emoji-picker>
+                    </div>
+                </div>
+            </div>
+            <div class="dialog-actions">
+                <button type="submit" class="btn btn-primary">Save Game</button>
+            </div>
+        </form>
+    </dialog>
+ 
+    <!-- Folder Picker Modal (In-App Browser & Fallback) -->
+    <dialog id="folder-picker-modal" class="glass-dialog folder-dialog">
+        <div class="dialog-header">
+            <h2><span class="icon">📁</span> Select Game Folder</h2>
+            <button id="btn-close-folder-modal" class="btn-close">&times;</button>
+        </div>
+        <div class="folder-picker-body">
+            <div class="folder-nav-bar">
+                <button type="button" id="btn-folder-parent" class="btn btn-outline btn-folder-parent" title="Go up to parent directory">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                    <span>Up</span>
+                </button>
+                <div class="folder-current-path" id="folder-current-path">/home/darren/Documents/AntiGravityProjects</div>
+            </div>
+            <div class="folder-items-container">
+                <div class="folder-items-list" id="folder-items-list">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </div>
+        <div class="dialog-actions">
+            <button type="button" id="btn-folder-select-current" class="btn btn-primary">Select Current Folder</button>
+        </div>
+    </dialog>
+
+    <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+    <!-- Architect Modal -->
+    <dialog id="architect-modal" class="glass-dialog architect-dialog">
+        <div class="dialog-header">
+            <h2><span class="icon">📐</span> Game Architect</h2>
+            <button id="btn-close-architect" class="btn-close">&times;</button>
+        </div>
+        <form id="architect-form">
+            <div class="form-grid">
+                <!-- Left Column -->
+                <div class="form-col">
+                    <div class="form-group">
+                        <label>Game Name</label>
+                        <input type="text" id="arch-name" required placeholder="e.g. CyberDash">
+                    </div>
+                    <div class="form-group">
+                        <label>Description / Core Loop</label>
+                        <textarea id="arch-desc" rows="3" required placeholder="Describe the core gameplay loop..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Main Character Name</label>
+                        <input type="text" id="arch-char" placeholder="Leave blank if N/A">
+                    </div>
+                    <div class="form-group">
+                        <label>Win/Loss Condition</label>
+                        <textarea id="arch-win" rows="2" placeholder="e.g. Survive for 5 minutes"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Core Mechanic</label>
+                        <textarea id="arch-mechanic" rows="2" placeholder="e.g. Time manipulation, Gravity inversion"></textarea>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="form-col">
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="arch-category">
+                            <option>Platformer</option><option>RPG</option><option>Puzzle</option>
+                            <option>Shooter</option><option>Racing</option><option>Strategy</option>
+                            <option>Arcade</option><option>Adventure</option><option>Simulation</option>
+                            <option>Fighting</option><option>Sports</option><option>Sandbox</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Art Style</label>
+                        <select id="arch-style">
+                            <option>Cartoon</option><option>Dark Fantasy</option><option>Sci-Fi</option>
+                            <option>Pixel Art</option><option>Retro Arcade</option><option>Realistic</option>
+                            <option>Minimalist</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Sound & Music</label>
+                        <select id="arch-audio">
+                            <option>Chiptune / 8-Bit</option><option>Synthwave</option>
+                            <option>Orchestral</option><option>Ambient</option><option>None</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Primary Controls</label>
+                        <select id="arch-controls">
+                            <option>Keyboard & Mouse</option><option>WASD Only</option>
+                            <option>Mouse Only</option><option>Touch Friendly</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Target Window Size</label>
+                        <select id="arch-size">
+                            <option>Responsive / Auto</option>
+                            <option>800 x 600</option>
+                            <option>1200 x 1000</option>
+                            <option>1280 x 720 (720p)</option>
+                            <option>1920 x 1080 (1080p)</option>
+                            <option>Mobile Portrait (9:16)</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Sliders and Toggles -->
+                    <div class="form-group">
+                        <label>Perspective (2D &harr; 3D)</label>
+                        <div class="slider-labels"><span>2D</span><span>Isometric</span><span>3D</span></div>
+                        <input type="range" id="arch-perspective" min="1" max="3" value="1" class="slider">
+                    </div>
+
+                    <div class="form-toggles">
+                        <label class="toggle-row">
+                            <span class="toggle-label">Web-based Engine</span>
+                            <input type="checkbox" id="arch-web" checked>
+                        </label>
+                        <label class="toggle-row">
+                            <span class="toggle-label">Include Pause Menu</span>
+                            <input type="checkbox" id="arch-pause" checked>
+                        </label>
+                        <label class="toggle-row">
+                            <span class="toggle-label">High Score System</span>
+                            <input type="checkbox" id="arch-score" checked>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="dialog-actions">
+                <button type="submit" class="btn btn-primary">Generate Blueprint</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Blueprint Result Modal -->
+    <dialog id="blueprint-modal" class="glass-dialog blueprint-dialog">
+        <div class="dialog-header">
+            <h2><span class="icon">📜</span> Generated Blueprint</h2>
+            <button id="btn-close-blueprint" class="btn-close">&times;</button>
+        </div>
+        <div class="blueprint-content">
+            <p class="blueprint-info">Copy the prompt below and paste it into AntiGravity to build your game.</p>
+            <textarea id="blueprint-output" readonly></textarea>
+        </div>
+        <div class="dialog-actions">
+            <button id="btn-copy-blueprint" class="btn btn-primary">Copy to Clipboard</button>
+        </div>
+    </dialog>
+
+    <script src="script.js"></script>
+</body>
+</html>

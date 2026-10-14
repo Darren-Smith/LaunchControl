@@ -8,8 +8,9 @@ import os
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
-# In-memory leaderboard (persisted to file)
-LEADERBOARD_FILE = 'leaderboard.json'
+# In-memory leaderboard (persisted to file in user data dir)
+_data_dir = os.environ.get('GAME_USER_DATA_DIR', '.')
+LEADERBOARD_FILE = os.path.join(_data_dir, 'leaderboard.json')
 
 def load_leaderboard():
     if os.path.exists(LEADERBOARD_FILE):

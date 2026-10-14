@@ -1,0 +1,137 @@
+[
+    {
+        "id": "buzzbee",
+        "title": "BuzzBee",
+        "description": "A Bee adventure - Protect and Bee Happy!",
+        "dir": "games/buzzbee",
+        "type": "flask",
+        "entry": "server.py",
+        "port": 8008,
+        "color": "#EDC001",
+        "icon": "🐝"
+    },
+    {
+        "id": "castle_defenders",
+        "title": "Castle Defenders",
+        "description": "Defend your castle in this room-builder strategy game.",
+        "dir": "games/castledefenders",
+        "type": "flask",
+        "entry": "server.py",
+        "port": 8005,
+        "color": "#5d4037",
+        "icon": "🏰"
+    },
+    {
+        "id": "fruitflip",
+        "title": "Fruit Flip",
+        "description": "A premium memory matching game — flip cards to find all the fruit pairs!",
+        "dir": "games/fruitflip",
+        "type": "static",
+        "port": 8003,
+        "color": "#ff9f0a",
+        "icon": "🍓"
+    },
+    {
+        "id": "heromaker",
+        "title": "HeroMaker",
+        "description": "An epic hero creator and management system.",
+        "dir": "games/heromaker",
+        "type": "flask",
+        "entry": "server.py",
+        "port": 8009,
+        "color": "#34c759",
+        "icon": "⚔️"
+    },
+    {
+        "id": "leozap",
+        "title": "LeoZap",
+        "description": "A classic 2D space shooter with powerups and bosses.",
+        "dir": "games/leozap",
+        "type": "flask",
+        "entry": "app.py",
+        "port": 8010,
+        "color": "#00ccff",
+        "icon": "🚀"
+    },
+    {
+        "id": "mining_buddies",
+        "title": "Mining Buddies",
+        "description": "A 2 player co-op game where you mine for diamonds and fight stone monsters.",
+        "dir": "games/miningbuddies",
+        "type": "static",
+        "port": 8007,
+        "color": "#808080",
+        "icon": "⛏️"
+    },
+    {
+        "id": "woodland_protector",
+        "title": "Woodland Protectors",
+        "description": "Defend the woodland as Sir Fluffalot in this 3D game.",
+        "dir": "games/woodlandprotector",
+        "type": "static",
+        "port": 8006,
+        "color": "#228b22",
+        "icon": "🌲"
+    },
+    {
+        "id": "zombie_apocalypse",
+        "title": "Zombie Apocalypse",
+        "description": "A 2D Side-Scrolling Survival Game.",
+        "dir": "games/zombie_apocalypse",
+        "type": "static",
+        "port": 8004,
+        "color": "#8b0000",
+        "icon": "🧟"
+    },
+    {
+        "id": "whackamania",
+        "title": "Whackamania",
+        "description": "Whack your way to victory!",
+        "dir": "games/whackamania",
+        "type": "flask",
+        "entry": "app.py",
+        "port": 5000,
+        "color": "#c64600",
+        "icon": "🔨"
+    },
+    {
+        "id": "dinosurvival",
+        "title": "Dino Survival",
+        "description": "Run for your Lives or be a dino snack!",
+        "dir": "games/dinosurvival",
+        "type": "static",
+        "port": 8011,
+        "color": "#e5a50a",
+        "icon": "🦖"
+    },
+    {
+        "id": "discocat",
+        "title": "Disco Cat",
+        "description": "Disco Groove that purrfect Rhythm to get high scores!",
+        "dir": "games/discocat",
+        "type": "static",
+        "port": 8001,
+        "color": "#c061cb",
+        "icon": "😸"
+    },
+    {
+        "id": "catfighters",
+        "title": "Cat Fighters",
+        "description": "Punch, paw, and poop your way to cat attack frenzy fun",
+        "dir": "games/catfighters",
+        "type": "static",
+        "port": 8013,
+        "color": "#430404",
+        "icon": "🐾"
+    },
+    {
+        "id": "happybirthdayleo",
+        "title": "Happy Birthday Leo",
+        "description": "An interactive Birthday Card",
+        "dir": "games/happybirthdayleo",
+        "type": "static",
+        "port": 8012,
+        "color": "#62a0ea",
+        "icon": "🎈"
+    }
+]

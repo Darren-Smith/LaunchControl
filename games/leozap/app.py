@@ -4,7 +4,9 @@ from flask import Flask, send_from_directory, request, jsonify
 
 app = Flask(__name__, static_folder='static')
 
-HIGHSCORES_FILE = 'highscores.json'
+# In-memory scores (persisted to file in user data dir)
+_data_dir = os.environ.get('GAME_USER_DATA_DIR', '.')
+HIGHSCORES_FILE = os.path.join(_data_dir, 'highscores.json')
 
 def load_scores():
     if not os.path.exists(HIGHSCORES_FILE):
