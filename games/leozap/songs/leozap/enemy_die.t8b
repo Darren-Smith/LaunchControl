@@ -1,0 +1,35 @@
+{
+  "tunic8bit": "1.0",
+  "title": "enemy_die",
+  "author": "LeoZap",
+  "bpm": 200,
+  "tracks": [
+    {
+      "name": "Explosion",
+      "waveform": "noise",
+      "channel": 0,
+      "volume": 0.8,
+      "octave": 3,
+      "duty_cycle": 0.5,
+      "envelope": {"attack": 0.001, "decay": 0.12, "sustain": 0.0, "release": 0.05},
+      "notes": [
+        {"note": "C", "octave": 3, "duration": "e"},
+        {"note": "REST", "octave": 0, "duration": "e"}
+      ]
+    },
+    {
+      "name": "Pitch drop",
+      "waveform": "square",
+      "channel": 1,
+      "volume": 0.5,
+      "octave": 4,
+      "duty_cycle": 0.5,
+      "envelope": {"attack": 0.001, "decay": 0.08, "sustain": 0.0, "release": 0.02},
+      "notes": [
+        {"note": "G",    "octave": 4, "duration": "s"},
+        {"note": "D",    "octave": 3, "duration": "s"},
+        {"note": "REST", "octave": 0, "duration": "e"}
+      ]
+    }
+  ]
+}

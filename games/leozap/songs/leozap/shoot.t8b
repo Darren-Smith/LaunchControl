@@ -1,0 +1,22 @@
+{
+  "tunic8bit": "1.0",
+  "title": "shoot",
+  "author": "LeoZap",
+  "bpm": 300,
+  "tracks": [
+    {
+      "name": "Laser",
+      "waveform": "square",
+      "channel": 0,
+      "volume": 0.7,
+      "octave": 5,
+      "duty_cycle": 0.25,
+      "envelope": {"attack": 0.001, "decay": 0.04, "sustain": 0.0, "release": 0.01},
+      "notes": [
+        {"note": "A",    "octave": 6, "duration": "s"},
+        {"note": "E",    "octave": 6, "duration": "s"},
+        {"note": "REST", "octave": 0, "duration": "e"}
+      ]
+    }
+  ]
+}

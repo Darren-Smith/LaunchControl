@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeroMaker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="game-container">
+        <canvas id="gameCanvas" width="1000" height="800"></canvas>
+        <div id="ui-layer">
+            <!-- Hero Maker / Inventory Screen -->
+            <div id="hero-maker-screen" class="hidden">
+                <h2>Hero Maker</h2>
+                <div class="equipment-slots">
+                    <div class="slot" data-type="weapon">Weapon: <span id="weapon-name">None</span></div>
+                    <div class="slot" data-type="armor">Armor: <span id="armor-name">None</span></div>
+                </div>
+                <div class="shop-list" id="shop-list">
+                    <!-- Shop items will be populated here -->
+                </div>
+                <button id="close-hero-maker">Return to Game</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/items.js?v=2"></script>
+    <script src="js/camera.js?v=2"></script>
+    <script src="js/engine.js?v=2"></script>
+    <script src="js/entities.js?v=2"></script>
+    <script src="js/levels.js?v=2"></script>
+    <script src="js/ui.js?v=2"></script>
+    <script src="js/game.js?v=2"></script>
+    <script src="js/main.js?v=2"></script>
+</body>
+
+</html>

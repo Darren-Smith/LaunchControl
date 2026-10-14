@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diamond Defenders</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Background elements for aesthetic -->
+        <div class="bg-gradient"></div>
+        <div class="particles"></div>
+
+        <div id="ui-layer">
+            <div id="top-bar">
+                <div class="stats-panel fighter-stats">
+                    <h2>Fighter</h2>
+                    <div class="health-bar-container">
+                        <div id="fighter-health-fill" class="health-fill"></div>
+                    </div>
+                </div>
+                
+                <div class="goal-panel">
+                    <div class="diamond-count">
+                        <span class="diamond-icon">💎</span>
+                        <span id="diamond-counter">0 / 1000</span>
+                    </div>
+                    <div class="goal-text">Defeat the Stone Boss!</div>
+                </div>
+
+                <div class="stats-panel miner-stats">
+                    <h2>Miner</h2>
+                    <div class="upgrades">
+                        <div id="upgrade-drill1" class="upgrade-icon locked">Drill 1</div>
+                        <div id="upgrade-drill2" class="upgrade-icon locked">Drill 2</div>
+                        <div id="upgrade-robot" class="upgrade-icon locked">Robot</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="notifications" class="hidden">
+                <h1 id="notification-text">Game Over</h1>
+                <button id="restart-btn" class="glass-btn">Play Again</button>
+            </div>
+        </div>
+
+        <canvas id="gameCanvas"></canvas>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

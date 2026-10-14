@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fruit Flip — Premium Memory Matching Game</title>
+  <meta name="description"
+    content="Test your memory with ChromaMatch, a beautifully designed 4x4 color matching game featuring pixel fruit icons, a live timer, and a global leaderboard.">
+
+  <!-- Preconnect and Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <!-- Background Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="app-container">
+    <header class="game-header">
+      <h1 class="game-title">Fruit<span class="highlight">Flip</span></h1>
+      <p class="game-subtitle">Find the matching fruit pairs. Challenge your memory.</p>
+    </header>
+
+    <main class="game-layout">
+      <!-- Stats and Controls Panel -->
+      <section class="stats-panel" aria-label="Game Stats and Controls">
+        <div class="stat-box" id="stat-turns" aria-live="polite">
+          <span class="stat-label">Card Turns</span>
+          <span class="stat-value" id="turns-count">0</span>
+        </div>
+        <div class="stat-box" id="stat-matches" aria-live="polite">
+          <span class="stat-label">Pairs Found</span>
+          <span class="stat-value"><span id="pairs-count">0</span><span class="stat-max">/8</span></span>
+        </div>
+        <div class="stat-box" id="stat-timer" aria-live="polite">
+          <span class="stat-label">Time</span>
+          <span class="stat-value" id="timer-display">0:00</span>
+        </div>
+        <div class="btn-group">
+          <button id="restart-btn" class="btn btn-secondary" aria-label="Restart Game">
+            <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+            </svg>
+            Restart
+          </button>
+          <button id="leaderboard-btn" class="btn btn-ghost" aria-label="View Leaderboard">
+            <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+            </svg>
+            Scores
+          </button>
+        </div>
+      </section>
+
+      <!-- Game Board Grid -->
+      <section class="board-container" aria-label="Game Board">
+        <div id="game-board" class="game-board" role="grid" aria-label="Card Grid">
+          <!-- Dynamic cards will be injected here by script.js -->
+        </div>
+      </section>
+    </main>
+
+    <footer class="game-footer">
+      <p>Flip cards to reveal fruits. Match them all to win!</p>
+    </footer>
+  </div>
+
+  <!-- Victory / High Score Dialog -->
+  <div id="victory-overlay" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="victory-title">
+    <div class="victory-card">
+      <div class="victory-icon-wrapper">
+        <svg class="victory-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <path d="m9 12 2 2 4-4" />
+        </svg>
+      </div>
+      <h2 id="victory-title" class="victory-headline">Victory!</h2>
+      <p class="victory-message" id="victory-message-text">You completed the game in 0 card turns</p>
+
+      <!-- High Score Entry (shown when player qualifies) -->
+      <div id="highscore-entry" class="highscore-entry hidden">
+        <p class="highscore-label">🏆 You made the Top 20! Enter your name:</p>
+        <div class="name-input-group">
+          <input type="text" id="player-name-input" class="name-input" maxlength="20" placeholder="Your name..."
+            autocomplete="off" spellcheck="false" aria-label="Enter player name">
+          <button id="save-score-btn" class="btn btn-primary" aria-label="Save score">Save</button>
+        </div>
+      </div>
+
+      <div class="victory-actions">
+        <button id="view-scores-btn" class="btn btn-ghost" aria-label="View leaderboard">View Leaderboard</button>
+        <button id="play-again-btn" class="btn btn-primary" aria-label="Play Game Again">
+          Play Again
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaderboard Dialog -->
+  <div id="leaderboard-overlay" class="overlay hidden" role="dialog" aria-modal="true"
+    aria-labelledby="leaderboard-title">
+    <div class="leaderboard-card">
+      <div class="leaderboard-header">
+        <h2 id="leaderboard-title" class="leaderboard-headline">🏆 Leaderboard</h2>
+        <p class="leaderboard-sub">Ranked by fewest turns, then fastest time</p>
+      </div>
+      <div id="leaderboard-list" class="leaderboard-list" aria-live="polite">
+        <!-- Populated by JS -->
+      </div>
+      <div class="leaderboard-actions">
+        <button id="clear-scores-btn" class="btn btn-danger-ghost" aria-label="Clear all scores">Clear All</button>
+        <button id="close-leaderboard-btn" class="btn btn-primary" aria-label="Close leaderboard">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,25 @@
+{
+  "tunic8bit": "1.0",
+  "title": "power_up",
+  "author": "LeoZap",
+  "bpm": 220,
+  "tracks": [
+    {
+      "name": "Power sweep",
+      "waveform": "square",
+      "channel": 0,
+      "volume": 0.8,
+      "octave": 5,
+      "duty_cycle": 0.5,
+      "envelope": {"attack": 0.005, "decay": 0.04, "sustain": 0.7, "release": 0.08},
+      "notes": [
+        {"note": "C",    "octave": 5, "duration": "s"},
+        {"note": "E",    "octave": 5, "duration": "s"},
+        {"note": "G",    "octave": 5, "duration": "s"},
+        {"note": "B",    "octave": 5, "duration": "s"},
+        {"note": "C",    "octave": 6, "duration": "e"},
+        {"note": "REST", "octave": 0, "duration": "e"}
+      ]
+    }
+  ]
+}

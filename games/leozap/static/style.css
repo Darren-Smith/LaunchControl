@@ -1,0 +1,372 @@
+:root {
+    --primary-color: #00ffcc;
+    --secondary-color: #ff00ff;
+    --bg-color: #0a0a2a;
+    --text-color: #ffffff;
+    --ui-font: 'Press Start 2P', cursive;
+    --body-font: 'Roboto', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--body-font);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    /* Background handled by canvas */
+}
+
+#spaceCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+#game-container {
+    position: relative;
+    width: 1120px;
+    height: 840px;
+    box-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
+    border: 2px solid var(--primary-color);
+    border-radius: 4px;
+    /* background-color: #000; Removed to show starfield */
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+#ui-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    /* Let clicks pass through to canvas if needed, but buttons will re-enable pointer-events */
+}
+
+/* Screens */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.85);
+    pointer-events: auto;
+    z-index: 10;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Typography */
+h1.game-title {
+    font-family: var(--ui-font);
+    font-size: 64px;
+    background: linear-gradient(to bottom, #00ffff, #0088ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    margin-bottom: 20px;
+}
+
+.subtitle {
+    font-family: var(--ui-font);
+    font-size: 16px;
+    color: #ffcc00;
+    margin-bottom: 40px;
+}
+
+h2 {
+    font-family: var(--ui-font);
+    font-size: 32px;
+    color: var(--primary-color);
+}
+
+/* Buttons */
+.btn {
+    font-family: var(--ui-font);
+    font-size: 20px;
+    padding: 15px 30px;
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 4px solid var(--primary-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    box-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
+}
+
+.btn:hover {
+    background-color: var(--primary-color);
+    color: #000;
+    box-shadow: 0 0 20px rgba(0, 255, 204, 0.8);
+    transform: scale(1.05);
+}
+
+.controls-info {
+    margin-top: 40px;
+    text-align: center;
+    color: #aaa;
+    font-family: var(--ui-font);
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+/* HUD */
+#hud {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px 16px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 16px;
+    font-family: var(--ui-font);
+    font-size: 13px;
+    color: #fff;
+    text-shadow: 2px 2px 0 #000;
+    pointer-events: none;
+    z-index: 5;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.65) 0%, transparent 100%);
+}
+
+.hud-item span {
+    color: var(--primary-color);
+}
+
+/* Power-level star display — colour applied dynamically via JS */
+#power-level {
+    letter-spacing: 2px;
+    font-size: 14px;
+    transition: color 0.4s ease;
+    text-shadow: 0 0 8px currentColor;
+}
+
+/* Sound toggle mini-buttons in HUD */
+.hud-sound {
+    margin-left: auto;
+    display: flex;
+    gap: 6px;
+    pointer-events: auto;
+}
+
+.hud-sound-btn {
+    font-family: var(--body-font);
+    font-size: 11px;
+    padding: 3px 8px;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #ccc;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.hud-sound-btn:hover {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+}
+
+.btn.secondary {
+    font-size: 14px;
+    padding: 10px 20px;
+    margin-top: 10px;
+    border-width: 2px;
+}
+
+#high-score-board {
+    pointer-events: auto;
+    z-index: 20;
+}
+
+.board-content {
+    padding: 30px;
+    background: rgba(10, 10, 42, 0.95);
+    border: 3px solid var(--secondary-color);
+    box-shadow: 0 0 30px rgba(255, 0, 255, 0.3);
+    width: 400px;
+    max-height: 80vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#high-score-board h2 {
+    font-size: 24px;
+    margin-bottom: 25px;
+    color: var(--secondary-color);
+    text-align: center;
+}
+
+#high-score-list {
+    list-style: none;
+    padding: 0;
+    font-family: var(--ui-font);
+    font-size: 12px;
+}
+
+#high-score-list li {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 4px;
+}
+
+#save-score-container {
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+#player-name {
+    padding: 10px;
+    background: #000;
+    border: 2px solid var(--primary-color);
+    color: #fff;
+    font-family: var(--ui-font);
+    font-size: 14px;
+    text-align: center;
+}
+
+/* Level Title Explosion Effect */
+#level-screen {
+    background: transparent;
+    pointer-events: none;
+}
+
+#level-title {
+    font-size: 48px;
+    opacity: 0;
+    text-align: center;
+    line-height: 1.2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+}
+
+.level-explode {
+    animation: explode 5s ease-out forwards;
+}
+
+@keyframes explode {
+    0% {
+        transform: scale(1);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.5;
+    }
+
+    20% {
+        opacity: 0.1;
+    }
+
+    100% {
+        transform: scale(40);
+        opacity: 0;
+    }
+}
+
+@keyframes explode-delayed {
+    0% {
+        transform: scale(1);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.5;
+    }
+
+    20% {
+        opacity: 0.1;
+    }
+
+    100% {
+        transform: scale(40);
+        opacity: 0;
+    }
+}
+
+/* ─── Pause Screen ──────────────────────────────────────────────────────────── */
+
+
+#pause-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    background: rgba(0, 0, 20, 0.82);
+    backdrop-filter: blur(4px);
+    z-index: 50;
+    pointer-events: auto;
+}
+
+#pause-screen h2 {
+    font-family: var(--ui-font);
+    font-size: 40px;
+    color: var(--primary-color);
+    text-shadow: 0 0 20px var(--primary-color);
+    margin-bottom: 10px;
+    letter-spacing: 4px;
+}
+
+#pause-screen .btn {
+    width: 240px;
+    text-align: center;
+    font-size: 14px;
+    padding: 12px 20px;
+}
+
+#pause-screen .hud-sound-btn {
+    width: 240px;
+    font-size: 13px;
+    padding: 10px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #ccc;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+#pause-screen .hud-sound-btn:hover {
+    background: rgba(255,255,255,0.18);
+    color: #fff;
+}

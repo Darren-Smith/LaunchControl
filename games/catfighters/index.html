@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Cat Fighters - 2-Player Street Fighting Game</title>
+  <meta name="description" content="Cat Fighters is a fast-paced 2-player cartoon fighting game featuring Red Cat vs Blue Cat with special moves including Poo Attack, Hairball Attack, Scratch, Litter Throw, Poop Grenade, and Scramble Attack.">
+  
+  <!-- Modern & Arcade Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="gameWrapper" class="game-wrapper">
+    <!-- Top Utility Bar -->
+    <header class="top-nav" id="topNav">
+      <div class="nav-left">
+        <span class="game-brand">🐾 CAT FIGHTERS</span>
+      </div>
+      <div class="nav-right">
+        <button id="btnMuteToggle" class="nav-btn" aria-label="Toggle Sound">🔊 Sound: ON</button>
+        <button id="btnPauseToggle" class="nav-btn" aria-label="Pause Game">⏸ Pause [P]</button>
+      </div>
+    </header>
+
+    <!-- Main Game Canvas Container with 1200x1000 Resolution -->
+    <main class="canvas-container" id="canvasContainer">
+      <canvas id="gameCanvas" width="1200" height="1000"></canvas>
+
+      <!-- Main Menu Overlay -->
+      <section id="mainMenuOverlay" class="screen-overlay active" aria-labelledby="mainTitle">
+        <div class="menu-card glass-panel">
+          <div class="logo-box">
+            <h1 id="mainTitle" class="arcade-title">CAT FIGHTERS</h1>
+            <p class="arcade-subtitle">RED CAT VS BLUE CAT • 60-SEC SHOWDOWN</p>
+          </div>
+
+          <div class="versus-preview">
+            <div class="cat-card red-team">
+              <div class="cat-avatar">🔴</div>
+              <span class="cat-title">RED CAT (P1)</span>
+              <span class="cat-tagline">Fiery Ninja Claws</span>
+            </div>
+            <div class="vs-badge">VS</div>
+            <div class="cat-card blue-team">
+              <div class="cat-avatar">🔵</div>
+              <span class="cat-title">BLUE CAT (P2)</span>
+              <span class="cat-tagline">Cool Stink Boxer</span>
+            </div>
+          </div>
+
+          <div class="menu-actions">
+            <button id="btnMode2P" class="btn btn-primary pulse-btn">⚔️ 2-PLAYER LOCAL FIGHT</button>
+            
+            <div class="cpu-mode-block">
+              <button id="btnModeCPU" class="btn btn-secondary">🤖 1-PLAYER VS CPU (NORMAL)</button>
+              <div class="difficulty-picker" id="difficultyPicker" role="group" aria-label="CPU Difficulty">
+                <span class="difficulty-title">DIFFICULTY:</span>
+                <div class="difficulty-options">
+                  <button type="button" class="diff-btn" data-diff="easy" id="diffEasy" title="Slow moving and slow attacking cat (0.6x score)">🟢 EASY <span class="diff-mult">0.6×</span></button>
+                  <button type="button" class="diff-btn active" data-diff="normal" id="diffNormal" title="Balanced opponent (1.0x score)">🟡 NORMAL <span class="diff-mult">1.0×</span></button>
+                  <button type="button" class="diff-btn" data-diff="hard" id="diffHard" title="Master cat with dodging & combos (1.5x score)">🔴 HARD <span class="diff-mult">1.5×</span></button>
+                </div>
+              </div>
+            </div>
+
+            <div class="btn-group-row">
+              <button id="btnMovelist" class="btn btn-outline">📜 MOVELIST & KEYS</button>
+              <button id="btnHighScores" class="btn btn-outline">🏆 HIGH SCORES</button>
+            </div>
+          </div>
+
+          <footer class="controls-hint-bar">
+            <span><strong>P1:</strong> A/D Move, W Jump, 1-6 Attacks</span>
+            <span class="divider">|</span>
+            <span><strong>P2:</strong> ←/→ Move, ↑ Jump, Numpad 1-6 (or Laptop: U,I,O,P,[,])</span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- Game Over / Victory & Defeat Overlay -->
+      <section id="gameOverOverlay" class="screen-overlay" aria-labelledby="winnerTitle">
+        <div class="victory-card glass-panel">
+          <h2 id="winnerTitle" class="victory-heading">🏆 RED CAT WINS!</h2>
+          <p id="matchScoreDisplay" class="victory-score">FINAL SCORE: 0 PTS</p>
+          
+          <!-- Name Entry for Human Winners Only -->
+          <div id="nameEntryBox" class="name-entry-box">
+            <label for="winnerNameInput">ENTER NAME FOR LEADERBOARD:</label>
+            <div class="input-row">
+              <input type="text" id="winnerNameInput" maxlength="12" placeholder="CLAW_MASTER" autocomplete="off" />
+              <button id="btnSubmitScore" class="btn btn-primary">SAVE SCORE</button>
+            </div>
+          </div>
+
+          <!-- Defeat Actions (Shown when CPU wins - No High Score submission) -->
+          <div id="cpuDefeatActions" class="defeat-actions" style="display: none;">
+            <button id="btnDefeatRetry" class="btn btn-primary">🔄 RETRY MATCH</button>
+            <button id="btnDefeatMenu" class="btn btn-secondary">🏠 QUIT TO TITLE</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pause Menu Modal -->
+      <section id="pauseModal" class="screen-overlay" aria-labelledby="pauseTitle">
+        <div class="pause-card glass-panel">
+          <h2 id="pauseTitle" class="pause-heading">MATCH PAUSED</h2>
+          <div class="pause-menu-buttons">
+            <button id="btnResume" class="btn btn-primary">▶ RESUME FIGHT</button>
+            <button id="btnRestart" class="btn btn-secondary">🔄 RESTART MATCH</button>
+            <button id="btnPauseMovelist" class="btn btn-outline">📜 VIEW MOVELIST</button>
+            <button id="btnPauseExit" class="btn btn-danger">🏠 QUIT TO TITLE</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Bottom Controls Cheat-Sheet Footer -->
+    <footer class="bottom-cheat-sheet">
+      <div class="cheat-col">
+        <span class="cheat-header red-accent">PLAYER 1 CONTROLS:</span>
+        <span class="cheat-detail">Move: <code>A</code> / <code>D</code> | Jump: <code>W</code> | Attacks: <code>1</code> (Poo) <code>2</code> (Hairball) <code>3</code> (Scratch) <code>4</code> (Litter) <code>5</code> (Poop Bomb) <code>6</code> (Scramble)</span>
+      </div>
+      <div class="cheat-col">
+        <span class="cheat-header blue-accent">PLAYER 2 CONTROLS:</span>
+        <span class="cheat-detail">Move: <code>←</code> / <code>→</code> | Jump: <code>↑</code> | Attacks: <code>Num 1-6</code> (or Laptop: <code>U, I, O, P, [, ]</code>)</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Movelist & Keybindings Guide Modal -->
+  <aside id="movelistModal" class="game-modal" aria-labelledby="movelistTitle" role="dialog">
+    <div class="modal-content glass-panel">
+      <div class="modal-header">
+        <h2 id="movelistTitle" class="modal-title">📖 MOVELIST & ATTACKS GUIDE</h2>
+        <button class="modal-close" aria-label="Close Modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="moves-grid">
+          <div class="move-card">
+            <div class="move-badge">ATTACK 1</div>
+            <h3 class="move-name">💩 POO ATTACK</h3>
+            <p class="move-keys">P1: <code>1</code> | P2: <code>Num 1</code> / <code>U</code></p>
+            <p class="move-desc">The cat whips around 180°, raises tail high into the air, and launches a comical flying poop projectile straight forward!</p>
+          </div>
+
+          <div class="move-card special-status">
+            <div class="move-badge green-badge">ATTACK 2 (ROOT)</div>
+            <h3 class="move-name">🧶 HAIRBALL ATTACK</h3>
+            <p class="move-keys">P1: <code>2</code> | P2: <code>Num 2</code> / <code>I</code></p>
+            <p class="move-desc">Hacks up a sticky, slimy green hairball. When it hits, it completely <strong>sticks the enemy in place for 5 seconds</strong> (cannot move or jump)!</p>
+          </div>
+
+          <div class="move-card">
+            <div class="move-badge">ATTACK 3</div>
+            <h3 class="move-name">🐾 FURIOUS SCRATCH</h3>
+            <p class="move-keys">P1: <code>3</code> | P2: <code>Num 3</code> / <code>O</code></p>
+            <p class="move-desc">Rapid lightning-fast double claw swipe with glowing slash trails. Great close-range combo starter.</p>
+          </div>
+
+          <div class="move-card">
+            <div class="move-badge">ATTACK 4</div>
+            <h3 class="move-name">📦 LITTER THROW</h3>
+            <p class="move-keys">P1: <code>4</code> | P2: <code>Num 4</code> / <code>P</code></p>
+            <p class="move-desc">Cat scoops into the litter box and flings a shotgun spread of 5 clumping litter pebbles covering a wide arc.</p>
+          </div>
+
+          <div class="move-card special-status">
+            <div class="move-badge purple-badge">ATTACK 5 (POISON)</div>
+            <h3 class="move-name">💣 POOP GRENADE</h3>
+            <p class="move-keys">P1: <code>5</code> | P2: <code>Num 5</code> / <code>[</code></p>
+            <p class="move-desc">Lobs a bouncing, fused explosive stink-bomb. On detonation, deals blast damage and <strong>poisons the target for 10 seconds (5 damage/sec)</strong>!</p>
+          </div>
+
+          <div class="move-card special-move">
+            <div class="move-badge gold-badge">ATTACK 6 (NEW)</div>
+            <h3 class="move-name">🌪️ SCRAMBLE ATTACK</h3>
+            <p class="move-keys">P1: <code>6</code> | P2: <code>Num 6</code> / <code>]</code></p>
+            <p class="move-desc">The cat leaps forward in a furious spinning furball toward the opponent! On hit, inflicts heavy damage and massive knockback.</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary modal-close">GOT IT, LET'S FIGHT!</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- High Scores Leaderboard Modal -->
+  <aside id="highscoresModal" class="game-modal" aria-labelledby="highscoresTitle" role="dialog">
+    <div class="modal-content glass-panel">
+      <div class="modal-header">
+        <h2 id="highscoresTitle" class="modal-title">🏆 HALL OF FAME LEADERBOARD</h2>
+        <button class="modal-close" aria-label="Close Modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="highscoresList" class="highscores-table">
+          <!-- Dynamically populated by highscores.js -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary modal-close">CLOSE</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Game Scripts -->
+  <script src="src/audio.js"></script>
+  <script src="src/input.js"></script>
+  <script src="src/particles.js"></script>
+  <script src="src/attacks.js"></script>
+  <script src="src/entities.js"></script>
+  <script src="src/ai.js"></script>
+  <script src="src/highscores.js"></script>
+  <script src="src/game.js"></script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="BuzzBee – A thrilling 2D side-scrolling bee game. Collect pollen, protect your nectar and sting enemy hands!" />
+  <title>🐝 BuzzBee – Protect the Hive!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════ LOADING SCREEN ═══════════════════════════════ -->
+<div id="loading-screen">
+  <div class="loading-content">
+    <div class="loading-bee">🐝</div>
+    <h1>BuzzBee</h1>
+    <div class="loading-bar-wrap">
+      <div class="loading-bar" id="loading-bar"></div>
+    </div>
+    <p id="loading-text">Loading assets…</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ MAIN MENU ═══════════════════════════════ -->
+<div id="main-menu" class="screen hidden">
+  <div class="menu-bg-particles" id="menu-particles"></div>
+  <div class="menu-content">
+    <div class="logo-wrap">
+      <div class="logo-bee animate-float">🐝</div>
+      <h1 class="game-title">BuzzBee</h1>
+      <p class="game-subtitle">Protect the Hive · Sting the Thieves · Collect the Pollen</p>
+    </div>
+    <div class="menu-buttons">
+      <button class="btn btn-primary" id="btn-play">▶ Play Game</button>
+      <button class="btn btn-secondary" id="btn-howto">📖 How to Play</button>
+      <button class="btn btn-secondary" id="btn-leaderboard">🏆 Leaderboard</button>
+    </div>
+    <div class="difficulty-row">
+      <span class="diff-label">Difficulty:</span>
+      <button class="diff-btn active" id="diff-easy" data-diff="easy">🌸 Easy</button>
+      <button class="diff-btn" id="diff-normal" data-diff="normal">🌼 Normal</button>
+      <button class="diff-btn" id="diff-hard" data-diff="hard">🌵 Hard</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ HOW TO PLAY ═══════════════════════════════ -->
+<div id="howto-screen" class="screen hidden">
+  <div class="panel">
+    <h2>📖 How to Play</h2>
+    <div class="howto-grid">
+      <div class="howto-card">
+        <div class="howto-icon">⬆⬇⬅➡</div>
+        <h3>Move</h3>
+        <p>Arrow Keys or WASD to fly your bee around the screen</p>
+      </div>
+      <div class="howto-card">
+        <div class="howto-icon">Space / Z</div>
+        <h3>Sting</h3>
+        <p>Press Space or Z to sting enemies when close. Costs stamina!</p>
+      </div>
+      <div class="howto-card">
+        <div class="howto-icon">🌸</div>
+        <h3>Flowers</h3>
+        <p>Fly close to flowers to collect nectar (max 3 at a time)</p>
+      </div>
+      <div class="howto-card">
+        <div class="howto-icon">🌼</div>
+        <h3>Good Pollen</h3>
+        <p>Touch yellow pollen to carry it (max 3). Deliver to hive!</p>
+      </div>
+      <div class="howto-card">
+        <div class="howto-icon">🟢</div>
+        <h3>Bad Pollen</h3>
+        <p>Avoid green pesticide pollen — it damages you!</p>
+      </div>
+      <div class="howto-card">
+        <div class="howto-icon">🍯</div>
+        <h3>Hive</h3>
+        <p>Fly to the hive (right side) to deposit nectar &amp; pollen. 3+3 fills a hex, then brews honey in 45s!</p>
+      </div>
+      <div class="howto-card">
+        <div class="howto-icon">🦹</div>
+        <h3>Burglar</h3>
+        <p>Striped-sleeve hand swoops down. Sting fast to stop theft! (+50)</p>
+      </div>
+      <div class="howto-card">
+        <div class="howto-icon">👨‍🌾</div>
+        <h3>Farmer</h3>
+        <p>Check-shirt hand sprays pesticide, turns pollen green &amp; kills flower nectar. Sting to stop! (+30)</p>
+      </div>
+      <div class="howto-card">
+        <div class="howto-icon">⚡</div>
+        <h3>Combo</h3>
+        <p>Consecutive stings multiply your score for big bonuses!</p>
+      </div>
+      <div class="howto-card">
+        <div class="howto-icon">🏆</div>
+        <h3>Victory</h3>
+        <p>Easy: 5 honey jars · Normal: 10 · Hard: 15</p>
+      </div>
+    </div>
+    <button class="btn btn-primary" id="btn-howto-back">← Back to Menu</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ LEADERBOARD ═══════════════════════════════ -->
+<div id="leaderboard-screen" class="screen hidden">
+  <div class="panel">
+    <h2>🏆 Leaderboard</h2>
+    <div id="leaderboard-list">
+      <p class="loading-msg">Loading scores…</p>
+    </div>
+    <button class="btn btn-secondary" id="btn-lb-back">← Back to Menu</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ GAME HUD ═══════════════════════════════ -->
+<div id="game-screen" class="screen hidden">
+  <div id="hud">
+    <div class="hud-left">
+      <div class="hud-item" id="hud-score">
+        <span class="hud-label">Score</span>
+        <span class="hud-val" id="score-val">0</span>
+      </div>
+      <div class="hud-item" id="hud-combo">
+        <span class="hud-label">Combo</span>
+        <span class="hud-val" id="combo-val">x1</span>
+      </div>
+      <div class="hud-item" id="hud-wave">
+        <span class="hud-label">Wave</span>
+        <span class="hud-val" id="wave-val">1</span>
+      </div>
+    </div>
+    <div class="hud-center">
+      <div class="hud-carry-row">
+        <div class="hud-carry-item">
+          <span class="hud-label">💧 Nectar</span>
+          <span class="hud-val" id="nectar-hud">—</span>
+        </div>
+        <div class="hud-carry-item">
+          <span class="hud-label">🌼 Pollen</span>
+          <span class="hud-val" id="pollen-hud">—</span>
+        </div>
+        <div class="hud-carry-item">
+          <span class="hud-label">🍯 Honey</span>
+          <span class="hud-val" id="honey-hud">×0</span>
+        </div>
+      </div>
+      <div id="enemy-warning" class="enemy-warning" style="display:none">⚠️ ENEMY!</div>
+    </div>
+    <div class="hud-right">
+      <div class="hud-bars">
+        <div class="bar-row">
+          <span class="bar-label">❤️</span>
+          <div class="bar-track"><div class="bar-fill health-bar" id="health-bar"></div></div>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">⚡</span>
+          <div class="bar-track"><div class="bar-fill stamina-bar" id="stamina-bar"></div></div>
+        </div>
+      </div>
+      <button class="btn-pause" id="btn-pause">⏸</button>
+    </div>
+  </div>
+
+  <!-- The game canvas -->
+  <canvas id="game-canvas"></canvas>
+
+  <!-- Floating score popup container -->
+  <div id="popup-layer"></div>
+</div>
+
+<!-- ═══════════════════════════════ PAUSE MENU ═══════════════════════════════ -->
+<div id="pause-menu" class="overlay hidden">
+  <div class="panel compact">
+    <h2>⏸ Paused</h2>
+    <button class="btn btn-primary" id="btn-resume">▶ Resume</button>
+    <button class="btn btn-secondary" id="btn-quit-pause">🏠 Main Menu</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ GAME OVER ═══════════════════════════════ -->
+<div id="gameover-screen" class="overlay hidden">
+  <div class="panel">
+    <div class="go-icon" id="go-icon">💀</div>
+    <h2 id="go-title">Game Over</h2>
+    <div class="go-stats">
+      <div class="stat-row"><span>Final Score</span><span class="stat-val" id="go-score">0</span></div>
+      <div class="stat-row"><span>Wave Reached</span><span class="stat-val" id="go-wave">1</span></div>
+      <div class="stat-row"><span>Pollen Collected</span><span class="stat-val" id="go-pollen">0</span></div>
+      <div class="stat-row"><span>Enemies Stung</span><span class="stat-val" id="go-stings">0</span></div>
+      <div class="stat-row"><span>Highest Combo</span><span class="stat-val" id="go-combo">x1</span></div>
+    </div>
+    <div class="name-entry">
+      <label for="player-name">Enter your name:</label>
+      <input type="text" id="player-name" maxlength="20" placeholder="BuzzMaster" />
+    </div>
+    <div class="go-buttons">
+      <button class="btn btn-primary" id="btn-submit-score">🏆 Submit Score</button>
+      <button class="btn btn-primary" id="btn-play-again">🔄 Play Again</button>
+      <button class="btn btn-secondary" id="btn-go-menu">🏠 Main Menu</button>
+    </div>
+    <p class="rank-msg" id="rank-msg"></p>
+  </div>
+</div>
+
+<script src="/static/js/audio.js"></script>
+<script src="/static/js/entities.js"></script>
+<script src="/static/js/flower.js"></script>
+<script src="/static/js/hive.js"></script>
+<script src="/static/js/game.js"></script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Help Leo survive the zombie horde in this action-packed 2D survival shooter. Fight through city streets, countryside, and a haunted castle!">
+    <title>Zombie Apocalypse</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Fredoka+One&family=Outfit:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=2">
+</head>
+
+<body>
+    <main id="app-container">
+        <div id="game-canvas-wrapper">
+            <canvas id="gameCanvas" width="1200" height="1000"></canvas>
+            <div id="hud" class="hud-hidden">
+                <div id="hud-top">
+                    <div id="status-column">
+                        <div id="lives-container">
+                            <span class="heart-wrapper" id="heart-1"><svg viewBox="0 0 24 24" class="hud-icon heart-icon">
+                                    <path
+                                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                </svg></span>
+                            <span class="heart-wrapper" id="heart-2"><svg viewBox="0 0 24 24" class="hud-icon heart-icon">
+                                    <path
+                                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                </svg></span>
+                            <span class="heart-wrapper" id="heart-3"><svg viewBox="0 0 24 24" class="hud-icon heart-icon">
+                                    <path
+                                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                </svg></span>
+                            <span class="heart-wrapper lost" id="heart-4"><svg viewBox="0 0 24 24"
+                                    class="hud-icon heart-icon">
+                                    <path
+                                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                </svg></span>
+                            <span class="heart-wrapper lost" id="heart-5"><svg viewBox="0 0 24 24"
+                                    class="hud-icon heart-icon">
+                                    <path
+                                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                </svg></span>
+                            <span class="heart-wrapper lost" id="heart-6"><svg viewBox="0 0 24 24"
+                                    class="hud-icon heart-icon">
+                                    <path
+                                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                </svg></span>
+                        </div>
+                        <div id="powerups-container">
+                            <div id="pu-weapon" class="powerup-indicator hidden">
+                                <span class="icon">🔫</span>
+                                <svg viewBox="0 0 36 36" class="powerup-ring-svg">
+                                    <circle cx="18" cy="18" r="16.5" pathLength="100" />
+                                </svg>
+                            </div>
+                            <div id="pu-shield" class="powerup-indicator hidden">
+                                <span class="icon">🛡️</span>
+                                <svg viewBox="0 0 36 36" class="powerup-ring-svg">
+                                    <circle cx="18" cy="18" r="16.5" pathLength="100" />
+                                </svg>
+                            </div>
+                            <div id="pu-multiplier" class="powerup-indicator hidden">
+                                <span class="icon">⚡</span>
+                                <svg viewBox="0 0 36 36" class="powerup-ring-svg">
+                                    <circle cx="18" cy="18" r="16.5" pathLength="100" />
+                                </svg>
+                            </div>
+                            <div id="pu-magnet" class="powerup-indicator hidden">
+                                <span class="icon">🧲</span>
+                                <svg viewBox="0 0 36 36" class="powerup-ring-svg">
+                                    <circle cx="18" cy="18" r="16.5" pathLength="100" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="level-badge">
+                        <span id="level-label">LEVEL 1</span>
+                        <span id="level-name-label">CITY STREETS</span>
+                    </div>
+                    <div id="health-container">
+                        <div id="health-bar">
+                            <div id="health-bar-fill"></div>
+                            <div id="health-bar-glow"></div>
+                        </div>
+                        <span id="health-text">HP: 100%</span>
+                    </div>
+                </div>
+                <div id="hud-bottom">
+                    <div id="auto-aim-indicator">AUTO-AIM: ON</div>
+                    <div id="coins-container" class="hud-panel">
+                        <svg viewBox="0 0 24 24" class="hud-icon coin-icon spinning-coin-icon">
+                            <circle cx="12" cy="12" r="10" fill="#ffd700" stroke="#b8860b" stroke-width="2" />
+                            <text x="12" y="16" font-family="'Orbitron', sans-serif" font-size="12" font-weight="bold"
+                                fill="#b8860b" text-anchor="middle">$</text>
+                        </svg>
+                        <span class="hud-label">COINS:</span>
+                        <span id="coin-count" class="hud-value">0</span>
+                    </div>
+
+                    <div id="zombies-slain-container" class="hud-panel">
+                        <span class="hud-label">🧟SLAIN:</span>
+                        <span id="zombie-slain-count" class="hud-value">0</span>
+                    </div>
+                    <div id="keys-container" class="hud-panel">
+                        <span class="hud-key-icon">&#128273;</span>
+                        <span class="hud-label">KEYS:</span>
+                        <span id="key-count" class="hud-value key-value">0/4</span>
+                    </div>
+                    <div id="grenades-container" class="hud-panel locked">
+                        <svg viewBox="0 0 24 24" class="hud-icon grenade-icon">
+                            <path
+                                d="M12 2C10.9 2 10 2.9 10 4V5.1C7.2 5.6 5 8.1 5 11V16C5 17.1 5.9 18 7 18H8.5V20C8.5 21.1 9.4 22 10.5 22H13.5C14.6 22 15.5 21.1 15.5 20V18H17C18.1 18 19 17.1 19 16V11C19 8.1 16.8 5.6 14 5.1V4C14 2.9 13.1 2 12 2M10.5 12H13.5V14H10.5V12Z"
+                                fill="currentColor" />
+                        </svg>
+                        <span id="grenade-count" class="hud-value">0</span>
+                        <div id="grenade-progress-container">
+                            <div id="grenade-progress-fill"></div>
+                        </div>
+
+                    </div>
+                </div>
+                <canvas id="minimap" width="240" height="200"></canvas>
+            </div>
+
+            <div id="intro-screen" class="overlay-screen">
+                <div class="overlay-content">
+                    <h1 class="glitch-title" data-text="ZOMBIE APOCALYPSE">Z🧟MBIE APOCALYPSE</h1>
+                    <p class="subtitle">A 2D Apocalyptic Survival Shooter</p>
+                    <div class="instructions-panel">
+                        <h2>Controls</h2>
+                        <ul>
+                            <li><span class="key">W</span><span class="key">A</span><span class="key">S</span><span
+                                    class="key">D</span> / <span class="key">&#8593;</span><span
+                                    class="key">&#8595;</span><span class="key">&#8592;</span><span
+                                    class="key">&#8594;</span> &nbsp; Move Leo</li>
+                            <li><span class="key">Space</span> &nbsp; Shoot (Infinite Ammo)</li>
+                            <li><span class="key">E</span> / <span class="key">G</span> &nbsp; Throw Grenade <span
+                                    class="lock-hint">(Unlocks at 50 Coins)</span></li>
+                            <li><span class="key">Shift</span> &nbsp; Toggle Auto-Aim <span class="lock-hint">(Default:
+                                    ON)</span></li>
+                            <li><span class="key">Esc</span> / <span class="key">P</span> &nbsp; Pause Menu</li>
+                        </ul>
+                        <div class="mission-brief">
+                            <span class="key-gold">&#128273;</span> Collect all <strong>4 Keys</strong> per level to
+                            advance &mdash; 3 levels total!
+                        </div>
+                    </div>
+                    <button id="start-btn" class="glow-btn">START HUNTING</button>
+                    <button id="highscores-btn" class="glow-btn secondary-btn"
+                        style="margin-top:12px;">HIGHSCORES</button>
+                </div>
+            </div>
+            <div id="pause-screen" class="overlay-screen hidden">
+                <div class="overlay-content">
+                    <h2 class="level-complete-title"
+                        style="color: #38bdf8; text-shadow: 0 0 20px rgba(56,189,248,0.6);">PAUSED</h2>
+                    <p class="death-subtitle">Take a breather, survivor.</p>
+                    <div class="stats-panel">
+                        <div class="stat-row"><span>Zombies Slain:</span><span id="pause-stat-zombies">0</span></div>
+                        <div class="stat-row"><span>Coins:</span><span id="pause-stat-coins">0</span></div>
+                        <div class="stat-row"><span>Time:</span><span id="pause-stat-time">0s</span></div>
+                        <div class="stat-row"><span>Lives:</span><span id="pause-stat-lives">0</span></div>
+                    </div>
+
+                    <div class="settings-panel">
+                        <div class="setting-row">
+                            <span>Sound Effects</span>
+                            <div class="toggle-switch on" id="sfx-toggle">
+                                <div class="toggle-knob"></div>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <span>Music</span>
+                            <div class="toggle-switch on" id="music-toggle">
+                                <div class="toggle-knob"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="pause-continue-btn" class="glow-btn"
+                        style="background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%); box-shadow: 0 0 15px rgba(56,189,248,0.3); margin-bottom: 12px;">RESUME
+                        GAME</button>
+                    <button id="pause-highscore-btn" class="glow-btn secondary-btn" style="margin-bottom: 12px;">HIGH
+                        SCORES</button>
+                    <button id="pause-menu-btn" class="glow-btn secondary-btn">MAIN MENU</button>
+                </div>
+            </div>
+
+
+            <div id="level-complete-screen" class="overlay-screen hidden">
+                <div class="overlay-content">
+                    <h2 class="level-complete-title">LEVEL COMPLETE!</h2>
+                    <p id="level-complete-subtitle" class="death-subtitle"></p>
+                    <div class="stats-panel">
+                        <div class="stat-row"><span>Zombies Slain:</span><span id="lc-stat-zombies">0</span></div>
+                        <div class="stat-row"><span>Coins Earned:</span><span id="lc-stat-coins">0</span></div>
+                        <div class="stat-row"><span>Time:</span><span id="lc-stat-time">0s</span></div>
+                    </div>
+                    <button id="next-level-btn" class="glow-btn level-btn" style="margin-bottom:12px;">NEXT LEVEL
+                        &#8594;</button>
+                    <button id="lc-menu-btn" class="glow-btn secondary-btn">MAIN MENU</button>
+                </div>
+            </div>
+
+            <div id="win-screen" class="overlay-screen hidden">
+                <div class="overlay-content">
+                    <h2 class="win-title">&#127942; VICTORY!</h2>
+                    <p class="death-subtitle">Leo survived all three zones. The apocalypse is over &mdash; for now.</p>
+                    <div class="stats-panel">
+                        <div class="stat-row"><span>Total Zombies Slain:</span><span id="win-stat-zombies">0</span>
+                        </div>
+                        <div class="stat-row"><span>Total Coins:</span><span id="win-stat-coins">0</span></div>
+                        <div class="stat-row"><span>Total Time:</span><span id="win-stat-time">0s</span></div>
+                    </div>
+                    <button id="win-restart-btn" class="glow-btn" style="margin-bottom:12px;">PLAY AGAIN</button>
+                    <button id="win-menu-btn" class="glow-btn secondary-btn">MAIN MENU</button>
+                </div>
+            </div>
+
+            <div id="game-over-screen" class="overlay-screen hidden">
+                <div class="overlay-content">
+                    <h2 class="death-title">MISSION FAILED</h2>
+                    <p class="death-subtitle">Leo was overrun by the horde.</p>
+                    <div class="stats-panel">
+                        <div class="stat-row"><span>Zombies Terminated:</span><span id="stat-zombies">0</span></div>
+                        <div class="stat-row"><span>Coins Collected:</span><span id="stat-coins">0</span></div>
+                        <div class="stat-row"><span>Time Survived:</span><span id="stat-time">0.0s</span></div>
+                    </div>
+                    <button id="restart-btn" class="glow-btn restart-btn">REDEPLOY</button>
+                    <button id="main-menu-btn" class="glow-btn secondary-btn" style="margin-top:12px;">MAIN
+                        MENU</button>
+                </div>
+            </div>
+
+            <div id="unlock-toast" class="toast-hidden">
+                <div class="toast-content">
+                    <svg viewBox="0 0 24 24" class="toast-icon">
+                        <path
+                            d="M12 2C10.9 2 10 2.9 10 4V5.1C7.2 5.6 5 8.1 5 11V16C5 17.1 5.9 18 7 18H8.5V20C8.5 21.1 9.4 22 10.5 22H13.5C14.6 22 15.5 21.1 15.5 20V18H17C18.1 18 19 17.1 19 16V11C19 8.1 16.8 5.6 14 5.1V4C14 2.9 13.1 2 12 2M10.5 12H13.5V14H10.5V12Z"
+                            fill="currentColor" />
+                    </svg>
+                    <span>GRENADES UNLOCKED! Press E or G to throw</span>
+                </div>
+            </div>
+
+            <div id="highscore-modal" class="overlay-screen hidden">
+                <div class="overlay-content">
+                    <h2 class="death-title" style="color:#fbbf24;text-shadow:0 0 15px rgba(251,191,36,0.6);">&#127942;
+                        HIGH SCORES</h2>
+                    <p class="death-subtitle">Top zombie hunters</p>
+                    <ol id="highscore-list" class="highscore-list"></ol>
+                    <button id="highscore-close" class="glow-btn" style="margin-top:20px;">CLOSE</button>
+                </div>
+            </div>
+
+            <div id="name-entry-overlay" class="overlay-screen hidden" style="z-index:30;">
+                <div class="overlay-content">
+                    <h2 class="death-title" style="color:#fbbf24;font-size:28px;">NEW HIGH SCORE!</h2>
+                    <p class="death-subtitle" style="margin-bottom:20px;">Enter your name for the board</p>
+                    <input id="player-name-input" type="text" maxlength="20" placeholder="Your name..."
+                        class="name-input" />
+                    <button id="name-submit-btn" class="glow-btn" style="margin-top:14px;">SUBMIT</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="levels.js?v=2"></script>
+    <script src="game.js?v=2"></script>
+</body>
+
+</html>

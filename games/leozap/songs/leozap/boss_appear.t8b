@@ -1,0 +1,38 @@
+{
+  "tunic8bit": "1.0",
+  "title": "boss_appear",
+  "author": "LeoZap",
+  "bpm": 100,
+  "tracks": [
+    {
+      "name": "Boss stab",
+      "waveform": "sawtooth",
+      "channel": 0,
+      "volume": 0.9,
+      "octave": 3,
+      "duty_cycle": 0.5,
+      "envelope": {"attack": 0.001, "decay": 0.2, "sustain": 0.6, "release": 0.15},
+      "notes": [
+        {"note": "C",    "octave": 3, "duration": "e"},
+        {"note": "REST", "octave": 0, "duration": "s"},
+        {"note": "C",    "octave": 3, "duration": "e"},
+        {"note": "REST", "octave": 0, "duration": "s"},
+        {"note": "Ab",   "octave": 2, "duration": "h"},
+        {"note": "REST", "octave": 0, "duration": "e"}
+      ]
+    },
+    {
+      "name": "Boss noise",
+      "waveform": "noise",
+      "channel": 1,
+      "volume": 0.55,
+      "octave": 2,
+      "duty_cycle": 0.5,
+      "envelope": {"attack": 0.001, "decay": 0.3, "sustain": 0.0, "release": 0.1},
+      "notes": [
+        {"note": "C",    "octave": 2, "duration": "h."},
+        {"note": "REST", "octave": 0, "duration": "e"}
+      ]
+    }
+  ]
+}

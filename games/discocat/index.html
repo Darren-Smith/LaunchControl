@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiscoCat</title>
+    <meta name="description" content="A fun disco dancing game featuring cool cats!">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Start Screen -->
+        <div id="start-screen" class="screen active">
+            <h1>DiscoCat</h1>
+            <p>Select your dancer!</p>
+            <div class="character-selection">
+                <button class="char-btn" data-char="funky">
+                    <div class="cat-icon">🐱</div>
+                    <span>Funky Cat</span>
+                </button>
+                <button class="char-btn" data-char="neon">
+                    <div class="cat-icon">😸</div>
+                    <span>Neon Cat</span>
+                </button>
+                <button class="char-btn" data-char="groove">
+                    <div class="cat-icon">😻</div>
+                    <span>Groove Cat</span>
+                </button>
+            </div>
+            <div class="controls-info">
+                <h3>Controls (Numpad)</h3>
+                <ul>
+                    <li>2: Down/Kick</li>
+                    <li>4: Left Paw</li>
+                    <li>6: Right Paw</li>
+                    <li>8: Jump</li>
+                </ul>
+                <p>Hit the keys when the moves reach the target zone!</p>
+            </div>
+            <button id="view-leaderboard-btn" style="margin-top: 2rem;">View High Scores</button>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <div id="countdown-overlay">3</div>
+            
+            <div class="hud">
+                <div class="level-display">Level <span id="level-val">1</span></div>
+                <div class="timer-display">Time: <span id="time-val">10</span>s</div>
+                <div class="score-display">Score: <span id="score-val">0</span></div>
+            </div>
+            
+            <div class="dance-floor">
+                <!-- Rhythm Game Tracks -->
+                <div class="track-container">
+                    <div class="target-zone"></div>
+                    <div class="track" id="track-2"><div class="track-label">2</div></div>
+                    <div class="track" id="track-4"><div class="track-label">4</div></div>
+                    <div class="track" id="track-6"><div class="track-label">6</div></div>
+                    <div class="track" id="track-8"><div class="track-label">8</div></div>
+                </div>
+
+                <!-- Dancer -->
+                <div class="dancer-container">
+                    <div class="spotlights">
+                        <div class="spotlight left"></div>
+                        <div class="spotlight right"></div>
+                    </div>
+                    <div class="cat-bob-wrapper">
+                        <div id="player-cat" class="cat">
+                            <div class="cat-head" id="cat-head-emoji">🐱</div>
+                            <div class="cat-tail"></div>
+                            <div class="cat-body"></div>
+                            <div class="cat-arm left-arm">
+                                <div class="cat-forearm"></div>
+                            </div>
+                            <div class="cat-arm right-arm">
+                                <div class="cat-forearm"></div>
+                            </div>
+                            <div class="cat-leg left-leg"></div>
+                            <div class="cat-leg right-leg"></div>
+                        </div>
+                    </div>
+                    <div class="disco-floor"></div>
+                </div>
+                
+                <!-- Feedback text (Perfect, Good, Miss) -->
+                <div id="feedback-text"></div>
+            </div>
+        </div>
+
+        <!-- End Screen (Next Level) -->
+        <div id="end-screen" class="screen">
+            <h2 id="end-title">Level Complete!</h2>
+            <p>Score: <span id="final-score">0</span></p>
+            <button id="next-level-btn">Next Level</button>
+        </div>
+
+        <!-- Pause Screen -->
+        <div id="pause-screen" class="screen">
+            <h2>Paused</h2>
+            <button id="resume-btn">Resume</button>
+            <button id="restart-level-btn">Restart Level</button>
+            <button id="quit-menu-btn">Quit to Main Menu</button>
+        </div>
+
+        <!-- Name Entry Screen (Game Complete) -->
+        <div id="name-entry-screen" class="screen">
+            <h2>Game Complete!</h2>
+            <p>Final Score: <span id="game-complete-score">0</span></p>
+            <input type="text" id="player-name-input" placeholder="Enter your name" maxlength="10">
+            <button id="submit-score-btn">Submit Score</button>
+        </div>
+
+        <!-- Leaderboard Screen -->
+        <div id="leaderboard-screen" class="screen">
+            <h2>High Scores</h2>
+            <ul id="high-score-list"></ul>
+            <button id="back-to-main-btn">Main Menu</button>
+        </div>
+    </div>
+    
+    <script src="main.js" type="module"></script>
+</body>
+</html>

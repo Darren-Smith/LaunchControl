@@ -1,0 +1,41 @@
+{
+  "tunic8bit": "1.0",
+  "title": "game_over",
+  "author": "LeoZap",
+  "bpm": 90,
+  "tracks": [
+    {
+      "name": "Doom descent",
+      "waveform": "square",
+      "channel": 0,
+      "volume": 0.85,
+      "octave": 4,
+      "duty_cycle": 0.5,
+      "envelope": {"attack": 0.01, "decay": 0.1, "sustain": 0.7, "release": 0.2},
+      "notes": [
+        {"note": "C",    "octave": 5, "duration": "q"},
+        {"note": "B",    "octave": 4, "duration": "q"},
+        {"note": "Bb",   "octave": 4, "duration": "q"},
+        {"note": "A",    "octave": 4, "duration": "q"},
+        {"note": "Ab",   "octave": 4, "duration": "q"},
+        {"note": "G",    "octave": 4, "duration": "h"},
+        {"note": "REST", "octave": 0, "duration": "q"}
+      ]
+    },
+    {
+      "name": "Bass rumble",
+      "waveform": "sawtooth",
+      "channel": 1,
+      "volume": 0.5,
+      "octave": 3,
+      "duty_cycle": 0.5,
+      "envelope": {"attack": 0.02, "decay": 0.15, "sustain": 0.5, "release": 0.3},
+      "notes": [
+        {"note": "C",    "octave": 3, "duration": "h"},
+        {"note": "G",    "octave": 2, "duration": "h"},
+        {"note": "C",    "octave": 2, "duration": "w"},
+        {"note": "REST", "octave": 0, "duration": "q"}
+      ]
+    }
+  ]
+}

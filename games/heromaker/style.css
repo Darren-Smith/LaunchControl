@@ -1,0 +1,142 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #222;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+}
+
+#game-container {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+canvas {
+    background-color: #87CEEB;
+    /* Sky blue default */
+    display: block;
+}
+
+#ui-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    /* Let clicks pass through to canvas unless on UI elements */
+}
+
+#hud {
+    padding: 10px;
+    display: flex;
+    gap: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 2px 2px 2px black;
+}
+
+#hero-maker-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.9);
+    padding: 20px;
+    border: 2px solid gold;
+    border-radius: 10px;
+    pointer-events: auto;
+    text-align: center;
+    width: 60%;
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+}
+
+.hidden {
+    display: none !important;
+}
+
+button {
+    margin-top: auto;
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.shop-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+    margin-top: 20px;
+    max-height: 400px;
+}
+
+.shop-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.item-name {
+    font-weight: bold;
+    font-size: 1.1em;
+    width: 150px;
+    text-align: left;
+}
+
+.item-stats {
+    font-size: 0.9em;
+    color: #ccc;
+    flex-grow: 1;
+    text-align: left;
+    margin-left: 20px;
+}
+
+.buy-btn {
+    background-color: #ffd700;
+    color: black;
+    border: none;
+    padding: 5px 15px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 0;
+    /* Override default button margin */
+}
+
+.buy-btn:hover {
+    background-color: #ffeb3b;
+}
+
+.equipment-slots {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 20px;
+    font-size: 1.2em;
+}
+
+.slot {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: 1px solid #555;
+}

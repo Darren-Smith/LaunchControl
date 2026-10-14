@@ -1,0 +1,52 @@
+[
+  {
+    "id": "level_1",
+    "name": "Animals",
+    "theme": "Animals bigger than an orange 🍊",
+    "background": "meadow",
+    "targetToHit": "correct",
+    "description": "Whack the correct answers! Hit the animals that ARE bigger than an orange.",
+    "correctFacts": ["🐘 Elephant", "🐎 Horse", "🐕 Dog", "🐈 Cat", "🦁 Lion", "🐅 Tiger", "🐻 Bear", "🐄 Cow", "🦒 Giraffe", "🦛 Hippopotamus"],
+    "incorrectFacts": ["🐜 Ant", "🦟 Flea", "🐞 Ladybug", "🪱 Worm", "🐁 Mouse", "🐹 Hamster", "🐠 Goldfish", "🐝 Bee", "🪰 Fly", "🐦 Hummingbird"]
+  },
+  {
+    "id": "level_2",
+    "name": "Math",
+    "theme": "Sums that add to 100 💯",
+    "background": "playroom",
+    "targetToHit": "correct",
+    "description": "Whack the correct math! Hit the sums that DO equal 100.",
+    "correctFacts": ["50 + 50", "60 + 40", "75 + 25", "80 + 20", "90 + 10", "100 + 0", "45 + 55", "20 + 80", "30 + 70", "15 + 85"],
+    "incorrectFacts": ["50 + 60", "40 + 40", "75 + 35", "80 + 30", "90 + 20", "100 + 10", "35 + 55", "20 + 70", "30 + 80", "15 + 75"]
+  },
+  {
+    "id": "level_3",
+    "name": "Geography",
+    "theme": "Capital Cities 🏙️",
+    "background": "map",
+    "targetToHit": "correct",
+    "description": "Whack the real capitals! Hit the cities that ARE actual capital cities.",
+    "correctFacts": ["🇬🇧 London", "🇫🇷 Paris", "🇺🇸 Washington D.C.", "🇯🇵 Tokyo", "🇩🇪 Berlin", "🇮🇹 Rome", "🇪🇸 Madrid", "🇨🇦 Ottawa", "🇦🇺 Canberra", "🇨🇳 Beijing"],
+    "incorrectFacts": ["🇺🇸 New York", "🇦🇺 Sydney", "🇨🇦 Toronto", "🇺🇸 Los Angeles", "🇪🇸 Barcelona", "🇮🇹 Milan", "🇧🇷 Rio de Janeiro", "🇨🇳 Shanghai", "🇮🇳 Mumbai", "🇹🇷 Istanbul"]
+  },
+  {
+    "id": "level_4",
+    "name": "Space",
+    "theme": "Planets in our Solar System 🪐",
+    "background": "galactic",
+    "targetToHit": "correct",
+    "description": "Whack the correct answers! Hit the real planets in our solar system.",
+    "correctFacts": ["🌑 Mercury", "✨ Venus", "🌍 Earth", "🔴 Mars", "🟠 Jupiter", "🪐 Saturn", "🧊 Uranus", "🔵 Neptune"],
+    "incorrectFacts": ["⛄ Pluto", "☀️ The Sun", "🌙 The Moon", "🌟 Alpha Centauri", "⭐ Sirius", "🌌 Andromeda", "🌖 Titan", "🌔 Europa", "🌋 Io", "🌠 Halley's Comet"]
+  },
+  {
+    "id": "level_5",
+    "name": "Vocabulary",
+    "theme": "Not starting with 'P' 🚫",
+    "background": "town",
+    "targetToHit": "incorrect",
+    "description": "Whack the Cheeky moles! Hit the words that DO NOT start with the letter P!",
+    "correctFacts": ["🐧 Penguin", "🎹 Piano", "🍕 Pizza", "✏️ Pencil", "🐼 Panda", "🥔 Potato", "🦜 Parrot", "🎃 Pumpkin", "🧩 Puzzle", "🍿 Popcorn"],
+    "incorrectFacts": ["🍎 Apple", "🍌 Banana", "🚗 Car", "🐶 Dog", "🐘 Elephant", "🐸 Frog", "🎸 Guitar", "🏠 House", "🧊 Igloo", "🪁 Kite"]
+  }
+]

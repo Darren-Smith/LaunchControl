@@ -1,0 +1,23 @@
+{
+  "tunic8bit": "1.0",
+  "title": "collect_gem",
+  "author": "LeoZap",
+  "bpm": 280,
+  "tracks": [
+    {
+      "name": "Sparkle",
+      "waveform": "triangle",
+      "channel": 0,
+      "volume": 0.7,
+      "octave": 6,
+      "duty_cycle": 0.5,
+      "envelope": {"attack": 0.001, "decay": 0.05, "sustain": 0.3, "release": 0.04},
+      "notes": [
+        {"note": "C",    "octave": 6, "duration": "s"},
+        {"note": "E",    "octave": 6, "duration": "s"},
+        {"note": "G",    "octave": 6, "duration": "s"},
+        {"note": "REST", "octave": 0, "duration": "e"}
+      ]
+    }
+  ]
+}

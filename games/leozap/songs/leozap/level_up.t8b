@@ -1,0 +1,40 @@
+{
+  "tunic8bit": "1.0",
+  "title": "level_up",
+  "author": "LeoZap",
+  "bpm": 160,
+  "tracks": [
+    {
+      "name": "Fanfare lead",
+      "waveform": "square",
+      "channel": 0,
+      "volume": 0.85,
+      "octave": 5,
+      "duty_cycle": 0.5,
+      "envelope": {"attack": 0.005, "decay": 0.04, "sustain": 0.8, "release": 0.1},
+      "notes": [
+        {"note": "C",    "octave": 5, "duration": "e"},
+        {"note": "E",    "octave": 5, "duration": "e"},
+        {"note": "G",    "octave": 5, "duration": "e"},
+        {"note": "C",    "octave": 6, "duration": "q."},
+        {"note": "REST", "octave": 0, "duration": "e"}
+      ]
+    },
+    {
+      "name": "Harmony",
+      "waveform": "triangle",
+      "channel": 1,
+      "volume": 0.5,
+      "octave": 4,
+      "duty_cycle": 0.5,
+      "envelope": {"attack": 0.01, "decay": 0.04, "sustain": 0.7, "release": 0.12},
+      "notes": [
+        {"note": "E",    "octave": 4, "duration": "e"},
+        {"note": "G",    "octave": 4, "duration": "e"},
+        {"note": "B",    "octave": 4, "duration": "e"},
+        {"note": "E",    "octave": 5, "duration": "q."},
+        {"note": "REST", "octave": 0, "duration": "e"}
+      ]
+    }
+  ]
+}

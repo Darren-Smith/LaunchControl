@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeoZap - Space Superhero</title>
+    <meta name="description" content="LeoZap: Defender of the Galaxy — a superhero space shooter with 30 levels, power-ups, bosses and gem collecting.">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@400;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <canvas id="spaceCanvas"></canvas>
+    <div id="game-container">
+        <canvas id="gameCanvas" width="1120" height="840"></canvas>
+    <div id="pause-screen" class="screen hidden">
+        <h2>PAUSED</h2>
+        <button id="resume-btn" class="btn">RESUME</button>
+        <button id="restart-pause-btn" class="btn secondary">RESTART</button>
+        <button id="mute-pause-btn" class="hud-sound-btn">🔊 SFX</button>
+        <button id="mute-music-pause-btn" class="hud-sound-btn">🎵 MUSIC</button>
+        <button id="show-scores-pause-btn" class="btn secondary">HIGH SCORES</button>
+        <button id="exit-main-btn" class="btn secondary">MAIN MENU</button>
+    </div>
+        <div id="ui-layer">
+
+            <!-- ── HUD ──────────────────────────────────────────────── -->
+            <div id="hud" class="hidden">
+                <div class="hud-item">SCORE: <span id="score">0</span></div>
+                <div class="hud-item">LEVEL: <span id="level">1</span></div>
+                <div class="hud-item">GEMS: <span id="gems">0</span></div>
+                <div class="hud-item">HEALTH: <span id="health">100</span>%</div>
+                <div class="hud-item">PWR: <span id="power-level">★☆☆☆</span></div>
+                <div class="hud-sound">
+                    <button id="mute-btn"       class="hud-sound-btn">🔊 SFX</button>
+                    <button id="mute-music-btn"  class="hud-sound-btn">🎵 MUSIC</button>
+                </div>
+            </div>
+
+            <!-- ── Start Screen ──────────────────────────────────────── -->
+            <div id="start-screen" class="screen">
+                <h1 class="game-title">LeoZap</h1>
+                <p class="subtitle">Defender of the Galaxy</p>
+                <button id="start-btn"       class="btn">START MISSION</button>
+                <button id="show-scores-btn" class="btn secondary">HIGH SCORES</button>
+                <div class="controls-info">
+                    <p>Arrow Keys / WASD to Move</p>
+                    <p>SPACE to Shoot</p>
+                    <p>Collect ⚡ power-ups to upgrade your bullets!</p>
+                </div>
+            </div>
+
+            <!-- ── High Score Board ──────────────────────────────────── -->
+            <div id="high-score-board" class="screen hidden">
+                <div class="board-content">
+                    <h2>TOP DEFENDERS</h2>
+                    <ul id="high-score-list"></ul>
+                    <button id="hide-scores-btn" class="btn secondary">CLOSE</button>
+                </div>
+            </div>
+
+            <!-- ── Game Over Screen ───────────────────────────────────── -->
+            <div id="game-over-screen" class="screen hidden">
+                <h1>GAME OVER</h1>
+                <p>Score: <span id="final-score">0</span></p>
+                <p>Level: <span id="final-level">1</span></p>
+                <div id="save-score-container">
+                    <input type="text" id="player-name" placeholder="Enter Name" maxlength="10">
+                    <button id="save-score-btn" class="btn">SAVE SCORE</button>
+                </div>
+                <button id="restart-btn" class="btn">TRY AGAIN</button>
+            </div>
+
+            <!-- ── Level Transition Banner ───────────────────────────── -->
+            <div id="level-screen" class="screen hidden">
+                <h2 id="level-title">Level 1</h2>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Howler.js (audio library) — must load before game.js module -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+
+    <!-- Animated star background (non-module, runs immediately) -->
+    <script src="js/background.js"></script>
+
+    <!-- Game scripts (ES module tree rooted at game.js) -->
+    <script type="module" src="js/game.js"></script>
+</body>
+
+</html>

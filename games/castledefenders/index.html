@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Castle Defenders - Room Builder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Start Screen -->
+        <div id="screen-start" class="screen">
+            <div class="title-container">
+                <h1 style="font-size: 5rem; margin-bottom: 0; text-shadow: 2px 2px 4px #000;">CASTLE DEFENDERS</h1>
+                <p style="font-size: 1.5rem; color: #ffeb3b; margin-top: 0; margin-bottom: 20px; text-align: center;">Build. Defend. Survive.</p>
+                <div style="margin-bottom: 30px; display: flex; gap: 10px; justify-content: center;">
+                    <button class="diff-btn" id="btn-diff-easy" onclick="selectDifficulty('easy')">Easy</button>
+                    <button class="diff-btn selected" id="btn-diff-normal" onclick="selectDifficulty('normal')">Normal</button>
+                    <button class="diff-btn" id="btn-diff-hardcore" onclick="selectDifficulty('hardcore')">Hardcore</button>
+                </div>
+            </div>
+            <button class="primary-btn huge-btn" onclick="startGame()" style="font-size: 2rem; padding: 15px 40px; margin-bottom: 20px;">Play Game</button>
+            <button class="secondary-btn" onclick="showScreen('screen-highscores')" style="font-size: 1.5rem; padding: 10px 30px;">High Scores</button>
+        </div>
+
+        <!-- High Scores Screen -->
+        <div id="screen-highscores" class="screen hidden">
+            <div class="parchment-panel modal" style="min-width: 400px;">
+                <h1>High Scores</h1>
+                <table id="highscore-table" style="width: 100%; margin-bottom: 20px; text-align: left; border-collapse: collapse;">
+                    <thead>
+                        <tr><th style="padding-bottom: 10px; padding-left: 10px;">Rank</th><th style="padding-bottom: 10px; padding-left: 10px;">Name</th><th style="padding-bottom: 10px; padding-left: 10px;">Score</th><th style="padding-bottom: 10px; text-align: center;">Round</th></tr>
+                    </thead>
+                    <tbody id="highscore-list">
+                        <!-- JS injects scores here -->
+                    </tbody>
+                </table>
+                <button class="secondary-btn" onclick="showScreen('screen-start')">Back to Menu</button>
+            </div>
+        </div>
+
+        <!-- Pause Overlay -->
+        <div id="overlay-pause" class="overlay hidden">
+            <div class="parchment-panel modal" style="text-align: center;">
+                <h1>Paused</h1>
+                <button class="primary-btn" onclick="togglePause()">Resume</button>
+                <button class="secondary-btn" style="margin-top: 15px;" onclick="quitGame()">Quit to Menu</button>
+            </div>
+        </div>
+
+        <!-- Play Screen -->
+        <div id="screen-play" class="screen hidden" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start;">
+            
+        <!-- Top Bar: Resources and Wave Info -->
+        <header id="top-bar" class="wood-panel">
+            <div class="resource-group">
+                <div class="resource" title="Gold">
+                    <span class="icon">🪙</span>
+                    <span class="value" id="val-gold">50</span>
+                </div>
+                <div class="resource" title="Iron">
+                    <span class="icon">⛏️</span>
+                    <span class="value" id="val-iron">50</span>
+                </div>
+                <div class="resource" title="Food">
+                    <span class="icon">🌾</span>
+                    <span class="value" id="val-food">50</span>
+                </div>
+                <div class="resource" title="Firepower">
+                    <span class="icon">⚔️</span>
+                    <span class="value" id="val-dps">0</span> <span style="font-size: 0.8rem; margin-left: 2px;">DPS</span>
+                </div>
+            </div>
+            
+            <div id="castle-top-hp-container">
+                <div id="castle-top-hp-text">100 / 100</div>
+                <div id="castle-top-hp-bar"><div id="castle-top-hp-fill"></div></div>
+            </div>
+            
+            <div class="center-controls">
+                <div class="wave-info">
+                    <h2>Round <span id="val-wave">1</span></h2>
+                    <div id="phase-indicator">Phase: Buy</div>
+                </div>
+                <button id="btn-next-phase" class="primary-btn">Start Next Wave</button>
+                <div id="wave-hp-container" class="hidden">
+                    <div id="wave-hp-text">0 / 0</div>
+                    <div id="wave-hp-bar"><div id="wave-hp-fill"></div></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Game Area: 2D Side View -->
+        <main id="battlefield-container">
+            <div id="battlefield" class="phase-buy">
+                
+                <!-- Castle Grid (2 columns x 5 rows) -->
+                <div id="castle-area">
+                    
+                    <!-- Back Turret -->
+                    <div id="back-turret" class="turret back-turret">
+                        <div class="turret-roof">
+                            <div class="turret-flag"></div>
+                        </div>
+                        <div class="turret-body" id="back-turret-body">
+                        </div>
+                    </div>
+
+                    <div class="castle-grid" id="castle-grid">
+                        <!-- Row 5 (Top) -->
+                        <div class="room-slot" data-slot="9"></div>
+                        <div class="room-slot" data-slot="10"></div>
+                        <!-- Row 4 -->
+                        <div class="room-slot" data-slot="7"></div>
+                        <div class="room-slot" data-slot="8"></div>
+                        <!-- Row 3 -->
+                        <div class="room-slot" data-slot="5"></div>
+                        <div class="room-slot" data-slot="6"></div>
+                        <!-- Row 2 -->
+                        <div class="room-slot" data-slot="3"></div>
+                        <div class="room-slot" data-slot="4"></div>
+                        <!-- Row 1 (Bottom) -->
+                        <div class="room-slot" data-slot="1"></div>
+                        <div class="room-slot" data-slot="2"></div>
+                    </div>
+                    
+                    <!-- Front Turret -->
+                    <div id="front-turret" class="turret">
+                        <div class="turret-roof">
+                            <div class="turret-flag"></div>
+                        </div>
+                        <div class="turret-body" id="turret-body">
+                            <div class="turret-door"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Castle Base -->
+                    <div class="castle-base"></div>
+                </div>
+
+                <!-- Independent Resource Nodes -->
+                <div id="building-food" class="building res-node" onclick="openMenu('food')">
+                    <div class="res-tile tile-farm">🌾</div>
+                    <div class="building-label">Farm <span id="lvl-food">Lv 1</span></div>
+                </div>
+                <div id="building-iron" class="building res-node" onclick="openMenu('iron')">
+                    <div class="res-tile tile-iron-mine"><div class="center-circle"></div></div>
+                    <div class="building-label">Iron Mine <span id="lvl-iron">Lv 1</span></div>
+                </div>
+                <div id="building-gold" class="building res-node" onclick="openMenu('gold')">
+                    <div class="res-tile tile-gold-mine"><div class="center-circle"></div></div>
+                    <div class="building-label">Gold Mine <span id="lvl-gold">Lv 1</span></div>
+                </div>
+
+                <!-- Dev Speed Indicator -->
+                <div id="speed-indicator" class="hidden" style="position: absolute; top: 70px; right: 20px; font-size: 2rem; color: #ffeb3b; font-weight: bold; text-shadow: 2px 2px 4px #000; z-index: 10; pointer-events: none; border: 2px solid #ffeb3b; padding: 5px 15px; border-radius: 8px; background: rgba(0,0,0,0.5);">
+                    ⏩ 2x Speed
+                </div>
+
+                <!-- Market / Moat Area -->
+                <div id="moat-area">
+                    <div id="building-market" class="building res-node" onclick="openShop()">
+                        <div class="res-tile tile-market" style="font-size: 2.5rem;">🏪</div>
+                        <div class="building-label">Market</div>
+                    </div>
+                </div>
+                
+                <div id="enemy-area">
+                    <!-- Enemies spawn here -->
+                </div>
+                
+                <!-- Float UI / Combat Log -->
+                <div class="combat-log parchment-panel" id="combat-log">
+                    <div class="log-content" id="log-content"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Shop Modal -->
+    <div id="shop-modal" class="overlay hidden">
+        <div class="parchment-panel modal">
+            <h2>Market Shop</h2>
+            <div class="shop-grid">
+                <button class="upgrade-btn shop-item" data-type="archer" onclick="buyRoom('archer')">
+                    <div class="title">Archer Room</div>
+                    <div class="desc">Basic ranged attack. +15% vs Flying.</div>
+                    <div class="cost"></div>
+                </button>
+                <button class="upgrade-btn shop-item" data-type="cannon" onclick="buyRoom('cannon')">
+                    <div class="title">Cannon Room</div>
+                    <div class="desc">High damage, 50% splash. Ground only.</div>
+                    <div class="cost"></div>
+                </button>
+                <button class="upgrade-btn shop-item" data-type="barracks" onclick="buyRoom('barracks')">
+                    <div class="title">Barracks</div>
+                    <div class="desc">Short range, rapid fire attacks.</div>
+                    <div class="cost"></div>
+                </button>
+                <button class="upgrade-btn shop-item" data-type="fireball" onclick="buyRoom('fireball')">
+                    <div class="title">Fireball Room</div>
+                    <div class="desc">Good damage, burns enemies.</div>
+                    <div class="cost"></div>
+                </button>
+                <button class="upgrade-btn shop-item" data-type="goo" onclick="buyRoom('goo')">
+                    <div class="title">Goo Room</div>
+                    <div class="desc">Low damage, applies 30% slow.</div>
+                    <div class="cost"></div>
+                </button>
+                <button class="upgrade-btn shop-item" data-type="snowbomb" onclick="buyRoom('snowbomb')">
+                    <div class="title">Snowbomb Room</div>
+                    <div class="desc">Splash damage + 15% slow in radius.</div>
+                    <div class="cost"></div>
+                </button>
+                <button class="upgrade-btn shop-item" data-type="lightning" onclick="buyRoom('lightning')">
+                    <div class="title">Lightning Room</div>
+                    <div class="desc">Instant hit, chains to 1 nearby enemy.</div>
+                    <div class="cost"></div>
+                </button>
+                <button class="upgrade-btn shop-item" data-type="gryphons" onclick="buyRoom('gryphons')">
+                    <div class="title">Gryphon Roost</div>
+                    <div class="desc">Anti-Air Specialist. Flying only.</div>
+                    <div class="cost"></div>
+                </button>
+                <button class="upgrade-btn shop-item" data-type="laser" onclick="buyRoom('laser')">
+                    <div class="title">Laser Room</div>
+                    <div class="desc">Very high damage, long range, slow.</div>
+                    <div class="cost"></div>
+                </button>
+                <button class="upgrade-btn shop-item" data-type="dragons" onclick="buyRoom('dragons')">
+                    <div class="title">Dragon Roost</div>
+                    <div class="desc">Spawns an allied dragon to defend!</div>
+                    <div class="cost"></div>
+                </button>
+                <button class="upgrade-btn shop-item" data-type="moat" onclick="upgradeMoat()">
+                    <div class="title">Upgrade Moat</div>
+                    <div class="desc">Adds Spikes/Sharks to damage crossing enemies.</div>
+                    <div class="cost"></div>
+                </button>
+                <button class="upgrade-btn shop-item" data-type="heal" onclick="healCastle()">
+                    <div class="title">Repair Castle</div>
+                    <div class="desc">Restores 20 HP</div>
+                    <div class="cost"></div>
+                </button>
+            </div>
+            <button class="primary-btn" onclick="closeShop()">Close Shop</button>
+        </div>
+    </div>
+    
+    <!-- Upgrade Building Modal -->
+    <div id="upgrade-modal" class="overlay hidden">
+        <div class="parchment-panel modal">
+            <h2 id="upg-title">Upgrade</h2>
+            <p id="upg-desc">Increase resource payout per round.</p>
+            <button class="primary-btn" id="btn-do-upgrade">Upgrade (<span id="upg-cost">10 🪙</span>)</button>
+            <button class="primary-btn" onclick="closeMenu()" style="background: #555; border-color: #333;">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Room Action Modal -->
+    <div id="room-menu-modal" class="overlay hidden">
+        <div class="parchment-panel modal">
+            <h2 id="room-menu-title">Room Options</h2>
+            <p id="room-menu-desc">Manage your defenses.</p>
+            <button class="primary-btn" id="btn-sell-room" style="background: #e53935;">Sell Room (<span id="room-sell-value">0</span>)</button>
+            <button class="primary-btn" onclick="closeRoomMenu()" style="background: #555; border-color: #333; margin-top: 10px;">Cancel</button>
+        </div>
+    </div>
+        </div>
+        <!-- End of screen-play -->
+
+        <!-- Game Over Screen -->
+        <div id="screen-gameover" class="screen hidden overlay">
+            <div class="parchment-panel modal">
+                <h1 id="game-over-title">Game Over</h1>
+                <p>You survived until Round <strong id="final-wave" style="color: #f44336; text-shadow: 1px 1px 2px rgba(0,0,0,0.4);"></strong>.</p>
+                <p style="font-size: 1.2rem;">Final Score: <strong id="final-score" style="color: #ff9800; text-shadow: 0px 0px 8px rgba(0,0,0,0.9); letter-spacing: 2px;"></strong></p>
+                
+                <div id="highscore-entry" class="hidden" style="margin: 20px 0; background: rgba(62, 39, 35, 0.7); padding: 15px; border-radius: 8px; border: 2px solid #8d6e63; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);">
+                    <p style="color: #4ade80; font-weight: bold; margin-top: 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">New High Score! Top 20!</p>
+                    <input type="text" id="player-name" placeholder="Enter your name" maxlength="15" style="padding: 8px; font-size: 1.1rem; border-radius: 4px; border: 2px solid #8d6e63; background: #fff8e1; margin-bottom: 15px;">
+                    <br>
+                    <button class="primary-btn" onclick="submitHighScore()">Submit Score</button>
+                </div>
+                
+                <button class="secondary-btn" onclick="quitGame()" style="margin-top: 10px;">Return to Menu</button>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Helper script to find the correct generated background filename -->
+    <script>
+        // Use an inline style block to dynamically load whatever background was generated
+        fetch('assets/')
+          .then(r => r.text())
+          .then(text => {
+              // Extract filename using simple regex if possible, or just hardcode to generic prefix 
+              // To avoid CORS and directory listing issues in simple HTTP servers, 
+              // we will rely on style.css directly looking for bg_sideview_*.png.
+              // Actually, since we don't know the exact timestamped filename for bg_sideview from HTML,
+              // we'll fetch the image via CSS wildcards? No, CSS can't do wildcards.
+              // We need to inject the first match from assets/ if we were server side.
+              // BUT we can just query the DOM or rely on a trick.
+          }).catch(e => console.log(e));
+    </script>
+
+    <script src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,838 @@
+/* ==========================================================================
+   CSS Reset & Variables
+   ========================================================================== */
+:root {
+  --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Premium Color Palette */
+  --bg-gradient-start: #0f111a;
+  --bg-gradient-end: #1a1d2e;
+
+  --panel-bg: rgba(30, 34, 54, 0.6);
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --panel-glow: rgba(99, 102, 241, 0.15);
+
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --primary-glow: rgba(99, 102, 241, 0.4);
+
+  --secondary: #374151;
+  --secondary-hover: #4b5563;
+
+  --success: #10b981;
+  --success-glow: rgba(16, 185, 129, 0.4);
+
+  --card-back-bg: radial-gradient(circle at center, #2e354f 0%, #1e2236 100%);
+  --card-back-border: rgba(99, 102, 241, 0.25);
+  --card-back-glow: rgba(99, 102, 241, 0.2);
+
+  /* Color Pairs Gradients */
+  --pair-1: linear-gradient(135deg, #ff5e62 0%, #ff9966 100%); /* Coral/Rose  → Cherries */
+  --pair-2: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); /* Emerald    → Banana   */
+  --pair-3: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%); /* Blue/Cyan  → Apple    */
+  --pair-4: linear-gradient(135deg, #f12711 0%, #f5af19 100%); /* Gold/Red   → Pear     */
+  --pair-5: linear-gradient(135deg, #b06ab3 0%, #4568dc 100%); /* Purple     → Pineapple*/
+  --pair-6: linear-gradient(135deg, #7f00ff 0%, #e100ff 100%); /* Violet     → Strawberry*/
+  --pair-7: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); /* Cyan/Blue  → Blackberry*/
+  --pair-8: linear-gradient(135deg, #f857a6 0%, #ff5858 100%); /* Magenta    → Peach    */
+
+  /* Timing & Animations */
+  --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-flip: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: radial-gradient(circle at 50% 50%, var(--bg-gradient-end) 0%, var(--bg-gradient-start) 100%);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px 0;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ==========================================================================
+   Background Canvas for Confetti
+   ========================================================================== */
+#confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* ==========================================================================
+   App Container & Layout
+   ========================================================================== */
+.app-container {
+  width: 100%;
+  max-width: 620px;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  z-index: 10;
+}
+
+.game-header {
+  text-align: center;
+}
+
+.game-title {
+  font-family: var(--font-display);
+  font-size: 2.75rem;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  color: #fff;
+  line-height: 1.1;
+  margin-bottom: 6px;
+  text-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
+}
+
+.game-title .highlight {
+  background: linear-gradient(to right, #818cf8, #c084fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.game-subtitle {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.game-layout {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ==========================================================================
+   Stats & Controls Panel (Glassmorphism)
+   ========================================================================== */
+.stats-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 14px 20px;
+  width: 100%;
+  transition: box-shadow var(--transition-smooth);
+}
+
+.stats-panel:hover {
+  box-shadow: 0 8px 32px 0 rgba(99, 102, 241, 0.08), 0 0 1px 1px var(--panel-glow);
+}
+
+.stat-box {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+
+#stat-timer .stat-value {
+  font-size: 1.5rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.stat-max {
+  font-size: 1rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-left: 2px;
+}
+
+.btn-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+.btn {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  transition: all var(--transition-smooth);
+  color: #fff;
+  white-space: nowrap;
+}
+
+.btn-secondary {
+  background-color: var(--secondary);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.btn-secondary:hover {
+  background-color: var(--secondary-hover);
+  transform: translateY(-2px);
+}
+
+.btn-secondary:active {
+  transform: translateY(0);
+}
+
+.btn-ghost {
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-secondary);
+}
+
+.btn-ghost:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.22);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  box-shadow: 0 4px 14px var(--primary-glow);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  box-shadow: 0 6px 20px var(--primary-glow);
+  transform: translateY(-2px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-danger-ghost {
+  background-color: transparent;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+
+.btn-danger-ghost:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.6);
+  transform: translateY(-1px);
+}
+
+.btn-icon {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Game Board (CSS Grid)
+   ========================================================================== */
+.board-container {
+  width: 100%;
+}
+
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  width: 100%;
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+/* ==========================================================================
+   Card Styling & 3D Flipping Effect
+   ========================================================================== */
+.card-wrapper {
+  perspective: 1000px;
+  aspect-ratio: 1 / 1;
+  width: 100%;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform var(--transition-flip);
+  cursor: pointer;
+  border-radius: 16px;
+}
+
+/* Make cards selectable via Keyboard */
+.card-wrapper:focus-visible {
+  outline: none;
+}
+
+.card-wrapper:focus-visible .card-inner {
+  box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--primary);
+}
+
+/* Card Faces */
+.card-face {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+/* Card Front (Face down / grey state) */
+.card-face.front {
+  background: var(--card-back-bg);
+  border: 1px solid var(--card-back-border);
+  transition: border-color var(--transition-smooth), box-shadow var(--transition-smooth);
+}
+
+/* Subtle graphic decoration on card back */
+.card-face.front::after {
+  content: '';
+  width: 30%;
+  height: 30%;
+  border: 2px dashed rgba(99, 102, 241, 0.2);
+  border-radius: 50%;
+  transition: transform var(--transition-smooth), border-color var(--transition-smooth);
+}
+
+/* Hover effects for face-down cards */
+.card-inner:hover {
+  transform: translateY(-4px);
+}
+
+.card-inner:hover .card-face.front {
+  border-color: rgba(99, 102, 241, 0.6);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35), 0 0 15px var(--card-back-glow);
+}
+
+.card-inner:hover .card-face.front::after {
+  transform: rotate(45deg) scale(1.15);
+  border-color: rgba(99, 102, 241, 0.5);
+}
+
+/* Card Back (Face up / revealed state) */
+.card-face.back {
+  transform: rotateY(180deg);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+
+/* Apply specific card gradient backgrounds */
+.color-1 .card-face.back { background: var(--pair-1); }
+.color-2 .card-face.back { background: var(--pair-2); }
+.color-3 .card-face.back { background: var(--pair-3); }
+.color-4 .card-face.back { background: var(--pair-4); }
+.color-5 .card-face.back { background: var(--pair-5); }
+.color-6 .card-face.back { background: var(--pair-6); }
+.color-7 .card-face.back { background: var(--pair-7); }
+.color-8 .card-face.back { background: var(--pair-8); }
+
+/* Card flipped state */
+.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+/* Prevent hover TranslateY when flipped */
+.flipped .card-inner:hover {
+  transform: rotateY(180deg);
+}
+
+/* ==========================================================================
+   Pixel Fruit Art
+   ========================================================================== */
+.fruit-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 18%;
+  pointer-events: none;
+}
+
+.fruit-pixel-art {
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.35));
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Fruit pop-in animation when card is flipped */
+.flipped .fruit-pixel-art {
+  animation: fruit-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.35s both;
+}
+
+@keyframes fruit-pop {
+  0% { transform: scale(0.5) rotate(-10deg); opacity: 0; }
+  60% { transform: scale(1.15) rotate(3deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* ==========================================================================
+   Matched States & Tick Overlay Animations
+   ========================================================================== */
+.matched {
+  pointer-events: none;
+}
+
+.matched .card-face.back {
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.4), 0 0 25px var(--success-glow);
+  border-color: var(--success);
+}
+
+/* Tick overlay on top of fruit */
+.tick-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.25);
+  border-radius: 15px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.matched .tick-overlay {
+  opacity: 1;
+}
+
+/* Success SVG Tick Style */
+.tick-icon {
+  width: 42%;
+  height: 42%;
+  color: #fff;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  opacity: 0;
+  transform: scale(0.3) rotate(-20deg);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+}
+
+/* Draw path keyframes */
+.tick-path {
+  stroke-dasharray: 50;
+  stroke-dashoffset: 50;
+}
+
+/* Matched tick reveal */
+.matched .tick-icon {
+  opacity: 1;
+  transform: scale(1) rotate(0);
+}
+
+.matched .tick-path {
+  animation: draw-check 0.4s ease-out 0.2s forwards;
+}
+
+@keyframes draw-check {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ==========================================================================
+   Victory Overlay Modal
+   ========================================================================== */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 11, 20, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 200;
+  opacity: 1;
+  transition: opacity var(--transition-smooth);
+  padding: 20px;
+}
+
+.overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.victory-card {
+  background: rgba(30, 35, 60, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(99, 102, 241, 0.15);
+  border-radius: 28px;
+  width: 100%;
+  max-width: 440px;
+  padding: 36px 28px;
+  text-align: center;
+  transform: scale(1);
+  transition: transform var(--transition-smooth);
+}
+
+.overlay.hidden .victory-card {
+  transform: scale(0.9);
+}
+
+.victory-icon-wrapper {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+}
+
+.victory-icon {
+  width: 38px;
+  height: 38px;
+  color: #fff;
+}
+
+.victory-headline {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.victory-message {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+/* High Score Entry */
+.highscore-entry {
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+  text-align: left;
+  transition: opacity var(--transition-smooth), max-height 0.4s ease;
+}
+
+.highscore-entry.hidden {
+  display: none;
+}
+
+.highscore-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #c7d2fe;
+  margin-bottom: 12px;
+}
+
+.name-input-group {
+  display: flex;
+  gap: 8px;
+}
+
+.name-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #fff;
+  outline: none;
+  transition: border-color var(--transition-smooth), box-shadow var(--transition-smooth);
+}
+
+.name-input::placeholder {
+  color: var(--text-muted);
+}
+
+.name-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.victory-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   Leaderboard Modal
+   ========================================================================== */
+.leaderboard-card {
+  background: rgba(20, 22, 40, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 50px rgba(99, 102, 241, 0.12);
+  border-radius: 28px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.leaderboard-header {
+  padding: 28px 28px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.leaderboard-headline {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.leaderboard-sub {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+.leaderboard-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(99,102,241,0.3) transparent;
+}
+
+.leaderboard-list::-webkit-scrollbar {
+  width: 5px;
+}
+.leaderboard-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.leaderboard-list::-webkit-scrollbar-thumb {
+  background-color: rgba(99,102,241,0.3);
+  border-radius: 4px;
+}
+
+.lb-empty {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  padding: 40px 20px;
+}
+
+.lb-row {
+  display: grid;
+  grid-template-columns: 44px 1fr auto auto auto;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 11px 16px;
+  transition: background var(--transition-smooth), border-color var(--transition-smooth);
+}
+
+.lb-row:hover {
+  background: rgba(99,102,241,0.07);
+  border-color: rgba(99,102,241,0.2);
+}
+
+.lb-rank {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.lb-rank.gold   { color: #fbbf24; text-shadow: 0 0 10px rgba(251,191,36,0.5); font-size: 1.3rem; }
+.lb-rank.silver { color: #9ca3af; text-shadow: 0 0 10px rgba(156,163,175,0.4); font-size: 1.3rem; }
+.lb-rank.bronze { color: #cd7c3a; text-shadow: 0 0 10px rgba(205,124,58,0.4); font-size: 1.3rem; }
+
+.lb-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #f3f4f6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lb-turns, .lb-time {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  text-align: right;
+}
+
+.lb-val {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.lb-unit {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.lb-date {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.lb-time .lb-val {
+  font-variant-numeric: tabular-nums;
+  color: #a5f3fc;
+}
+
+.leaderboard-actions {
+  padding: 16px 24px 20px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+.game-footer {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Responsive Adaptations
+   ========================================================================== */
+@media (max-width: 520px) {
+  .game-title {
+    font-size: 2.1rem;
+  }
+
+  .game-board {
+    gap: 8px;
+  }
+
+  .card-face {
+    border-radius: 12px;
+  }
+
+  .card-inner {
+    border-radius: 12px;
+  }
+
+  .stats-panel {
+    padding: 10px 14px;
+  }
+
+  .stat-value {
+    font-size: 1.35rem;
+  }
+
+  .victory-card {
+    padding: 28px 20px;
+  }
+
+  .leaderboard-card {
+    border-radius: 20px;
+  }
+
+  .lb-row {
+    grid-template-columns: 34px 1fr auto auto;
+    gap: 6px;
+    padding: 9px 12px;
+  }
+
+  .lb-date {
+    display: none;
+  }
+
+  .btn-group {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .btn {
+    padding: 8px 14px;
+    font-size: 0.8rem;
+  }
+}
