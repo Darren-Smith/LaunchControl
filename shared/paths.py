@@ -10,19 +10,29 @@ from pathlib import Path
 
 
 def get_app_root() -> Path:
-    """Return the absolute path to the application root directory."""
+    """Return the absolute path to the application resources root directory."""
     if getattr(sys, "frozen", False):
-        # PyInstaller onedir binary: executable is inside the distributed app root
+        if hasattr(sys, "_MEIPASS"):
+            return Path(sys._MEIPASS)
         return Path(sys.executable).resolve().parent
     return Path(__file__).resolve().parent.parent
 
 
 def get_user_data_dir() -> Path:
-    """Return the user data directory (~/.local/share/LaunchControl)."""
+    """Return the user data directory (~/.local/share/LaunchControl), with graceful fallback."""
     xdg = os.environ.get("XDG_DATA_HOME")
     base = Path(xdg) if xdg else Path.home() / ".local" / "share"
     d = base / "LaunchControl"
-    d.mkdir(parents=True, exist_ok=True)
+    try:
+        d.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        d = Path.home() / ".LaunchControl"
+        try:
+            d.mkdir(parents=True, exist_ok=True)
+        except OSError:
+            import tempfile
+            d = Path(tempfile.gettempdir()) / "LaunchControl_UserData"
+            d.mkdir(parents=True, exist_ok=True)
     return d
 
 

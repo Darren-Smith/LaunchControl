@@ -37,7 +37,7 @@ if len(sys.argv) >= 3 and sys.argv[1] == "--run-game":
 
 from flask import Flask, jsonify, request, send_from_directory
 
-app = Flask(__name__, static_folder="static")
+app = Flask(__name__, static_folder=str(get_app_root() / "static"))
 
 running_processes = {}
 process_logs = {}
@@ -125,7 +125,7 @@ def get_all_games():
 
 @app.route("/")
 def index():
-    return send_from_directory("static", "index.html")
+    return send_from_directory(str(get_app_root() / "static"), "index.html")
 
 
 @app.route("/api/games", methods=["GET"])
@@ -431,9 +431,32 @@ def api_edit_game(game_id):
     return jsonify({"error": "Game not found or cannot edit bundled game"}), 404
 
 
+@app.route("/api/check_update", methods=["GET"])
+def api_check_update():
+    try:
+        from updater.updater import UpdateService
+        service = UpdateService(app_dir=get_app_root())
+        info = service.check_for_update()
+        return jsonify({"status": "success", **info})
+    except Exception as e:
+        return jsonify({"status": "error", "error": str(e)}), 200
+
+
+@app.route("/api/run_updater", methods=["POST"])
+def api_run_updater():
+    updater_bin = get_app_root() / "updater" / "updater"
+    updater_py = get_app_root() / "updater" / "updater.py"
+    cmd = [str(updater_bin)] if updater_bin.exists() else [sys.executable, str(updater_py)]
+    try:
+        subprocess.Popen(cmd, cwd=str(get_app_root()), start_new_session=True)
+        return jsonify({"status": "launched"})
+    except Exception as e:
+        return jsonify({"status": "error", "error": str(e)}), 500
+
+
 @app.route("/<path:path>")
 def serve_static(path):
-    return send_from_directory("static", path)
+    return send_from_directory(str(get_app_root() / "static"), path)
 
 
 def open_browser_later():

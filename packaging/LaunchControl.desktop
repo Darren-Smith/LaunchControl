@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Launch Control
+Comment=Play and Manage Games
+Exec=@@APP_DIR@@/launchcontrol
+Icon=cinnamon-panel-launcher
+Terminal=false
+Categories=Game;
+StartupNotify=true
