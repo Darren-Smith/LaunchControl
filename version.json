@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.1.1",
   "commit": "",
-  "notes": "Initial repository setup (pre-release)."
+  "notes": "Fix NEW badge clipping on long titles; show version on console; add Spacejet Defender."
 }

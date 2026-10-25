@@ -1,0 +1,4079 @@
+{
+  "tunic8bit": "1.0",
+  "title": "boss",
+  "author": "Spacejet Defender",
+  "bpm": 152.0,
+  "swing": 0.0,
+  "time_signature": "4/4",
+  "tracks": [
+    {
+      "name": "Boss Lead",
+      "waveform": "sawtooth",
+      "channel": 0,
+      "volume": 0.84,
+      "octave": 5,
+      "duty_cycle": 0.5,
+      "envelope": {
+        "attack": 0.006,
+        "decay": 0.04,
+        "sustain": 0.8,
+        "release": 0.04
+      },
+      "notes": [
+        {
+          "note": "C",
+          "octave": 6,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "G",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "Eb",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "G",
+          "octave": 5,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "Ab",
+          "octave": 5,
+          "duration": "q.",
+          "velocity": 1.0
+        },
+        {
+          "note": "G",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "Eb",
+          "octave": 5,
+          "duration": "h",
+          "velocity": 1.0
+        },
+        {
+          "note": "F",
+          "octave": 5,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "Ab",
+          "octave": 5,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 6,
+          "duration": "q.",
+          "velocity": 1.0
+        },
+        {
+          "note": "D",
+          "octave": 6,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "B",
+          "octave": 5,
+          "duration": "h",
+          "velocity": 1.0
+        },
+        {
+          "note": "G",
+          "octave": 5,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "REST",
+          "octave": 0,
+          "duration": "q",
+          "velocity": 0.0
+        },
+        {
+          "note": "C",
+          "octave": 6,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "D",
+          "octave": 6,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "Eb",
+          "octave": 6,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "G",
+          "octave": 6,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "Eb",
+          "octave": 6,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 6,
+          "duration": "q.",
+          "velocity": 1.0
+        },
+        {
+          "note": "Ab",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "Eb",
+          "octave": 5,
+          "duration": "h",
+          "velocity": 1.0
+        },
+        {
+          "note": "Bb",
+          "octave": 5,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "D",
+          "octave": 6,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "F",
+          "octave": 6,
+          "duration": "q.",
+          "velocity": 1.0
+        },
+        {
+          "note": "Eb",
+          "octave": 6,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "D",
+          "octave": 6,
+          "duration": "h.",
+          "velocity": 1.0
+        },
+        {
+          "note": "REST",
+          "octave": 0,
+          "duration": "q",
+          "velocity": 0.0
+        },
+        {
+          "note": "Eb",
+          "octave": 6,
+          "duration": "q.",
+          "velocity": 1.0
+        },
+        {
+          "note": "Bb",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "G",
+          "octave": 5,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "Eb",
+          "octave": 6,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "D",
+          "octave": 6,
+          "duration": "q.",
+          "velocity": 1.0
+        },
+        {
+          "note": "Bb",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "F",
+          "octave": 5,
+          "duration": "h",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 6,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "Eb",
+          "octave": 6,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "Ab",
+          "octave": 6,
+          "duration": "q.",
+          "velocity": 1.0
+        },
+        {
+          "note": "G",
+          "octave": 6,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "G",
+          "octave": 6,
+          "duration": "h",
+          "velocity": 1.0
+        },
+        {
+          "note": "D",
+          "octave": 6,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "REST",
+          "octave": 0,
+          "duration": "q",
+          "velocity": 0.0
+        },
+        {
+          "note": "F",
+          "octave": 6,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 6,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "Ab",
+          "octave": 5,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "F",
+          "octave": 5,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "Eb",
+          "octave": 6,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 6,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "Ab",
+          "octave": 5,
+          "duration": "h",
+          "velocity": 1.0
+        },
+        {
+          "note": "G",
+          "octave": 5,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "B",
+          "octave": 5,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "D",
+          "octave": 6,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "F",
+          "octave": 6,
+          "duration": "q",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 6,
+          "duration": "h.",
+          "velocity": 1.0
+        },
+        {
+          "note": "REST",
+          "octave": 0,
+          "duration": "q",
+          "velocity": 0.0
+        }
+      ],
+      "loop": false
+    },
+    {
+      "name": "Boss Arp",
+      "waveform": "pulse",
+      "channel": 1,
+      "volume": 0.56,
+      "octave": 4,
+      "duty_cycle": 0.25,
+      "envelope": {
+        "attack": 0.004,
+        "decay": 0.03,
+        "sustain": 0.65,
+        "release": 0.03
+      },
+      "notes": [
+        {
+          "note": "C",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Eb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "G",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "G",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Eb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "G",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Ab",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Eb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Ab",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Eb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Ab",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Eb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "F",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Ab",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "F",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Ab",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "F",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "G",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "B",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "D",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "G",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "D",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "B",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "G",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "D",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Eb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "G",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "G",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Eb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "G",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Ab",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Eb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Ab",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Eb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Ab",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Eb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Bb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "D",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "F",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Bb",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "F",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "D",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Bb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "F",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "G",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "B",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "D",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "G",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "D",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "B",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "G",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "D",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Eb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "G",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Bb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Eb",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Bb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "G",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Eb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Bb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Bb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "D",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "F",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Bb",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "F",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "D",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Bb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "F",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Ab",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Eb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Ab",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Eb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Ab",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Eb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "G",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "B",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "D",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "G",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "D",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "B",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "G",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "D",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "F",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Ab",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "F",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Ab",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "F",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Ab",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Eb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Ab",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Eb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Ab",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Eb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "G",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "B",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "D",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "G",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "D",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "B",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "G",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "D",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Eb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "G",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "G",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "Eb",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "G",
+          "octave": 4,
+          "duration": "e",
+          "velocity": 0.65
+        }
+      ],
+      "loop": false
+    },
+    {
+      "name": "Boss Bass",
+      "waveform": "sawtooth",
+      "channel": 2,
+      "volume": 0.88,
+      "octave": 2,
+      "duty_cycle": 0.5,
+      "envelope": {
+        "attack": 0.003,
+        "decay": 0.03,
+        "sustain": 0.85,
+        "release": 0.03
+      },
+      "notes": [
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "Ab",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "Ab",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "Ab",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "Ab",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "Eb",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "Ab",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "Ab",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "Ab",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "Eb",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "Ab",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "F",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "F",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "F",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "F",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "F",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "F",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "F",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "F",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "G",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "D",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "G",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "D",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "G",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "Ab",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "Ab",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "Ab",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "Ab",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "Eb",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "Ab",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "Ab",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "Ab",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "Eb",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "Ab",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "Bb",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "Bb",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "Bb",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "Bb",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "F",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "Bb",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "Bb",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "Bb",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "F",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "Bb",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "G",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "D",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "G",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "D",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "G",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "Eb",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "Eb",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "Eb",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "Eb",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "Bb",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "Eb",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "Eb",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "Eb",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "Bb",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "Eb",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "Bb",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "Bb",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "Bb",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "Bb",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "F",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "Bb",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "Bb",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "Bb",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "F",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "Bb",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "Ab",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "Ab",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "Ab",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "Ab",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "Eb",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "Ab",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "Ab",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "Ab",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "Eb",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "Ab",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "G",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "D",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "G",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "D",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "G",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "F",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "F",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "F",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "F",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "F",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "F",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "F",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "F",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "Ab",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "Ab",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "Ab",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "Ab",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "Eb",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "Ab",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "Ab",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "Ab",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "Eb",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "Ab",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "G",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "D",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "G",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "D",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "G",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.85
+        }
+      ],
+      "loop": false
+    },
+    {
+      "name": "Kick Beat",
+      "waveform": "triangle",
+      "channel": 3,
+      "volume": 1.0,
+      "octave": 2,
+      "duty_cycle": 0.5,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 0.05,
+        "sustain": 0.22,
+        "release": 0.02
+      },
+      "notes": [
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "G",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "A",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "G",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "A",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "G",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "A",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "F",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "E",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "D",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 1.0
+        },
+        {
+          "note": "G",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "G",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "A",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "G",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "A",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "G",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "A",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "F",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "E",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "D",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 1.0
+        },
+        {
+          "note": "G",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "G",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "A",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "G",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "A",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "G",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "A",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "F",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "E",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "D",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 1.0
+        },
+        {
+          "note": "G",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "G",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "A",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "G",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "A",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "G",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "A",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "G",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "F",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "E",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "D",
+          "octave": 2,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 2,
+          "duration": "s",
+          "velocity": 1.0
+        },
+        {
+          "note": "G",
+          "octave": 1,
+          "duration": "e",
+          "velocity": 1.0
+        }
+      ],
+      "loop": false
+    },
+    {
+      "name": "Drums",
+      "waveform": "noise",
+      "channel": 4,
+      "volume": 0.72,
+      "octave": 4,
+      "duty_cycle": 0.5,
+      "envelope": {
+        "attack": 0.001,
+        "decay": 0.04,
+        "sustain": 0.25,
+        "release": 0.02
+      },
+      "notes": [
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.32
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.25
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.4
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.32
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.25
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.32
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.25
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.4
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.32
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.25
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.32
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.25
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.4
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.32
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.25
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.4
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.9
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.32
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.25
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.4
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.32
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.25
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.32
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.25
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.4
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.32
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.25
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.32
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.25
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.4
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.32
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.25
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.4
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.9
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.32
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.25
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.4
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.32
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.25
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.32
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.25
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.4
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.32
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.25
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.32
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.25
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.4
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.32
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.25
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.4
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.9
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.32
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.25
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.4
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.32
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.25
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.32
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.25
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.4
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.32
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.25
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.32
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.25
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.4
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.32
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.25
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "s",
+          "velocity": 0.38
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.65
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.9
+        },
+        {
+          "note": "C",
+          "octave": 5,
+          "duration": "e",
+          "velocity": 0.4
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.8
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.85
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.9
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 0.95
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "s",
+          "velocity": 1.0
+        },
+        {
+          "note": "C",
+          "octave": 3,
+          "duration": "e",
+          "velocity": 1.0
+        }
+      ],
+      "loop": false
+    }
+  ]
+}

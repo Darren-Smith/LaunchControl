@@ -136,7 +136,7 @@ function renderGameList() {
                 <div class="card-icon">${game.icon || '🎮'}</div>
                 <div class="card-title-group">
                     <div class="card-title">
-                        ${game.title}
+                        <span class="card-title-text" title="${game.title}">${game.title}</span>
                         ${game.is_new ? '<span class="badge-new">NEW</span>' : ''}
                     </div>
                     <div class="card-status ${isRunning ? 'running' : ''}">
@@ -826,7 +826,21 @@ if (btnCopyBlueprint) {
     });
 }
 
+async function fetchVersion() {
+    try {
+        const res = await fetch('/api/version');
+        const data = await res.json();
+        const verEl = document.getElementById('terminal-version');
+        if (verEl && data.version) {
+            verEl.textContent = data.version;
+        }
+    } catch (e) {
+        // Fallback stays at default HTML version
+    }
+}
+
 // ── Init ─────────────────────────────────────────────────────────────────────
 window.onload = () => {
+    fetchVersion();
     setTimeout(fetchGames, 500);
 };

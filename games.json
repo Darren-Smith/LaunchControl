@@ -133,5 +133,15 @@
         "port": 8012,
         "color": "#62a0ea",
         "icon": "🎈"
+    },
+    {
+        "id": "spacejetdefender",
+        "title": "Spacejet Defender",
+        "description": "Pilot your jet to victory against an alien invasion!",
+        "dir": "games/spacejetdefender",
+        "type": "static",
+        "port": 8014,
+        "color": "#62a0ea",
+        "icon": "🚀"
     }
 ]

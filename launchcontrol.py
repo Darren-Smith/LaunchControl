@@ -128,6 +128,35 @@ def index():
     return send_from_directory(str(get_app_root() / "static"), "index.html")
 
 
+@app.route("/api/version", methods=["GET"])
+def api_version():
+    version = "unknown"
+    try:
+        version = json.loads((get_app_root() / "version.json").read_text()).get("version", version)
+    except Exception:
+        pass
+    return jsonify({"version": version})
+
+
+def is_game_new(game, full_dir, now, max_age=30 * 24 * 60 * 60):
+    added_at = game.get("added_at")
+    if isinstance(added_at, (int, float)) and (now - added_at) <= max_age:
+        return True
+    if not full_dir.exists():
+        return False
+    try:
+        if (now - full_dir.stat().st_mtime) <= max_age:
+            return True
+        for entry in full_dir.iterdir():
+            if entry.name.startswith("."):
+                continue
+            if (now - entry.stat().st_mtime) <= max_age:
+                return True
+    except Exception:
+        pass
+    return False
+
+
 @app.route("/api/games", methods=["GET"])
 def api_get_games():
     games = get_all_games()
@@ -139,17 +168,9 @@ def api_get_games():
         proc = running_processes.get(gid)
         game["running"] = proc is not None and proc.poll() is None
 
-        # Check if dir was modified recently
         raw_dir = Path(game.get("dir", ""))
         full_dir = raw_dir if raw_dir.is_absolute() else root / raw_dir
-        game["is_new"] = False
-        if full_dir.exists():
-            try:
-                mtime = full_dir.stat().st_mtime
-                if (now - mtime) <= (30 * 24 * 60 * 60):
-                    game["is_new"] = True
-            except Exception:
-                pass
+        game["is_new"] = is_game_new(game, full_dir, now)
 
     return jsonify(games)
 
