@@ -395,6 +395,14 @@ body {
     color: var(--success);
 }
 
+.card-version {
+    margin-left: auto;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: none;
+    opacity: 0.7;
+}
+
 /* Persistent Terminal Deck */
 .terminal-deck {
     display: flex;

@@ -4,6 +4,7 @@
 Serves the Launch Control web UI on http://127.0.0.1:9000 and dispatches child
 game processes in a fully isolated, portable environment.
 """
+import datetime
 import json
 import os
 import subprocess
@@ -138,39 +139,32 @@ def api_version():
     return jsonify({"version": version})
 
 
-def is_game_new(game, full_dir, now, max_age=30 * 24 * 60 * 60):
-    added_at = game.get("added_at")
-    if isinstance(added_at, (int, float)) and (now - added_at) <= max_age:
-        return True
-    if not full_dir.exists():
+NEW_DAYS = 30
+DEFAULT_GAME_VERSION = "0.1.0"
+
+
+def is_game_new(game, max_age_days=NEW_DAYS):
+    """A game is NEW if its 'released' date (YYYY-MM-DD) is within max_age_days."""
+    released = game.get("released")
+    if not released:
         return False
     try:
-        if (now - full_dir.stat().st_mtime) <= max_age:
-            return True
-        for entry in full_dir.iterdir():
-            if entry.name.startswith("."):
-                continue
-            if (now - entry.stat().st_mtime) <= max_age:
-                return True
-    except Exception:
-        pass
-    return False
+        released_date = datetime.date.fromisoformat(str(released)[:10])
+    except ValueError:
+        return False
+    return 0 <= (datetime.date.today() - released_date).days <= max_age_days
 
 
 @app.route("/api/games", methods=["GET"])
 def api_get_games():
     games = get_all_games()
-    now = time.time()
-    root = get_app_root()
 
     for game in games:
         gid = str(game.get("id"))
         proc = running_processes.get(gid)
         game["running"] = proc is not None and proc.poll() is None
-
-        raw_dir = Path(game.get("dir", ""))
-        full_dir = raw_dir if raw_dir.is_absolute() else root / raw_dir
-        game["is_new"] = is_game_new(game, full_dir, now)
+        game.setdefault("version", DEFAULT_GAME_VERSION)
+        game["is_new"] = is_game_new(game)
 
     return jsonify(games)
 
@@ -419,6 +413,8 @@ def api_add_game():
     new_game = request.json or {}
     if not new_game.get("id"):
         new_game["id"] = str(uuid.uuid4())[:8]
+    new_game.setdefault("version", DEFAULT_GAME_VERSION)
+    new_game.setdefault("released", datetime.date.today().isoformat())
 
     # Assign default port if missing
     if not new_game.get("port"):
@@ -444,6 +440,9 @@ def api_edit_game(game_id):
     for i, g in enumerate(user_games):
         if str(g.get("id")) == gid:
             updated["id"] = gid
+            for key in ("version", "released"):
+                if key in g and key not in updated:
+                    updated[key] = g[key]
             user_games[i] = updated
             if save_user_games(user_games):
                 return jsonify({"status": "success", "game": updated})

@@ -8,7 +8,9 @@
         "entry": "server.py",
         "port": 8008,
         "color": "#EDC001",
-        "icon": "🐝"
+        "icon": "🐝",
+        "version": "0.1.0",
+        "released": "2026-05-05"
     },
     {
         "id": "castle_defenders",
@@ -19,7 +21,9 @@
         "entry": "server.py",
         "port": 8005,
         "color": "#5d4037",
-        "icon": "🏰"
+        "icon": "🏰",
+        "version": "0.1.0",
+        "released": "2026-07-16"
     },
     {
         "id": "fruitflip",
@@ -29,7 +33,9 @@
         "type": "static",
         "port": 8003,
         "color": "#ff9f0a",
-        "icon": "🍓"
+        "icon": "🍓",
+        "version": "0.1.0",
+        "released": "2026-06-13"
     },
     {
         "id": "heromaker",
@@ -40,7 +46,9 @@
         "entry": "server.py",
         "port": 8009,
         "color": "#34c759",
-        "icon": "⚔️"
+        "icon": "⚔️",
+        "version": "0.1.0",
+        "released": "2026-05-02"
     },
     {
         "id": "leozap",
@@ -51,7 +59,9 @@
         "entry": "app.py",
         "port": 8010,
         "color": "#00ccff",
-        "icon": "🚀"
+        "icon": "🚀",
+        "version": "0.1.0",
+        "released": "2026-07-26"
     },
     {
         "id": "mining_buddies",
@@ -61,7 +71,9 @@
         "type": "static",
         "port": 8007,
         "color": "#808080",
-        "icon": "⛏️"
+        "icon": "⛏️",
+        "version": "0.1.0",
+        "released": "2026-07-26"
     },
     {
         "id": "woodland_protector",
@@ -71,7 +83,9 @@
         "type": "static",
         "port": 8006,
         "color": "#228b22",
-        "icon": "🌲"
+        "icon": "🌲",
+        "version": "0.1.0",
+        "released": "2026-07-26"
     },
     {
         "id": "zombie_apocalypse",
@@ -81,7 +95,9 @@
         "type": "static",
         "port": 8004,
         "color": "#8b0000",
-        "icon": "🧟"
+        "icon": "🧟",
+        "version": "0.1.0",
+        "released": "2026-07-26"
     },
     {
         "id": "whackamania",
@@ -92,7 +108,9 @@
         "entry": "app.py",
         "port": 5000,
         "color": "#c64600",
-        "icon": "🔨"
+        "icon": "🔨",
+        "version": "0.1.0",
+        "released": "2026-08-31"
     },
     {
         "id": "dinosurvival",
@@ -102,7 +120,9 @@
         "type": "static",
         "port": 8011,
         "color": "#e5a50a",
-        "icon": "🦖"
+        "icon": "🦖",
+        "version": "0.1.0",
+        "released": "2026-09-20"
     },
     {
         "id": "discocat",
@@ -112,7 +132,9 @@
         "type": "static",
         "port": 8001,
         "color": "#c061cb",
-        "icon": "😸"
+        "icon": "😸",
+        "version": "0.1.0",
+        "released": "2026-10-04"
     },
     {
         "id": "catfighters",
@@ -122,7 +144,9 @@
         "type": "static",
         "port": 8013,
         "color": "#430404",
-        "icon": "🐾"
+        "icon": "🐾",
+        "version": "0.1.0",
+        "released": "2026-10-12"
     },
     {
         "id": "happybirthdayleo",
@@ -132,7 +156,9 @@
         "type": "static",
         "port": 8012,
         "color": "#62a0ea",
-        "icon": "🎈"
+        "icon": "🎈",
+        "version": "0.1.0",
+        "released": "2026-10-12"
     },
     {
         "id": "spacejetdefender",
@@ -140,8 +166,22 @@
         "description": "Pilot your jet to victory against an alien invasion!",
         "dir": "games/spacejetdefender",
         "type": "static",
-        "port": 8014,
+        "port": 8015,
         "color": "#62a0ea",
-        "icon": "🚀"
+        "icon": "🚀",
+        "version": "0.1.0",
+        "released": "2026-10-24"
+    },
+    {
+        "id": "office",
+        "title": "Office",
+        "description": "Do you have what it takes to be a top coffee swigging school guardian?",
+        "dir": "games/office",
+        "type": "static",
+        "port": 8014,
+        "color": "#562a0f",
+        "icon": "🏫",
+        "version": "0.1.0",
+        "released": "2026-10-25"
     }
 ]

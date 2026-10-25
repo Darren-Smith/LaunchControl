@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>THE OFFICE — School Security Sign-In Strategy Game</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- ================= TOP HUD BAR ================= -->
+    <header id="hud">
+      <!-- Game Brand -->
+      <div class="hud-brand">
+        <div class="brand-badge" aria-hidden="true">🏫</div>
+        <div class="brand-titles">
+          <h1>The Office</h1>
+          <span>School Sign-In Security</span>
+        </div>
+      </div>
+
+      <!-- Big Animated Happy / Sad / Crying Face + Happiness Meter (105 Max) -->
+      <div class="hud-happiness" id="hud-happiness-box" title="Happiness Score (Max 105). Letting a Fake/Expired/Banned teacher in costs -10 Happiness. Coffee restores +8!">
+        <canvas id="face-canvas" width="136" height="136"></canvas>
+        <div class="happiness-info">
+          <div class="happiness-label-row">
+            <span>Happiness</span>
+            <span class="happiness-value" id="hud-happiness-val">105 / 105</span>
+          </div>
+          <div class="happiness-bar-track">
+            <div class="happiness-bar-fill" id="hud-happiness-fill"></div>
+          </div>
+          <div class="happiness-mood-text" id="hud-mood-text">Beaming &amp; Happy 😊</div>
+        </div>
+      </div>
+
+      <!-- Day Counter (20-Day or 55-Day Campaign) & 10-Teacher Queue Progress -->
+      <div class="hud-day-box">
+        <div class="day-header-row">
+          <div class="day-title">DAY <span id="hud-day-num">1</span> / <span id="hud-max-days">20</span></div>
+          <button class="campaign-mode-btn" id="btn-campaign-toggle" title="Switch between 20-Day Shorter Campaign and 55-Day Classic Campaign">20D ⇄ 55D</button>
+        </div>
+        <div class="queue-sub" id="hud-queue-text">Teacher 1/10 (10 in queue)</div>
+        <div class="queue-dots" id="queue-dots"></div>
+      </div>
+
+      <!-- HUD Counters: Good Let In, Bad Let In, Denied, Points -->
+      <div class="hud-stats">
+        <div class="stat-pill good" title="Good Teachers with valid IDs allowed into the school">
+          <span class="stat-label">Good Let In</span>
+          <span class="stat-num" id="stat-good-in">0</span>
+          <span class="stat-sub">+100 pts ea</span>
+        </div>
+        <div class="stat-pill bad" title="Dodgy / Expired / Banned Teachers mistakenly let in (-10 Happiness each)">
+          <span class="stat-label">Bad Let In</span>
+          <span class="stat-num" id="stat-bad-in">0</span>
+          <span class="stat-sub">-10 😊 ea</span>
+        </div>
+        <div class="stat-pill denied" title="Total Teachers Denied Entry (Fakes/Banned Caught vs Valid Denied)">
+          <span class="stat-label">Denied</span>
+          <span class="stat-num" id="stat-denied">0</span>
+          <span class="stat-sub" id="stat-denied-sub">0 fake / 0 valid</span>
+        </div>
+        <div class="stat-pill score" title="Total Security Score &amp; High Score">
+          <span class="stat-label">Score</span>
+          <span class="stat-num" id="stat-score">0</span>
+          <span class="stat-sub" id="stat-streak">Best: 8450</span>
+        </div>
+      </div>
+
+      <!-- Coffee Machine Quick Button (2 Cups/Day, +8 Happiness) -->
+      <button class="hud-coffee-btn" id="btn-coffee-hud" title="Drink Coffee from the Office Machine (+8 Happiness, max 2 per day) [Shortcut: C]">
+        <span class="coffee-icon">☕</span>
+        <div class="coffee-details">
+          <span class="coffee-title">Drink Coffee (+8 😊)</span>
+          <span class="coffee-cups" id="hud-coffee-cups">☕☕ (2/2 Today)</span>
+        </div>
+      </button>
+
+      <!-- System Buttons: Portrait Gallery, Handbook, High Scores, Audio, Pause -->
+      <div class="hud-actions">
+        <button class="icon-btn" id="btn-gallery" title="View Portrait Bank &amp; Fake ID Examples">🎨</button>
+        <button class="icon-btn" id="btn-highscores" title="High Scores Leaderboard">🏆</button>
+        <button class="icon-btn" id="btn-help" title="Security Handbook &amp; Controls">❓</button>
+        <button class="icon-btn" id="btn-mute" title="Toggle Audio / Ambient Sound">🔊</button>
+        <button class="icon-btn" id="btn-pause" title="Pause Menu [ESC / P]">⏸</button>
+      </div>
+    </header>
+
+    <!-- ================= MAIN WORKSPACE ================= -->
+    <main id="workspace">
+      <!-- LEFT PANEL (54%): ZOOMED-IN ISOMETRIC SCHOOL OFFICE, CHECK-IN DESK, DOOR & QUEUE -->
+      <section id="iso-panel" aria-label="Isometric School Office View">
+        <canvas id="iso-canvas"></canvas>
+
+        <div class="iso-overlay-bar">
+          <div class="iso-location-tag">
+            <span class="status-dot"></span>
+            <span>SCHOOL OFFICE • CHECK-IN DESK, DOOR &amp; QUEUE</span>
+          </div>
+          <div class="iso-right-controls">
+            <div class="iso-hint-tag">
+              ☕ Click Coffee Machine (+8 😊)
+            </div>
+            <button class="iso-zoom-btn" id="btn-zoom-in" title="Zoom In Isometric Scene">+</button>
+            <button class="iso-zoom-btn" id="btn-zoom-out" title="Zoom Out Isometric Scene">−</button>
+          </div>
+        </div>
+
+        <div id="feedback-toast" role="status" aria-live="polite"></div>
+      </section>
+
+      <!-- RIGHT PANEL (46%): COMPUTER RECORD, PHYSICAL PHOTO ID BADGE (LEVEL PHOTOS) & CONTROLS -->
+      <section id="terminal-panel" aria-label="Computer Verification Terminal and ID Badge">
+        <div class="inspection-deck">
+          <!-- Official School Computer Terminal -->
+          <div class="computer-monitor">
+            <div class="monitor-screen">
+              <!-- Synchronized 60px Top Header -->
+              <div class="card-synchronized-header">
+                <div class="os-topbar">
+                  <span>🖥️ SCHOOL-SECURE DB v4.5</span>
+                  <span class="os-status">TODAY: OCT 2026</span>
+                </div>
+                <div class="db-record-header">
+                  <span class="db-record-title">Official Computer Record</span>
+                  <span class="db-species-tag" id="db-species">HUMAN</span>
+                </div>
+              </div>
+
+              <!-- Synchronized Level Photo Row -->
+              <div class="photo-level-row">
+                <div class="portrait-frame" id="db-portrait-frame">
+                  <canvas id="db-portrait-canvas" width="400" height="440"></canvas>
+                </div>
+              </div>
+
+              <!-- Lower Details Section (3 Checks: Banned/Allowed, Expiry Status, Visual Record) -->
+              <div class="card-details-section">
+                <div class="db-fields">
+                  <div class="db-field full">
+                    <span class="db-field-label">1. Entry Watchlist Status</span>
+                    <span class="db-field-val status-badge-ok" id="db-entry-status">✓ ALLOWED (ACTIVE STAFF)</span>
+                  </div>
+                  <div class="db-field full">
+                    <span class="db-field-label">2. ID Expiry Check</span>
+                    <span class="db-field-val status-badge-ok" id="db-expiry-status">✓ VALID (EXP: AUG 2028)</span>
+                  </div>
+                  <div class="db-field full">
+                    <span class="db-field-label">Registered Staff Name</span>
+                    <span class="db-field-val" id="db-name">Mrs. Clara Higgins</span>
+                  </div>
+                  <div class="db-field">
+                    <span class="db-field-label">Department / ID</span>
+                    <span class="db-field-val" id="db-subject">Mathematics</span>
+                  </div>
+                  <div class="db-field">
+                    <span class="db-field-label">3. Visual Eyes / Tie</span>
+                    <span class="db-field-val swatch-row">
+                      <span class="color-dot" id="db-eye-dot" title="Registered Eye Colour"></span>
+                      <span>Eyes</span>
+                      <span class="color-dot" id="db-tie-dot" title="Registered Tie Colour"></span>
+                      <span>Tie</span>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="card-bottom-bar">
+                  <span id="db-code">STF-1042</span>
+                  <span id="db-glasses">Eyewear: Round</span>
+                  <span class="power-led"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Presented Physical Photo ID Badge (Synchronized Level Photo!) -->
+          <div class="id-card-tray">
+            <div class="id-badge-card" id="id-badge-card">
+              <!-- Synchronized 60px Top Header -->
+              <div class="card-synchronized-header">
+                <div class="badge-top-slot-row">
+                  <span>🪪 PRESENTED ID</span>
+                  <div class="lanyard-slot"></div>
+                  <span>CHECK 3 ITEMS</span>
+                </div>
+                <div class="badge-banner">
+                  <span class="badge-school-name">OAKRIDGE ACADEMY</span>
+                  <span class="badge-role-tag">STAFF ID</span>
+                </div>
+              </div>
+
+              <!-- Synchronized Level Photo Row (Matches Computer Photo Y & Height 100%) -->
+              <div class="photo-level-row">
+                <div class="id-photo-frame" id="id-photo-frame">
+                  <canvas id="id-portrait-canvas" width="400" height="440"></canvas>
+                  <div class="hologram-seal">EDU<br/>SEAL</div>
+                </div>
+              </div>
+
+              <!-- Lower Details Section -->
+              <div class="card-details-section">
+                <div class="badge-info-grid">
+                  <div class="b-item full">
+                    <span class="b-label">Staff Member Name</span>
+                    <span class="b-val" id="id-name">Mrs. Clara Higgins</span>
+                  </div>
+                  <div class="b-item full">
+                    <span class="b-label">Card Expiry Date</span>
+                    <span class="b-val" id="id-expiry">EXP: AUG 2028</span>
+                  </div>
+                  <div class="b-item">
+                    <span class="b-label">Subject</span>
+                    <span class="b-val" id="id-subject">Mathematics</span>
+                  </div>
+                  <div class="b-item">
+                    <span class="b-label">Badge No.</span>
+                    <span class="b-val" id="id-code">STF-1042</span>
+                  </div>
+                </div>
+
+                <div class="card-bottom-bar badge-footer">
+                  <span>CHECK: STATUS • EXPIRY • PHOTO</span>
+                  <span class="barcode">|||| || |||</span>
+                </div>
+              </div>
+
+              <!-- Animated Decision Stamp Overlay -->
+              <div class="decision-stamp" id="decision-stamp">ALLOWED</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Easy-to-Operate Action Control Deck -->
+        <div class="control-deck">
+          <div class="teacher-speech-bar">
+            <span class="speech-quote" id="teacher-quote">"Good morning! Just signing in before first period bell."</span>
+            <button class="scanner-hint-btn" id="btn-scanner" title="Toggle UV Scanner Outline [Shortcut: S]">🔍 UV Inspect [S]</button>
+          </div>
+
+          <div class="action-buttons-row">
+            <button class="big-action-btn btn-allow" id="btn-allow">
+              <span>✓ ALLOW INTO SCHOOL</span>
+              <span class="btn-shortcut">Key: [A] / [ENTER] / [←]</span>
+            </button>
+
+            <button class="big-action-btn btn-coffee-deck" id="btn-coffee-deck">
+              <span id="deck-coffee-label">☕ COFFEE (+8 😊)</span>
+              <span class="btn-shortcut" id="deck-coffee-sub">[C] 2/2 Left Today</span>
+            </button>
+
+            <button class="big-action-btn btn-deny" id="btn-deny">
+              <span>✕ DENY &amp; SEND AWAY</span>
+              <span class="btn-shortcut">Key: [D] / [BACKSPACE] / [→]</span>
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ================= PAUSE MENU MODAL ================= -->
+    <div class="modal-backdrop hidden" id="modal-pause" role="dialog" aria-modal="true" aria-labelledby="pause-title">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2 id="pause-title">⏸ Game Paused — Office Security</h2>
+        </div>
+        <div class="modal-body">
+          <p>Choose your Campaign Length (20 Days or 55 Days) or adjust your audio settings below.</p>
+
+          <div class="setting-row">
+            <label>📅 Campaign Length Mode</label>
+            <div class="campaign-select-group">
+              <button class="camp-opt-btn active" id="btn-mode-20">20 Days (Short Campaign)</button>
+              <button class="camp-opt-btn" id="btn-mode-55">55 Days (Full Campaign)</button>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <label for="slider-ambient">🎵 Ambient Office Music Volume</label>
+            <input type="range" id="slider-ambient" min="0" max="0.6" step="0.02" value="0.28" />
+          </div>
+
+          <div class="setting-row">
+            <label for="slider-sfx">🔔 Sound Effects Volume</label>
+            <input type="range" id="slider-sfx" min="0" max="1" step="0.05" value="0.7" />
+          </div>
+
+          <div class="setting-row">
+            <label for="chk-auto-day">⚡ Auto-Advance Between Days</label>
+            <input type="checkbox" id="chk-auto-day" />
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="danger-btn" id="btn-restart-pause">Restart Campaign (Day 1)</button>
+          <button class="primary-btn" id="btn-resume">Resume Game [ESC]</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= END OF DAY REPORT MODAL ================= -->
+    <div class="modal-backdrop hidden" id="modal-day-end" role="dialog" aria-modal="true" aria-labelledby="eod-title">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2 id="eod-title">🔔 Day 1 of 20 Complete!</h2>
+          <span id="eod-days-left" style="color: #38bdf8; font-weight: 800;">19 Days Remaining</span>
+        </div>
+        <div class="modal-body">
+          <p>The school bell has rung and today's queue of 10 teachers has been processed. Your coffee machine has been refilled to <strong>2/2 cups</strong> for tomorrow!</p>
+
+          <div class="summary-grid">
+            <div class="summary-box">
+              <div class="s-val" id="eod-good-in" style="color: #4ade80;">7</div>
+              <div class="s-lbl">Good Teachers Let In</div>
+            </div>
+            <div class="summary-box">
+              <div class="s-val" id="eod-fakes-caught" style="color: #facc15;">3</div>
+              <div class="s-lbl">Dodgy / Banned Caught</div>
+            </div>
+            <div class="summary-box">
+              <div class="s-val" id="eod-bad-in" style="color: #f87171;">0</div>
+              <div class="s-lbl">Dodgy Let In (-10 😊)</div>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <span>Current Happiness Level:</span>
+            <strong id="eod-happiness" style="color: #4ade80; font-size: 1.15rem;">105 / 105</strong>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="primary-btn" id="btn-next-day">Start Next Day [SPACE / ENTER] ➔</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= GAME OVER / VICTORY MODAL ================= -->
+    <div class="modal-backdrop hidden" id="modal-gameover" role="dialog" aria-modal="true" aria-labelledby="go-title">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2 id="go-title">🏆 Campaign Complete!</h2>
+        </div>
+        <div class="modal-body">
+          <p id="go-subtitle"></p>
+
+          <div class="summary-grid">
+            <div class="summary-box">
+              <div class="s-val" id="go-score">0</div>
+              <div class="s-lbl">Final Score</div>
+            </div>
+            <div class="summary-box">
+              <div class="s-val" id="go-days">1 / 20</div>
+              <div class="s-lbl">Days Reached</div>
+            </div>
+            <div class="summary-box">
+              <div class="s-val" id="go-accuracy">100%</div>
+              <div class="s-lbl">ID Accuracy</div>
+            </div>
+            <div class="summary-box">
+              <div class="s-val" id="go-good" style="color: #4ade80;">0</div>
+              <div class="s-lbl">Good Let In</div>
+            </div>
+            <div class="summary-box">
+              <div class="s-val" id="go-bad" style="color: #f87171;">0</div>
+              <div class="s-lbl">Bad Let In</div>
+            </div>
+            <div class="summary-box">
+              <div class="s-val" id="go-denied" style="color: #fbbf24;">0</div>
+              <div class="s-lbl">Teachers Denied</div>
+            </div>
+          </div>
+
+          <div>
+            <label for="input-player-name" style="font-size: 0.82rem; font-weight: 700; color: #94a3b8;">RECORD YOUR NAME ON THE HIGH SCORE BOARD:</label>
+            <div class="score-input-row">
+              <input type="text" id="input-player-name" placeholder="Enter Officer Name..." value="Officer Alex" maxlength="20" />
+              <button class="primary-btn" id="btn-save-score">Save High Score</button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="secondary-btn" id="btn-play-again-20">Play 20-Day Campaign</button>
+          <button class="primary-btn" id="btn-play-again-55">Play 55-Day Campaign</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= HIGH SCORES MODAL ================= -->
+    <div class="modal-backdrop hidden" id="modal-highscores" role="dialog" aria-modal="true">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2>🏆 Office Security High Scores</h2>
+        </div>
+        <div class="modal-body">
+          <table class="highscore-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Officer</th>
+                <th>Score</th>
+                <th>Days</th>
+                <th>Good In</th>
+                <th>Fakes Caught</th>
+              </tr>
+            </thead>
+            <tbody id="highscores-tbody"></tbody>
+          </table>
+        </div>
+        <div class="modal-actions">
+          <button class="secondary-btn" id="btn-clear-scores">Reset Board</button>
+          <button class="primary-btn" id="btn-close-scores">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= PORTRAIT BANK GALLERY MODAL ================= -->
+    <div class="modal-backdrop hidden" id="modal-gallery" role="dialog" aria-modal="true">
+      <div class="modal-card wide">
+        <div class="modal-header">
+          <h2>🎨 Portrait Bank &amp; 3-Check Discrepancy Showcase</h2>
+          <button class="secondary-btn" id="btn-refresh-gallery">🎲 Shuffle Sample Portraits</button>
+        </div>
+        <div class="modal-body">
+          <p>Watch out for all <strong>3 Security Checks</strong>: <strong>1. BANNED List status</strong>, <strong>2. Expired ID Dates</strong>, and <strong>3. Visual Portrait Mismatches</strong> (including <strong>Different Coloured Ties, Different Coloured Eyes, Goofy False Teeth, Pirate Eye Patches, Different Hair/Wigs, Fake Moustaches, Shades &amp; Hats</strong>).</p>
+          <div class="gallery-grid" id="gallery-grid"></div>
+        </div>
+        <div class="modal-actions">
+          <button class="primary-btn" id="btn-close-gallery">Back to Check-In Desk</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= SECURITY HANDBOOK / HELP MODAL ================= -->
+    <div class="modal-backdrop hidden" id="modal-help" role="dialog" aria-modal="true">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2>📘 School Office Security Handbook</h2>
+        </div>
+        <div class="modal-body">
+          <p><strong>Welcome to The Office!</strong> Check <strong>3 things</strong> for every teacher in the queue before letting them through the School Office door:</p>
+          <ul style="padding-left: 20px; display: flex; flex-direction: column; gap: 8px;">
+            <li><strong>1. Banned / Allowed Watchlist:</strong> Roughly once a week, someone on the <strong>BANNED list</strong> queues up! Even if their expiry date is valid and their photo matches, if the Computer says <code>🚨 BANNED — DO NOT ADMIT</code>, you must <strong>DENY</strong> them!</li>
+            <li><strong>2. Expiry Date Check:</strong> Check if the ID is expired! Both the Computer and the ID Card show the expiry date. If an ID is <strong>EXPIRED</strong> (before Oct 2026), <strong>DENY</strong> them!</li>
+            <li><strong>3. Visual Photo Match:</strong> Compare the Computer Portrait and the ID Badge Portrait carefully! Watch for <strong>different coloured ties, different coloured eyes, false teeth, pirate eye patches, different hair/wigs, fake moustaches, wrong glasses, or hats</strong>.</li>
+            <li><strong>Happiness (105 Max) &amp; Coffee (+8):</strong> Letting a dodgy/expired/banned teacher in costs <strong>-10 Happiness</strong>. Drink Coffee (2 cups/day, <strong>+8 Happiness</strong> each) by clicking the Coffee Machine in the office or pressing <code>C</code>!</li>
+            <li><strong>Campaigns:</strong> Play either the <strong>20-Day Short Campaign</strong> or the <strong>55-Day Full Campaign</strong>!</li>
+          </ul>
+        </div>
+        <div class="modal-actions">
+          <button class="primary-btn" id="btn-close-help">Got It — Start Checking IDs!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Scripts -->
+  <script src="js/audio.js"></script>
+  <script src="js/portraits.js"></script>
+  <script src="js/isometric.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>

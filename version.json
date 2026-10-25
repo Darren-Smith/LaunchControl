@@ -1,5 +1,5 @@
 {
-  "version": "0.1.1",
+  "version": "0.2.0",
   "commit": "",
-  "notes": "Fix NEW badge clipping on long titles; show version on console; add Spacejet Defender."
+  "notes": "Per-game version + released date drive the NEW badge; adds Office and Spacejet Defender; install.sh/start.sh."
 }

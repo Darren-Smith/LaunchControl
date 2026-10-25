@@ -142,6 +142,7 @@ function renderGameList() {
                     <div class="card-status ${isRunning ? 'running' : ''}">
                         <span class="status-dot ${isRunning ? 'running' : ''}"></span>
                         ${isRunning ? 'Running' : 'Offline'}
+                        <span class="card-version">v${game.version || '0.1.0'}</span>
                     </div>
                 </div>
                 <button class="btn-edit" onclick="editGame('${game.id}', event)" title="Edit Game">✎</button>
@@ -372,7 +373,8 @@ function getRecommendedPort() {
     const usedPorts = new Set(
         games.map(g => parseInt(g.port, 10)).filter(p => !isNaN(p) && p > 0)
     );
-    usedPorts.add(9000); // Launch Control server port
+    usedPorts.add(9000); // Launch Control (installed) port
+    usedPorts.add(9001); // Launch Control (dev) port
 
     // Look at 8000 series
     const ports8000 = [...usedPorts].filter(p => p >= 8000 && p < 9000);
@@ -395,8 +397,8 @@ function updatePortStatus() {
         return;
     }
     
-    if (currentVal === 9000) {
-        portStatusMsg.textContent = '⚠️ Port 9000 is used by Launch Control itself!';
+    if (currentVal === 9000 || currentVal === 9001) {
+        portStatusMsg.textContent = `⚠️ Port ${currentVal} is used by Launch Control itself!`;
         portStatusMsg.className = 'port-status-msg taken';
         return;
     }
