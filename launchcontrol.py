@@ -324,9 +324,12 @@ def detect_game_details(dir_path):
         game_type = "flask"
         entry = "server.py"
 
+    suggested_cmd = f"python3 {entry}" if entry else "python3 -m http.server {port}"
+
     return {
         "folder_name": folder_name,
         "suggested_title": folder_name.replace("_", " ").title(),
+        "suggested_command": suggested_cmd,
         "type": game_type,
         "entry": entry,
     }

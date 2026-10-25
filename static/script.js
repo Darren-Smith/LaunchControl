@@ -145,7 +145,7 @@ function renderGameList() {
                         <span class="card-version">v${game.version || '0.1.0'}</span>
                     </div>
                 </div>
-                <button class="btn-edit" onclick="editGame('${game.id}', event)" title="Edit Game">✎</button>
+                ${!game.is_bundled ? `<button class="btn-edit" onclick="editGame('${game.id}', event)" title="Edit Game">✎</button>` : ''}
                 <button class="btn-favourite ${game.favourite ? 'active' : ''}" onclick="toggleFavourite('${game.id}', event)" title="${game.favourite ? 'Unfavourite' : 'Favourite'}">♥</button>
             </div>
             <div class="card-desc">${game.description}</div>
@@ -186,16 +186,25 @@ async function toggleFavourite(gameId, event) {
 function editGame(gameId, event) {
     if (event) event.stopPropagation();
     const game = games.find(g => g.id === gameId);
-    if (!game) return;
+    if (!game || game.is_bundled) return;
     
     document.getElementById('admin-modal-title').textContent = 'Edit Game';
     document.getElementById('game-id').value = game.id;
     document.getElementById('game-title').value = game.title;
     document.getElementById('game-desc').value = game.description;
     document.getElementById('game-dir').value = game.dir;
-    let cmdStr = game.command.join(' ');
-    if (cmdStr.startsWith("/bin/bash -c ")) {
-        cmdStr = game.command[2];
+    let cmdStr = '';
+    if (Array.isArray(game.command)) {
+        cmdStr = game.command.join(' ');
+        if (cmdStr.startsWith("/bin/bash -c ")) {
+            cmdStr = game.command[2];
+        }
+    } else if (typeof game.command === 'string') {
+        cmdStr = game.command;
+    } else if (game.entry) {
+        cmdStr = `python3 ${game.entry}`;
+    } else {
+        cmdStr = `python3 -m http.server ${game.port || 8000}`;
     }
     document.getElementById('game-cmd').value = cmdStr;
     document.getElementById('game-port').value = game.port;
