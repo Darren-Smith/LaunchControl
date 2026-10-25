@@ -136,7 +136,7 @@ def api_version():
         version = json.loads((get_app_root() / "version.json").read_text()).get("version", version)
     except Exception:
         pass
-    return jsonify({"version": version})
+    return jsonify({"version": version, "root": str(get_app_root())})
 
 
 NEW_DAYS = 30
