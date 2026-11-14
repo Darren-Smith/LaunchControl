@@ -41,7 +41,7 @@ window.addEventListener('touchmove', (e) => {
 window.addEventListener('touchend', () => { mouse.x = -1000; mouse.y = -1000; });
 
 // Audio
-const bgAudio = new Audio('Assets/Birthday Celebration Beat.ogg');
+const bgAudio = new Audio('Assets/Birthday Celebration Beat.wav');
 
 // Global State
 const STATE = { WAITING: 0, TENSION: 1, DRUMROLL: 2, FANFARE: 3, CLIMAX: 4, PLAY: 5 };

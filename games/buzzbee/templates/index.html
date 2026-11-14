@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/static/css/style.css" />
+    <script src="/flask_sync.js"></script>
 </head>
 <body>
 
@@ -23,9 +24,10 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════ MAIN MENU ═══════════════════════════════ -->
+<!-- ═══════════════════════════════ MAIN MENU (SPLASH SCREEN) ═══════════════════════════════ -->
 <div id="main-menu" class="screen hidden">
   <div class="menu-bg-particles" id="menu-particles"></div>
+  <div class="controller-badge" id="menu-controller-badge">🎮 No Pad (Plug &amp; Press)</div>
   <div class="menu-content">
     <div class="logo-wrap">
       <div class="logo-bee animate-float">🐝</div>
@@ -35,7 +37,7 @@
     <div class="menu-buttons">
       <button class="btn btn-primary" id="btn-play">▶ Play Game</button>
       <button class="btn btn-secondary" id="btn-howto">📖 How to Play</button>
-      <button class="btn btn-secondary" id="btn-leaderboard">🏆 Leaderboard</button>
+      <button class="btn btn-secondary" id="btn-leaderboard">🏆 High Scores</button>
     </div>
     <div class="difficulty-row">
       <span class="diff-label">Difficulty:</span>
@@ -43,167 +45,250 @@
       <button class="diff-btn" id="diff-normal" data-diff="normal">🌼 Normal</button>
       <button class="diff-btn" id="diff-hard" data-diff="hard">🌵 Hard</button>
     </div>
+    <p class="gamepad-menu-hint">🎮 Stick / D-Pad: Navigate · Button 3 (Blue): Confirm · Left / Right: Difficulty</p>
   </div>
+  <!-- Mandatory bottom-right version badge -->
+  <div class="version-tag" id="game-version">v1.3.0</div>
 </div>
 
-<!-- ═══════════════════════════════ HOW TO PLAY ═══════════════════════════════ -->
-<div id="howto-screen" class="screen hidden">
-  <div class="panel">
-    <h2>📖 How to Play</h2>
-    <div class="howto-grid">
-      <div class="howto-card">
-        <div class="howto-icon">⬆⬇⬅➡</div>
-        <h3>Move</h3>
-        <p>Arrow Keys or WASD to fly your bee around the screen</p>
-      </div>
-      <div class="howto-card">
-        <div class="howto-icon">Space / Z</div>
-        <h3>Sting</h3>
-        <p>Press Space or Z to sting enemies when close. Costs stamina!</p>
-      </div>
-      <div class="howto-card">
-        <div class="howto-icon">🌸</div>
-        <h3>Flowers</h3>
-        <p>Fly close to flowers to collect nectar (max 3 at a time)</p>
-      </div>
-      <div class="howto-card">
-        <div class="howto-icon">🌼</div>
-        <h3>Good Pollen</h3>
-        <p>Touch yellow pollen to carry it (max 3). Deliver to hive!</p>
-      </div>
-      <div class="howto-card">
-        <div class="howto-icon">🟢</div>
-        <h3>Bad Pollen</h3>
-        <p>Avoid green pesticide pollen — it damages you!</p>
-      </div>
-      <div class="howto-card">
-        <div class="howto-icon">🍯</div>
-        <h3>Hive</h3>
-        <p>Fly to the hive (right side) to deposit nectar &amp; pollen. 3+3 fills a hex, then brews honey in 45s!</p>
-      </div>
-      <div class="howto-card">
-        <div class="howto-icon">🦹</div>
-        <h3>Burglar</h3>
-        <p>Striped-sleeve hand swoops down. Sting fast to stop theft! (+50)</p>
-      </div>
-      <div class="howto-card">
-        <div class="howto-icon">👨‍🌾</div>
-        <h3>Farmer</h3>
-        <p>Check-shirt hand sprays pesticide, turns pollen green &amp; kills flower nectar. Sting to stop! (+30)</p>
-      </div>
-      <div class="howto-card">
-        <div class="howto-icon">⚡</div>
-        <h3>Combo</h3>
-        <p>Consecutive stings multiply your score for big bonuses!</p>
-      </div>
-      <div class="howto-card">
-        <div class="howto-icon">🏆</div>
-        <h3>Victory</h3>
-        <p>Easy: 5 honey jars · Normal: 10 · Hard: 15</p>
-      </div>
-    </div>
-    <button class="btn btn-primary" id="btn-howto-back">← Back to Menu</button>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════ LEADERBOARD ═══════════════════════════════ -->
-<div id="leaderboard-screen" class="screen hidden">
-  <div class="panel">
-    <h2>🏆 Leaderboard</h2>
-    <div id="leaderboard-list">
-      <p class="loading-msg">Loading scores…</p>
-    </div>
-    <button class="btn btn-secondary" id="btn-lb-back">← Back to Menu</button>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════ GAME HUD ═══════════════════════════════ -->
+<!-- ═══════════════════════════════ GAME SCREEN (CENTERED CANVAS & HUD) ═══════════════════════════════ -->
 <div id="game-screen" class="screen hidden">
-  <div id="hud">
-    <div class="hud-left">
-      <div class="hud-item" id="hud-score">
-        <span class="hud-label">Score</span>
-        <span class="hud-val" id="score-val">0</span>
+  <div id="game-wrapper">
+    <div id="hud">
+      <div class="hud-left">
+        <div class="hud-item" id="hud-score">
+          <span class="hud-label">Score</span>
+          <span class="hud-val" id="score-val">0</span>
+        </div>
+        <div class="hud-item" id="hud-best-wrap">
+          <span class="hud-label">Best</span>
+          <span class="hud-val" id="hud-best">0</span>
+        </div>
+        <div class="hud-item" id="hud-combo">
+          <span class="hud-label">Combo</span>
+          <span class="hud-val" id="combo-val">x1</span>
+        </div>
+        <div class="hud-item" id="hud-wave">
+          <span class="hud-label">Wave</span>
+          <span class="hud-val" id="wave-val">1</span>
+        </div>
       </div>
-      <div class="hud-item" id="hud-combo">
-        <span class="hud-label">Combo</span>
-        <span class="hud-val" id="combo-val">x1</span>
+      <div class="hud-center">
+        <div class="hud-carry-row">
+          <div class="hud-carry-item">
+            <span class="hud-label">💧 Nectar</span>
+            <span class="hud-val" id="nectar-hud">—</span>
+          </div>
+          <div class="hud-carry-item">
+            <span class="hud-label">🌼 Pollen</span>
+            <span class="hud-val" id="pollen-hud">—</span>
+          </div>
+          <div class="hud-carry-item">
+            <span class="hud-label">🍯 Honey</span>
+            <span class="hud-val" id="honey-hud">×0</span>
+          </div>
+        </div>
+        <div id="enemy-warning" class="enemy-warning" style="display:none">⚠️ ENEMY!</div>
       </div>
-      <div class="hud-item" id="hud-wave">
-        <span class="hud-label">Wave</span>
-        <span class="hud-val" id="wave-val">1</span>
+      <div class="hud-right">
+        <div class="controller-badge hud-controller-badge" id="hud-controller-badge" title="Gamepad Status">🎮 No Pad</div>
+        <div class="hud-bars">
+          <div class="bar-row">
+            <span class="bar-label">❤️</span>
+            <div class="bar-track"><div class="bar-fill health-bar" id="health-bar"></div></div>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">⚡</span>
+            <div class="bar-track"><div class="bar-fill stamina-bar" id="stamina-bar"></div></div>
+          </div>
+        </div>
+        <button class="btn-pause" id="hud-info-btn" title="How to Play &amp; Info (I / ?)" aria-label="Information">ℹ</button>
+        <button class="btn-pause" id="btn-pause" title="Pause Game (Esc / P / Start)" aria-label="Pause">⏸</button>
       </div>
     </div>
-    <div class="hud-center">
-      <div class="hud-carry-row">
-        <div class="hud-carry-item">
-          <span class="hud-label">💧 Nectar</span>
-          <span class="hud-val" id="nectar-hud">—</span>
-        </div>
-        <div class="hud-carry-item">
-          <span class="hud-label">🌼 Pollen</span>
-          <span class="hud-val" id="pollen-hud">—</span>
-        </div>
-        <div class="hud-carry-item">
-          <span class="hud-label">🍯 Honey</span>
-          <span class="hud-val" id="honey-hud">×0</span>
-        </div>
-      </div>
-      <div id="enemy-warning" class="enemy-warning" style="display:none">⚠️ ENEMY!</div>
-    </div>
-    <div class="hud-right">
-      <div class="hud-bars">
-        <div class="bar-row">
-          <span class="bar-label">❤️</span>
-          <div class="bar-track"><div class="bar-fill health-bar" id="health-bar"></div></div>
-        </div>
-        <div class="bar-row">
-          <span class="bar-label">⚡</span>
-          <div class="bar-track"><div class="bar-fill stamina-bar" id="stamina-bar"></div></div>
-        </div>
-      </div>
-      <button class="btn-pause" id="btn-pause">⏸</button>
-    </div>
+
+    <!-- The game canvas -->
+    <canvas id="game-canvas"></canvas>
+
+    <!-- Floating score popup container -->
+    <div id="popup-layer"></div>
   </div>
-
-  <!-- The game canvas -->
-  <canvas id="game-canvas"></canvas>
-
-  <!-- Floating score popup container -->
-  <div id="popup-layer"></div>
 </div>
 
 <!-- ═══════════════════════════════ PAUSE MENU ═══════════════════════════════ -->
-<div id="pause-menu" class="overlay hidden">
+<div id="pause-menu" class="overlay hidden" role="dialog" aria-modal="true">
   <div class="panel compact">
-    <h2>⏸ Paused</h2>
-    <button class="btn btn-primary" id="btn-resume">▶ Resume</button>
-    <button class="btn btn-secondary" id="btn-quit-pause">🏠 Main Menu</button>
+    <h2>⏸ Game Paused</h2>
+    <div class="pause-buttons">
+      <button class="btn btn-primary" id="btn-resume">▶ Resume</button>
+      <button class="btn btn-secondary" id="btn-pause-restart">🔄 Restart Level</button>
+      <div class="setting-row" id="pause-sfx-row">
+        <span>🔊 Sound FX</span>
+        <button id="toggle-sfx" class="toggle-btn on" type="button">ON</button>
+      </div>
+      <div class="setting-row" id="pause-music-row">
+        <span>🎵 Music</span>
+        <button id="toggle-music" class="toggle-btn on" type="button">ON</button>
+      </div>
+      <button class="btn btn-secondary" id="btn-pause-info">📖 How to Play (ℹ)</button>
+      <button class="btn btn-secondary" id="btn-pause-scores">🏆 High Scores</button>
+      <button class="btn btn-danger" id="btn-quit-pause">🏠 Quit to Menu</button>
+    </div>
+    <p class="gamepad-pause-hint">🎮 Start / Button 2: Resume · Button 3: Select</p>
   </div>
 </div>
 
-<!-- ═══════════════════════════════ GAME OVER ═══════════════════════════════ -->
-<div id="gameover-screen" class="overlay hidden">
+<!-- ═══════════════════════════════ HIGH SCORE ENTRY MODAL ═══════════════════════════════ -->
+<div id="score-entry-modal" class="overlay hidden" role="dialog" aria-modal="true">
+  <div class="panel compact">
+    <h2>🎉 New High Score! 🎉</h2>
+    <p class="final-score-display">Your Score: <span id="entry-score-num">0</span></p>
+    <form id="score-entry-form">
+      <div class="name-entry">
+        <label for="player-name-input">Enter Your Call Sign (Max 12 chars): <span class="gamepad-name-hint">(🎮 Left/Right for presets)</span></label>
+        <input type="text" id="player-name-input" maxlength="12" placeholder="BUZZMASTER" required autocomplete="off" />
+      </div>
+      <div class="entry-actions">
+        <button type="submit" class="btn btn-primary" id="btn-save-score">💾 Save Score</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ VICTORY / DEFEAT (GAME OVER) ═══════════════════════════════ -->
+<div id="gameover-screen" class="overlay hidden" role="dialog" aria-modal="true">
   <div class="panel">
     <div class="go-icon" id="go-icon">💀</div>
     <h2 id="go-title">Game Over</h2>
+    <div id="go-new-best-badge" class="new-best-badge hidden">🌟 NEW TOP 10 HIGH SCORE! 🌟</div>
     <div class="go-stats">
       <div class="stat-row"><span>Final Score</span><span class="stat-val" id="go-score">0</span></div>
+      <div class="stat-row"><span>Best Score</span><span class="stat-val" id="go-best">0</span></div>
       <div class="stat-row"><span>Wave Reached</span><span class="stat-val" id="go-wave">1</span></div>
+      <div class="stat-row"><span>Honey Jars Brewed</span><span class="stat-val" id="go-honey">0</span></div>
       <div class="stat-row"><span>Pollen Collected</span><span class="stat-val" id="go-pollen">0</span></div>
       <div class="stat-row"><span>Enemies Stung</span><span class="stat-val" id="go-stings">0</span></div>
       <div class="stat-row"><span>Highest Combo</span><span class="stat-val" id="go-combo">x1</span></div>
-    </div>
-    <div class="name-entry">
-      <label for="player-name">Enter your name:</label>
-      <input type="text" id="player-name" maxlength="20" placeholder="BuzzMaster" />
-    </div>
-    <div class="go-buttons">
-      <button class="btn btn-primary" id="btn-submit-score">🏆 Submit Score</button>
-      <button class="btn btn-primary" id="btn-play-again">🔄 Play Again</button>
-      <button class="btn btn-secondary" id="btn-go-menu">🏠 Main Menu</button>
+      <div class="stat-row"><span>Time Elapsed</span><span class="stat-val" id="go-time">0:00</span></div>
     </div>
     <p class="rank-msg" id="rank-msg"></p>
+    <div class="go-buttons">
+      <button class="btn btn-primary" id="btn-play-again">🔄 Play Again</button>
+      <button class="btn btn-secondary" id="btn-go-scores">🏆 High Scores</button>
+      <button class="btn btn-secondary" id="btn-go-menu">🏠 Main Menu</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ INFORMATION & HOW TO PLAY MODAL ═══════════════════════════════ -->
+<div id="howto-screen" class="overlay hidden" role="dialog" aria-modal="true">
+  <div class="panel modal-card">
+    <div class="modal-header">
+      <h2>📖 Game Guide &amp; Information</h2>
+      <button class="close-modal-btn" id="btn-howto-close" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="info-meta">
+        <span class="info-badge">Version <span class="info-version-text">v1.3.0</span></span>
+        <span class="info-badge">Arcade Meadow Defense</span>
+      </div>
+
+      <section class="info-section">
+        <h3>🐝 Story &amp; Objective</h3>
+        <p>You are the guardian bee of the meadow's central hive! Harvest fresh flower nectar and golden airborne pollen to fill the hive's honeycomb cells and brew jars of golden honey—while stinging sneaky Burglar hands and pesticide-spraying Farmers before they ruin the harvest.</p>
+      </section>
+
+      <section class="info-section">
+        <h3>🎮 Controls Reference</h3>
+        <table class="controls-table">
+          <thead>
+            <tr><th>Action</th><th>Keyboard</th><th>Gamepad</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Move / Fly</td><td>WASD / Arrow Keys</td><td>Left Analog Stick / D-Pad</td></tr>
+            <tr><td>Sting Enemy</td><td>Space / Z</td><td>Buttons 1–4 / R1 / R2</td></tr>
+            <tr><td>Menu Confirm</td><td>Enter / Space</td><td>Button 3 (Blue) / Button 1</td></tr>
+            <tr><td>Menu Back / Close</td><td>Escape</td><td>Button 2</td></tr>
+            <tr><td>Pause / Resume</td><td>Escape / P</td><td>Start Button</td></tr>
+            <tr><td>Game Guide (ℹ)</td><td>I / ?</td><td>Info (ℹ) Button</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="info-section">
+        <h3>🌸 Mechanics &amp; Scoring</h3>
+        <div class="howto-grid">
+          <div class="howto-card">
+            <div class="howto-icon">🌸</div>
+            <h3>Flowers (+5)</h3>
+            <p>Fly close to blooming flowers to collect nectar drops (carry up to 3).</p>
+          </div>
+          <div class="howto-card">
+            <div class="howto-icon">🌼</div>
+            <h3>Good Pollen (+10)</h3>
+            <p>Touch golden pollen in the air to carry it (up to 3). Deliver to the hive!</p>
+          </div>
+          <div class="howto-card">
+            <div class="howto-icon">🟢</div>
+            <h3>Bad Pollen (-20)</h3>
+            <p>Avoid green pesticide pollen — it damages your health and resets combos!</p>
+          </div>
+          <div class="howto-card">
+            <div class="howto-icon">🍯</div>
+            <h3>Hive Brewing</h3>
+            <p>Deposit nectar &amp; pollen at the central hive. 3 Nectar + 3 Pollen brews 1 Honey Jar in 45s!</p>
+          </div>
+          <div class="howto-card">
+            <div class="howto-icon">🦹</div>
+            <h3>Burglar (+50)</h3>
+            <p>Striped-sleeve hand swoops in to steal nectar (-100). Sting twice fast to repel!</p>
+          </div>
+          <div class="howto-card">
+            <div class="howto-icon">👨‍🌾</div>
+            <h3>Farmer (+30)</h3>
+            <p>Checked-shirt hand sprays green pesticide on pollen &amp; flowers. Sting to stop!</p>
+          </div>
+          <div class="howto-card">
+            <div class="howto-icon">⚡</div>
+            <h3>Sting Combos</h3>
+            <p>Consecutive enemy stings build a 1.5× score multiplier per combo tier!</p>
+          </div>
+          <div class="howto-card">
+            <div class="howto-icon">🏆</div>
+            <h3>Victory Goal</h3>
+            <p>Brew target honey jars to win — Easy: 5 jars · Normal: 10 jars · Hard: 15 jars.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+    <button class="btn btn-primary" id="btn-howto-back">← Close Guide</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ HIGH SCORES / LEADERBOARD MODAL ═══════════════════════════════ -->
+<div id="leaderboard-screen" class="overlay hidden" role="dialog" aria-modal="true">
+  <div class="panel modal-card">
+    <div class="modal-header">
+      <h2>🏆 Top 10 High Scores</h2>
+      <button class="close-modal-btn" id="btn-lb-close" aria-label="Close">✕</button>
+    </div>
+    <div id="leaderboard-list" class="scores-table-wrap">
+      <table class="scores-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Call Sign</th>
+            <th>Wave</th>
+            <th>Score</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboard-tbody">
+          <tr><td colspan="5" class="loading-msg">Loading scores…</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <button class="btn btn-primary" id="btn-lb-back">← Close High Scores</button>
   </div>
 </div>
 

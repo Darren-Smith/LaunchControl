@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CharaGen | Advanced Skeleton Architect</title>
+    <link rel="stylesheet" href="style.css?v=2">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- gif.js for exporting GIFs -->
+    <script src="src/lib/gif.js"></script>
+    <script src="/flask_sync.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header glass-panel">
+            <div class="logo">
+                <i class="fa-solid fa-draw-polygon"></i> CharaGen
+            </div>
+            <div class="header-controls">
+                <button id="btn-new" class="btn btn-secondary" title="Create a new profile"><i class="fa-solid fa-file"></i> New</button>
+                <button id="btn-import" class="btn btn-secondary" title="Load character from JSON file"><i class="fa-solid fa-folder-open"></i> Load</button>
+                <button id="btn-export" class="btn btn-primary" title="Save character to JSON file"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+                <button id="btn-help" class="btn btn-secondary" style="background: rgba(255,255,255,0.1);" title="View Help Manual"><i class="fa-solid fa-circle-question"></i> Help</button>
+            </div>
+        </header>
+
+        <!-- Main Layout Grid -->
+        <div class="main-workspace">
+            
+            <!-- Left Panel: Hierarchy & Modules -->
+            <aside class="side-panel left-panel glass-panel">
+                <div class="panel-header">
+                    <div class="form-group" style="margin-bottom: 0; flex-direction: row; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center;">
+                            <label for="profile-name" style="margin: 0 0.5rem 0 0; white-space: nowrap; font-size: 0.875rem; color: var(--text-secondary);">Name:</label>
+                            <input type="text" id="profile-name" class="styled-input" style="width: 120px;" value="Exported_Character" placeholder="Profile Name">
+                        </div>
+                        <button id="btn-open-preview" class="btn btn-secondary" title="Preview Character"><i class="fa-solid fa-play"></i> Preview</button>
+                    </div>
+                </div>
+                
+                <div class="module-switcher">
+                    <button class="tab-btn active" data-target="skeleton-builder" title="Create and pose the bone structure">Skeleton Builder</button>
+                    <button class="tab-btn" data-target="skin-editor" title="Adjust flesh size and styling">Skin Editor</button>
+                    <button class="tab-btn" data-target="accessory-designer" title="Draw or equip items">Accessory Designer</button>
+                </div>
+
+                <div class="panel-content">
+                    <div id="skeleton-builder-ui">
+                        <div class="hierarchy-tree">
+                            <div class="tree-header">
+                                <span>Joint Hierarchy</span>
+                                <button id="btn-add-bone" class="btn-icon" title="Add Joint"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                            <ul id="bone-tree-list" class="tree-list">
+                                <!-- Populated dynamically by JS -->
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="accessory-designer-ui" class="hidden" style="display: flex; flex-direction: column; height: 100%;">
+                        <div class="equipment-loadout" style="display: flex; flex-direction: column; height: 100%;">
+                            <div class="section-header" style="margin-bottom: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="font-weight: 600;">Accessory Library</span>
+                                    <div style="display: flex; gap: 0.25rem;">
+                                        <button id="btn-import-lib-img" class="btn-icon" title="Import Image (.png/.svg)" style="font-size: 0.875rem;"><i class="fa-solid fa-image"></i></button>
+                                        <button id="btn-import-lib-json" class="btn-icon" title="Import Library (.json)" style="font-size: 0.875rem;"><i class="fa-solid fa-file-import"></i></button>
+                                        <button id="btn-export-lib-json" class="btn-icon" title="Export Library (.json)" style="font-size: 0.875rem;"><i class="fa-solid fa-file-export"></i></button>
+                                    </div>
+                                </div>
+                                <input type="file" id="file-import-lib-img" accept="image/png, image/jpeg, image/svg+xml" style="display: none;">
+                                <input type="file" id="file-import-lib-json" accept=".json" style="display: none;">
+                                <div class="sub-tabs" style="display: flex; gap: 0.25rem; overflow-x: auto; padding-bottom: 0.25rem;">
+                                    <button class="sub-tab-btn active" data-category="headwear">Head</button>
+                                    <button class="sub-tab-btn" data-category="mainWeapon">Weapon</button>
+                                    <button class="sub-tab-btn" data-category="topBody">Top Body</button>
+                                    <button class="sub-tab-btn" data-category="legs">Legs</button>
+                                    <button class="sub-tab-btn" data-category="feet">Feet</button>
+                                </div>
+                            </div>
+                            <div class="inventory-grid" id="inventory-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 0.5rem; overflow-y: auto; flex: 1; align-content: start;">
+                                <!-- Populated dynamically by JS -->
+                                <div class="inventory-item create-new" id="btn-create-item" style="display: flex; justify-content: center; align-items: center; border: 2px dashed rgba(255,255,255,0.2); border-radius: 4px; aspect-ratio: 1; cursor: pointer; color: #3b82f6;" title="Create New Item">
+                                    <i class="fa-solid fa-plus fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="skin-editor-ui" class="hidden" style="display: flex; flex-direction: column; gap: 1rem; padding: 0.5rem 0;">
+                        <div class="form-group" style="flex-direction: row; align-items: center; justify-content: space-between;">
+                            <label style="margin:0;">Enable Skin Layer</label>
+                            <input type="checkbox" id="skin-active-toggle" style="width: auto;">
+                        </div>
+                        <div class="form-group">
+                            <label>Skin Texture/Tone</label>
+                            <select id="skin-material-select" class="styled-select">
+                                <option value="#fcd5ce">Human Light</option>
+                                <option value="#d4a373">Human Medium</option>
+                                <option value="#a68a64">Human Dark</option>
+                                <option value="#8b5a2b">Human Deep</option>
+                                <option value="#4ade80">Alien Green</option>
+                                <option value="#c084fc">Alien Purple</option>
+                                <option value="#94a3b8">Stone/Metal</option>
+                                <option value="#ef4444">Demon Red</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Body Shape Preset</label>
+                            <select id="skin-shape-select" class="styled-select">
+                                <option value="lean">Lean (Thin limbs)</option>
+                                <option value="muscly">Muscly (Thick limbs)</option>
+                                <option value="chunky">Chunky (Very thick)</option>
+                            </select>
+                        </div>
+                        <button id="btn-apply-skin-shape" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;" title="Apply selected preset to character">Apply Body Shape</button>
+                        <p style="font-size: 0.75rem; color: #a0aab5; margin-top: 0.5rem; line-height: 1.4;">
+                            * Applying a body shape will automatically set the flesh thickness (radius) of all joints. 
+                            You can fine-tune individual joint radii in the right panel later!
+                        </p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Center Viewport -->
+            <main class="canvas-container">
+                <canvas id="main-canvas"></canvas>
+                <div class="canvas-overlay">
+                    <div class="tool-palette glass-panel">
+                        <button class="tool-btn active" title="Select / Move Tool (V)"><i class="fa-solid fa-arrow-pointer"></i></button>
+                        <button class="tool-btn" title="Add Joint Tool (J)"><i class="fa-solid fa-circle-dot"></i></button>
+                        <button class="tool-btn" title="Connect Tool (C)"><i class="fa-solid fa-link"></i></button>
+                        <button class="tool-btn" id="tool-lock-length" title="Lock Bone Lengths (L)"><i class="fa-solid fa-lock-open"></i></button>
+                        <div style="width: 100%; height: 1px; background: rgba(255,255,255,0.1); margin: 0.25rem 0;"></div>
+                        <button class="tool-btn active" id="tool-toggle-grid" title="Hide Grid (G)"><i class="fa-solid fa-border-all"></i></button>
+                        <button class="tool-btn active" id="tool-toggle-floor" title="Hide Floor Line (F)"><i class="fa-solid fa-grip-lines"></i></button>
+                        <button class="tool-btn active" id="tool-toggle-ruler" title="Hide Ruler (R)"><i class="fa-solid fa-ruler fa-rotate-90"></i></button>
+                    </div>
+                    <div class="canvas-stats">
+                        <span id="fps-counter">60 FPS</span>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Right Panel: Properties & Inspection -->
+            <aside class="side-panel right-panel glass-panel">
+                <div class="panel-header">
+                    <h3><i class="fa-solid fa-sliders"></i> Properties</h3>
+                </div>
+                
+                <div class="panel-content">
+                    <div id="no-selection-msg" class="empty-state">
+                        <i class="fa-solid fa-circle-dot"></i>
+                        <p>Select a joint or connection to edit</p>
+                    </div>
+
+                    <div id="properties-editor" class="properties-form hidden">
+                        <div class="form-group">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <label for="prop-id" style="margin: 0;">Item Id</label>
+                                <button id="btn-delete-item" class="btn-icon" style="color: #ef4444;" title="Delete Selected Item"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                            <input type="text" id="prop-id" class="styled-input" style="color: #8b9bb4; background: rgba(0,0,0,0.2); cursor: not-allowed;" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="prop-label">Label</label>
+                            <input type="text" id="prop-label" class="styled-input">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="prop-type">Bone Type</label>
+                            <select id="prop-type" class="styled-select">
+                                <option value="standard">Standard</option>
+                                <option value="skull">Skull</option>
+                                <option value="pelvis">Pelvis</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="prop-parent">Parent Node</label>
+                            <div class="input-row">
+                                <select id="prop-parent" class="styled-select"></select>
+                                <button id="btn-unlink" class="btn btn-secondary" title="Unlink (Set as Root)"><i class="fa-solid fa-link-slash"></i></button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Base Translation (X, Y)</label>
+                            <div class="input-row">
+                                <input type="number" id="prop-x" class="styled-input" step="1">
+                                <input type="number" id="prop-y" class="styled-input" step="1">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Flesh Radius</label>
+                            <input type="number" id="prop-radius" class="styled-input" step="1" min="1" max="100">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Base Rotation (Radians)</label>
+                            <input type="number" id="prop-rot" class="styled-input" step="0.01">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Length</label>
+                            <input type="number" id="prop-length" class="styled-input" step="1" min="0">
+                        </div>
+
+                        <hr class="divider">
+
+                        <div class="anchors-section">
+                            <div class="section-header">
+                                <h4>Anchors</h4>
+                                <button id="btn-add-anchor" class="btn-icon" title="Add Anchor"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                            <div id="anchors-list" class="list-container">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Bottom Panel: Timeline & Motion -->
+        <footer class="bottom-panel glass-panel">
+            <div class="timeline-header">
+                <div class="motion-controls">
+                    <button class="btn-icon" id="btn-undo" title="Undo (Ctrl+Z)"><i class="fa-solid fa-rotate-left"></i></button>
+                    <button class="btn-icon" id="btn-redo" title="Redo (Ctrl+Y)"><i class="fa-solid fa-rotate-right"></i></button>
+                    <div style="width: 10px;"></div>
+                    <button class="btn-icon" title="Previous Frame"><i class="fa-solid fa-backward-step"></i></button>
+                    <button class="btn-icon" id="btn-play" title="Play / Pause"><i class="fa-solid fa-play"></i></button>
+                    <button class="btn-icon" title="Next Frame"><i class="fa-solid fa-forward-step"></i></button>
+                    <button class="btn-icon" id="btn-add-keyframe" title="Add Keyframe (K)" style="margin-left: 10px; color: #f59e0b;"><i class="fa-solid fa-key"></i></button>
+                </div>
+                <div class="profile-selector">
+                    <label>Profile:</label>
+                    <select id="profile-select" class="styled-select">
+                        <option value="Idle 1">Idle 1</option>
+                        <option value="Walk">Walk</option>
+                        <option value="Run">Run</option>
+                        <option value="Attack 1">Attack 1</option>
+                        <option value="Defend 1">Defend 1</option>
+                    </select>
+                </div>
+                <div class="profile-selector" style="margin-left: 10px;">
+                    <label>Easing:</label>
+                    <select id="easing-type" class="styled-select">
+                        <option value="linear">Linear</option>
+                        <option value="ease-in-out">Ease In-Out</option>
+                        <option value="ease-out">Ease Out</option>
+                        <option value="ease-in">Ease In</option>
+                    </select>
+                </div>
+                <div class="profile-selector" style="margin-left: 10px;">
+                    <label>Return:</label>
+                    <select id="repo-frames" class="styled-select">
+                        <option value="0">Off</option>
+                        <option value="10">10 Frames</option>
+                        <option value="20">20 Frames</option>
+                        <option value="30">30 Frames</option>
+                    </select>
+                </div>
+                <div class="timeline-info">Frame: <span id="current-frame">1</span> / 60</div>
+            </div>
+            
+            <div class="timeline-tracks" id="timeline-tracks-area">
+                <div class="timeline-ruler" id="timeline-ruler">
+                    <!-- Ruler populated via JS -->
+                </div>
+                <div class="track-list" id="timeline-tracks-container">
+                    <!-- Tracks populated here -->
+                </div>
+                <div class="timeline-scrubber" id="timeline-scrubber">
+                    <div class="scrub-head"></div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="src/data/ProfileSerializer.js"></script>
+    <script src="src/data/HistoryManager.js"></script>
+    <!-- Modal for New Profile -->
+    <div id="modal-new-profile" class="modal hidden">
+        <div class="modal-content glass-panel" style="width: 300px;">
+            <h3 style="margin-top: 0;">Create New Profile</h3>
+            <div class="form-group">
+                <label for="new-profile-name">Profile Name</label>
+                <input type="text" id="new-profile-name" class="styled-input" value="NewProfile">
+            </div>
+            <div class="form-group">
+                <label for="new-profile-template">Template</label>
+                <select id="new-profile-template" class="styled-select">
+                    <option value="humanoid">Humanoid</option>
+                    <option value="avian">Avian</option>
+                    <option value="quadruped">Quadruped</option>
+                    <option value="blank">Blank (Single Bone)</option>
+                </select>
+            </div>
+            <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem;">
+                <button id="btn-modal-cancel" class="btn" style="background: rgba(255,255,255,0.1);" title="Cancel profile creation">Cancel</button>
+                <button id="btn-modal-create" class="btn" style="background: #3b82f6;" title="Confirm and create">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Drawing Tool -->
+    <div id="modal-drawing-tool" class="modal hidden">
+        <div class="modal-content glass-panel" style="width: 550px; display: flex; flex-direction: column; gap: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0;">Draw Accessory</h3>
+                <button id="btn-draw-close" class="btn-icon" title="Close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="drawing-tools" style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                <div style="display: flex; gap: 0.25rem;">
+                    <button id="btn-tool-brush" class="btn btn-secondary active" style="background: rgba(59, 130, 246, 0.2); border-color: #3b82f6;" title="Brush Tool"><i class="fa-solid fa-paintbrush"></i></button>
+                    <button id="btn-tool-fill" class="btn btn-secondary" title="Fill Tool"><i class="fa-solid fa-fill-drip"></i></button>
+                </div>
+                <label style="display:flex; align-items:center; gap:0.5rem;">Color: <input type="color" id="draw-color" value="#ffffff" style="background: transparent; border: none; cursor: pointer;"></label>
+                <label style="display:flex; align-items:center; gap:0.5rem;">Size: <input type="range" id="draw-size" min="1" max="50" value="5" style="width: 100px;"></label>
+                <button id="btn-draw-undo" class="btn btn-secondary" title="Undo Last Stroke (Ctrl+Z)"><i class="fa-solid fa-rotate-left"></i></button>
+                <button id="btn-draw-clear" class="btn btn-secondary" title="Clear canvas">Clear</button>
+                <div style="border-left: 1px solid rgba(255,255,255,0.2); height: 24px; margin: 0 0.5rem;"></div>
+                <button id="btn-set-pivot" class="btn btn-secondary" title="Set Pivot Point"><i class="fa-solid fa-crosshairs"></i> Set Pivot</button>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; align-self: center; position: relative;">
+                <!-- 512x512 Canvas for drawing -->
+                <canvas id="drawing-canvas" width="512" height="512" style="cursor: crosshair; display: block;"></canvas>
+                <!-- Pivot Crosshair Overlay -->
+                <div id="pivot-crosshair" style="position: absolute; left: 256px; top: 256px; width: 20px; height: 20px; transform: translate(-50%, -50%); pointer-events: none;">
+                    <div style="position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: red; transform: translateX(-50%);"></div>
+                    <div style="position: absolute; top: 50%; left: 0; right: 0; height: 2px; background: red; transform: translateY(-50%);"></div>
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+                <button id="btn-draw-cancel" class="btn" style="background: rgba(255,255,255,0.1);" title="Cancel changes">Cancel</button>
+                <button id="btn-draw-save" class="btn" style="background: #3b82f6;" title="Save accessory to library">Save Item</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Preview Modal -->
+    <div id="preview-modal" class="modal hidden">
+        <div class="modal-content glass-panel" style="width: 550px; display: flex; flex-direction: column; align-items: center;">
+            <div class="modal-header" style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0;">Character Preview</h3>
+                <button id="btn-close-preview" class="btn-icon" title="Close Preview"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div style="width: 512px; height: 512px; background: var(--bg-primary); border-radius: 8px; overflow: hidden; margin: 1rem 0; position: relative;">
+                <canvas id="preview-canvas" width="512" height="512"></canvas>
+            </div>
+            <div style="width: 100%; display: flex; flex-direction: column; gap: 0.5rem;">
+                <button id="btn-export-gif" class="btn btn-primary" style="width: 100%;" title="Export this animation as a GIF file"><i class="fa-solid fa-film"></i> Export as GIF</button>
+                <div id="gif-progress" style="display: none; text-align: center; font-size: 0.875rem; color: var(--text-secondary);">Rendering...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Manual Modal -->
+    <div id="help-modal" class="modal hidden">
+        <div class="modal-content glass-panel" style="width: 700px; max-height: 80vh; display: flex; flex-direction: column;">
+            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem; margin-bottom: 1rem;">
+                <h2 style="margin: 0;"><i class="fa-solid fa-book"></i> CharaGen Help Manual</h2>
+                <button id="btn-close-help" class="btn-icon"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div style="overflow-y: auto; flex: 1; padding-right: 1rem;">
+                <h3><i class="fa-solid fa-bone"></i> Skeleton Builder</h3>
+                <p>The core of your character. Use the tools to create a bone hierarchy.</p>
+                <ul>
+                    <li><strong>Add Joint (J)</strong>: Click anywhere to add a new joint. </li>
+                    <li><strong>Connect (C)</strong>: Click a parent joint, then click a child joint to link them. The hierarchy is important for animation!</li>
+                    <li><strong>Select/Move (V)</strong>: Drag joints to reposition them. If they are connected, moving a parent moves its children (Forward Kinematics), while moving a child attempts to drag the parent along (Inverse Kinematics).</li>
+                </ul>
+
+                <h3><i class="fa-solid fa-palette"></i> Skin Editor</h3>
+                <p>Flesh out your stick figure.</p>
+                <ul>
+                    <li>Toggle <strong>Enable Skin Layer</strong> to generate dynamic flesh around the bones.</li>
+                    <li><strong>Body Shape Preset</strong>: Quickly assign standard thicknesses to your character.</li>
+                    <li>Select a joint, and in the <strong>Properties panel (right)</strong>, adjust the <strong>Flesh Radius</strong> to make specific parts thicker or thinner.</li>
+                </ul>
+
+                <h3><i class="fa-solid fa-gem"></i> Accessory Designer</h3>
+                <p>Equip your character with custom items stored in your global library.</p>
+                <ul>
+                    <li><strong>Global Library</strong>: Any item you draw or import is saved to your browser locally.</li>
+                    <li>Click the <strong>+</strong> icon to draw a new item, or use the <strong>Import Image</strong> button in the header to upload a PNG/SVG.</li>
+                    <li><strong>Set Pivot</strong>: When drawing an item, click "Set Pivot" to define where the item attaches to the character (e.g., the hilt of a sword).</li>
+                    <li><strong>Anchors</strong>: To attach an item, select a bone connection, and click the <strong>+ Anchor</strong> button in the Properties panel. Then click an item in your library to equip it to that anchor!</li>
+                </ul>
+
+                <h3><i class="fa-solid fa-film"></i> Animator & Timeline</h3>
+                <p>Bring your character to life.</p>
+                <ul>
+                    <li>Select an animation profile like <strong>Walk</strong> or <strong>Attack</strong> from the bottom panel.</li>
+                    <li>Move the playhead scrubber on the timeline. Pose your character, then click the <strong>Add Keyframe (K)</strong> button (the golden key) to save the pose at that frame.</li>
+                    <li>The engine will automatically interpolate (tween) the movement between your keyframes.</li>
+                    <li>Click <strong>Preview</strong> in the top left to see your animation isolated, and click <strong>Export as GIF</strong> to download a transparent game asset!</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="src/engine/JointEngine.js?v=4"></script>
+    <script src="src/engine/AccessoryManager.js?v=3"></script>
+    <script src="src/engine/TimelineEngine.js?v=3"></script>
+    <!-- View & UI -->
+    <script src="src/view/CanvasViewport.js?v=3"></script>
+    <script src="src/ui/UIManager.js?v=3"></script>
+    <!-- Main Bootstrap -->
+    <script src="src/main.js?v=3"></script>
+</body>
+</html>

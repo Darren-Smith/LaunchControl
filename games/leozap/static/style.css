@@ -370,3 +370,66 @@ h2 {
     background: rgba(255,255,255,0.18);
     color: #fff;
 }
+
+/* ─── Gamepad Controller Support ────────────────────────────────────────────── */
+
+body.hide-cursor,
+body.hide-cursor * {
+    cursor: none !important;
+}
+
+.gamepad-focus {
+    outline: 3px solid #ffd600 !important;
+    outline-offset: 2px;
+    box-shadow: 0 0 18px rgba(255, 214, 0, 0.75), 0 0 6px #ffffff !important;
+    transform: translateY(-2px) scale(1.02);
+    z-index: 2;
+}
+
+.gamepad-badge {
+    font-family: var(--ui-font);
+    font-size: 9px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #999;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    letter-spacing: 0.5px;
+    transition: all 0.25s ease;
+}
+
+#start-screen .gamepad-badge {
+    margin-bottom: 18px;
+    font-size: 10px;
+    padding: 7px 14px;
+}
+
+.gamepad-badge.connected {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background: rgba(0, 255, 204, 0.12);
+    box-shadow: 0 0 12px rgba(0, 255, 204, 0.35);
+}
+
+.gamepad-hint {
+    font-family: var(--ui-font);
+    font-size: 9px;
+    color: #ffd600;
+    text-align: center;
+    opacity: 0.9;
+}
+
+.game-version {
+    position: absolute;
+    bottom: 16px;
+    right: 20px;
+    font-family: var(--ui-font);
+    font-size: 11px;
+    color: rgba(0, 255, 204, 0.75);
+    letter-spacing: 1px;
+    text-shadow: 0 0 8px rgba(0, 255, 204, 0.35);
+    pointer-events: none;
+}

@@ -117,7 +117,7 @@ export default class LevelManager {
         let w = 48;
         if (type === 'blue_troll') w = 64;
         if (type === 'boss') w = 128;
-        if (type === 'alien_king') w = 96;
+        if (type === 'alien_knight') w = 96;
         if (type === 'slow_fly') w = 34;
         if (type === 'fast_fly') w = 28;
 
@@ -127,7 +127,7 @@ export default class LevelManager {
         this.enemies.push(enemy);
 
         if (type === 'boss') window.SoundManager?.play('bossAppear');
-        if (type === 'alien_king') window.SoundManager?.play('bossAppear');
+        if (type === 'alien_knight') window.SoundManager?.play('bossAppear');
 
         // Flies enter anywhere on the screen vertically for a better "buzz" effect
         if (type === 'slow_fly' || type === 'fast_fly') {
@@ -156,7 +156,7 @@ export default class LevelManager {
         const lvl = this.level;
         const rand = Math.random();
 
-        // Boss: last enemy of every 5th level
+        // Alien King (Boss): last enemy of every 5th level
         if (lvl >= 5 && lvl % 5 === 0 && this.enemiesSpawned === this.maxEnemiesPerLevel - 1) {
             return 'boss';
         }
@@ -173,7 +173,7 @@ export default class LevelManager {
         if (lvl >= 3) pool.push({ type: 'space_cow', weight: 12 });
         if (lvl >= 4) pool.push({ type: 'blue_troll', weight: 10 });
         if (lvl >= 4) pool.push({ type: 'fast_fly', weight: 12 });
-        if (lvl >= 5) pool.push({ type: 'alien_king', weight: 8 });
+        if (lvl >= 5) pool.push({ type: 'alien_knight', weight: 8 });
         if (lvl >= 6) pool.push({ type: 'blob_alien', weight: 6 });
 
         const total = pool.reduce((s, e) => s + e.weight, 0);
@@ -202,6 +202,8 @@ export default class LevelManager {
                         enemy.markedForDeletion = true;
                         window.addScore(enemy.scoreValue);
                         window.SoundManager?.play('enemyDie');
+                        const isBossy = ['boss', 'alien_knight', 'blob_alien'].includes(enemy.type);
+                        window.triggerGamepadRumble?.(isBossy ? 0.6 : 0.2, isBossy ? 0.85 : 0.35, isBossy ? 200 : 75);
                         this._onEnemyKilled(enemy, canvas);
                     }
                 }
@@ -216,6 +218,7 @@ export default class LevelManager {
                 bullet.markedForDeletion = true;
                 player.health = Math.max(0, player.health - (bullet.damage || 10));
                 window.SoundManager?.play('playerHit');
+                window.triggerGamepadRumble?.(0.5, 0.8, 160);
             }
         });
 
@@ -227,6 +230,7 @@ export default class LevelManager {
                 enemy.markedForDeletion = true;
                 player.health = Math.max(0, player.health - enemy.damage);
                 window.SoundManager?.play('playerHit');
+                window.triggerGamepadRumble?.(0.6, 0.9, 180);
             }
         });
 
@@ -244,6 +248,7 @@ export default class LevelManager {
                 } else if (c.type === 'bullet_powerup') {
                     player.powerLevel = Math.min(4, player.powerLevel + 1);
                     window.SoundManager?.play('powerUp');
+                    window.triggerGamepadRumble?.(0.3, 0.5, 110);
                     window.addScore(200); // Small bonus for collecting it
 
                 } else {
@@ -271,7 +276,7 @@ export default class LevelManager {
         const rand = Math.random();
 
         // Drop a power-up (15 % chance) — bias toward bossy enemies
-        const powerChance = ['boss', 'alien_king', 'blob_alien'].includes(enemy.type) ? 0.6 : 0.12;
+        const powerChance = ['boss', 'alien_knight', 'blob_alien'].includes(enemy.type) ? 0.6 : 0.12;
         if (rand < powerChance) {
             this.collectibles.push(new Collectible(enemy.x + enemy.width / 2 - 19, enemy.y, 'bullet_powerup'));
             return; // Only one drop per kill
@@ -297,13 +302,30 @@ export default class LevelManager {
         this.enemies.forEach(e => e.draw(ctx));
         this.collectibles.forEach(c => c.draw(ctx));
 
-        // Enemy bullets
+        // Enemy bullets (Alien Knight bolts & Alien King Boss purple spray orbs)
         this.enemyBullets.forEach(b => {
-            ctx.fillStyle = '#ff4400';
-            ctx.shadowColor = '#ff8800';
-            ctx.shadowBlur = 8;
-            ctx.fillRect(b.x, b.y, b.width, b.height);
-            ctx.shadowBlur = 0;
+            ctx.save();
+            ctx.fillStyle = b.color || '#ff4400';
+            ctx.shadowColor = b.glowColor || '#ff8800';
+            ctx.shadowBlur = 10;
+
+            if (b.shape === 'orb') {
+                const cx = b.x + b.width / 2;
+                const cy = b.y + b.height / 2;
+                const r = b.width / 2;
+                ctx.beginPath();
+                ctx.arc(cx, cy, r, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Bright inner core for purple plasma orbs
+                ctx.fillStyle = '#f5ccff';
+                ctx.beginPath();
+                ctx.arc(cx, cy, r * 0.45, 0, Math.PI * 2);
+                ctx.fill();
+            } else {
+                ctx.fillRect(b.x, b.y, b.width, b.height);
+            }
+            ctx.restore();
         });
     }
 

@@ -17,3 +17,4 @@ user/
 .vscode/
 .idea/
 .pyre/
+games/*/storage.json

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@400;700&display=swap"
         rel="stylesheet">
+    <script src="/flask_sync.js"></script>
 </head>
 
 <body>
@@ -34,6 +35,7 @@
                 <div class="hud-item">HEALTH: <span id="health">100</span>%</div>
                 <div class="hud-item">PWR: <span id="power-level">★☆☆☆</span></div>
                 <div class="hud-sound">
+                    <span id="gamepad-status-hud" class="gamepad-badge">🎮 No Pad (Plug &amp; Press)</span>
                     <button id="mute-btn"       class="hud-sound-btn">🔊 SFX</button>
                     <button id="mute-music-btn"  class="hud-sound-btn">🎵 MUSIC</button>
                 </div>
@@ -43,13 +45,16 @@
             <div id="start-screen" class="screen">
                 <h1 class="game-title">LeoZap</h1>
                 <p class="subtitle">Defender of the Galaxy</p>
+                <div id="gamepad-status" class="gamepad-badge">🎮 No Pad (Plug &amp; Press)</div>
                 <button id="start-btn"       class="btn">START MISSION</button>
                 <button id="show-scores-btn" class="btn secondary">HIGH SCORES</button>
                 <div class="controls-info">
-                    <p>Arrow Keys / WASD to Move</p>
-                    <p>SPACE to Shoot</p>
+                    <p>⌨️ Arrow Keys / WASD to Move • SPACE to Shoot • ESC to Pause</p>
+                    <p>🎮 Stick / D-Pad to Move • Buttons 1–4 / R1 / R2 to Shoot</p>
+                    <p>🎮 Button 3 (Blue) Confirm • Button 2 Back • START Pause</p>
                     <p>Collect ⚡ power-ups to upgrade your bullets!</p>
                 </div>
+                <div id="game-version" class="game-version">v1.6.0</div>
             </div>
 
             <!-- ── High Score Board ──────────────────────────────────── -->
@@ -68,6 +73,7 @@
                 <p>Level: <span id="final-level">1</span></p>
                 <div id="save-score-container">
                     <input type="text" id="player-name" placeholder="Enter Name" maxlength="10">
+                    <p class="gamepad-hint">🎮 Left/Right on Name cycles presets • Button 3 confirms</p>
                     <button id="save-score-btn" class="btn">SAVE SCORE</button>
                 </div>
                 <button id="restart-btn" class="btn">TRY AGAIN</button>

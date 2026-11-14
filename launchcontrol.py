@@ -315,14 +315,14 @@ def detect_game_details(dir_path):
 
     game_type = "static"
     entry = ""
-    if "index.html" in files:
-        game_type = "static"
+    if "server.py" in files:
+        game_type = "flask"
+        entry = "server.py"
     elif "app.py" in files:
         game_type = "flask"
         entry = "app.py"
-    elif "server.py" in files:
-        game_type = "flask"
-        entry = "server.py"
+    elif "index.html" in files:
+        game_type = "static"
 
     suggested_cmd = f"python3 {entry}" if entry else "python3 -m http.server {port}"
 

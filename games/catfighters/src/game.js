@@ -66,11 +66,32 @@ class CatFightersGame {
     this.p1DisplayHealth = 100;
     this.p2DisplayHealth = 100;
 
+    // Controller Menu Navigation State
+    this.mainMenuRow = 0; // 0: 2P, 1: CPU, 2: Difficulty, 3: Movelist/HighScores, 4: Mute
+    this.mainMenuCol = 0; // Used on Row 3 (0: Movelist, 1: HighScores)
+    this.pauseMenuIndex = 0;
+    this.gameOverMenuIndex = 0;
+    this.presetNames = [
+      'CLAW_MASTER',
+      'RED_NINJA',
+      'BLUE_BOXER',
+      'FUR_FURY',
+      'MEOW_CHAMP',
+      'POOP_KING',
+      'SCRATCH_PRO',
+      'CAT_BOSS',
+    ];
+    this.presetNameIndex = 0;
+    this.navRepeatDir = null;
+    this.navRepeatTimer = 0;
+
     // Last frame timestamp
     this.lastTime = performance.now();
 
     // DOM UI Elements
     this.initUI();
+    this.updateMenuFocusVisuals();
+    this.updateCursorVisibility();
 
     // Start render/update loop
     requestAnimationFrame((t) => this.loop(t));
@@ -148,6 +169,8 @@ class CatFightersGame {
       btn.addEventListener('click', () => {
         const modal = btn.closest('.game-modal');
         if (modal) modal.classList.remove('active');
+        this.updateMenuFocusVisuals();
+        this.updateCursorVisibility();
       });
     });
 
@@ -164,6 +187,16 @@ class CatFightersGame {
     const btnSubmitScore = document.getElementById('btnSubmitScore');
     if (btnSubmitScore) {
       btnSubmitScore.addEventListener('click', () => this.submitHighScore());
+    }
+    const winnerNameInput = document.getElementById('winnerNameInput');
+    if (winnerNameInput) {
+      winnerNameInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          e.stopPropagation();
+          this.submitHighScore();
+        }
+      });
     }
 
     // Defeat Actions (Retry vs Menu)
@@ -194,6 +227,29 @@ class CatFightersGame {
     };
     window.addEventListener('click', handleFirstGesture);
     window.addEventListener('keydown', handleFirstGesture);
+
+    // Gamepad connection status indicator
+    if (window.input) {
+      window.input.onGamepadStatusChange = (pads) => this.updateGamepadStatusUI(pads);
+      this.updateGamepadStatusUI(window.input.refreshConnectedGamepads());
+    }
+  }
+
+  updateGamepadStatusUI(pads = []) {
+    const badge = document.getElementById('gamepadStatusBadge');
+    if (!badge) return;
+
+    const count = pads.length;
+    if (count === 0) {
+      badge.textContent = '🎮 No Pad (Plug & Press)';
+      badge.className = 'nav-badge gamepad-badge';
+    } else if (count === 1) {
+      badge.textContent = '🎮 1 Controller (P1)';
+      badge.className = 'nav-badge gamepad-badge connected-1';
+    } else {
+      badge.textContent = `🎮 ${count} Controllers (P1 & P2)`;
+      badge.className = 'nav-badge gamepad-badge connected-2';
+    }
   }
 
   updateMuteUI(isMuted) {
@@ -237,13 +293,15 @@ class CatFightersGame {
     this.p2.wins = 0;
     this.p2.score = 0;
 
-    // Hide Main Menu & Game Over overlays
+    // Hide Main Menu, Game Over, and any open modals
     const menuOverlay = document.getElementById('mainMenuOverlay');
     if (menuOverlay) menuOverlay.classList.remove('active');
     const gameOverOverlay = document.getElementById('gameOverOverlay');
     if (gameOverOverlay) gameOverOverlay.classList.remove('active');
+    document.querySelectorAll('.game-modal.active').forEach(m => m.classList.remove('active'));
 
-    window.audio.playBattleBGM();
+    // Stop any High Score / Title / Victory BGM cleanly before starting Round 1 battle music
+    window.audio.stopBGM();
     this.startRound(1);
   }
 
@@ -281,8 +339,11 @@ class CatFightersGame {
     } else if (this.state === 'fight' || this.state === 'intro') {
       this.previousState = this.state;
       this.state = 'paused';
+      this.pauseMenuIndex = 0;
       const pauseModal = document.getElementById('pauseModal');
       if (pauseModal) pauseModal.classList.add('active');
+      this.updateMenuFocusVisuals();
+      this.updateCursorVisibility();
     }
   }
 
@@ -290,6 +351,8 @@ class CatFightersGame {
     if (this.state === 'paused') {
       this.state = this.previousState;
       this.hidePauseMenu();
+      this.updateMenuFocusVisuals();
+      this.updateCursorVisibility();
     }
   }
 
@@ -305,11 +368,17 @@ class CatFightersGame {
     if (menuOverlay) menuOverlay.classList.add('active');
     const gameOverOverlay = document.getElementById('gameOverOverlay');
     if (gameOverOverlay) gameOverOverlay.classList.remove('active');
+    this.updateMenuFocusVisuals();
+    this.updateCursorVisibility();
   }
 
   showMovelistModal() {
     const modal = document.getElementById('movelistModal');
-    if (modal) modal.classList.add('active');
+    if (modal) {
+      modal.classList.add('active');
+      this.updateMenuFocusVisuals();
+      this.updateCursorVisibility();
+    }
   }
 
   showHighScoresModal() {
@@ -317,6 +386,258 @@ class CatFightersGame {
     if (modal) {
       this.renderHighScoresTable();
       modal.classList.add('active');
+      this.updateMenuFocusVisuals();
+      this.updateCursorVisibility();
+    }
+  }
+
+  updateCursorVisibility() {
+    const hasOpenModal = Boolean(document.querySelector('.game-modal.active'));
+    const isGameplay = (
+      this.state === 'intro' ||
+      this.state === 'fight' ||
+      this.state === 'ko' ||
+      this.state === 'time_over' ||
+      this.state === 'round_over'
+    ) && !hasOpenModal;
+    document.body.classList.toggle('hide-cursor', isGameplay);
+  }
+
+  cycleCPUDifficulty(delta) {
+    const order = ['easy', 'normal', 'hard'];
+    const idx = Math.max(0, order.indexOf(this.cpuDifficulty));
+    const nextIdx = (idx + delta + order.length) % order.length;
+    this.setCPUDifficulty(order[nextIdx]);
+  }
+
+  cycleWinnerPresetName(delta) {
+    const input = document.getElementById('winnerNameInput');
+    if (!input) return;
+    this.presetNameIndex = (this.presetNameIndex + delta + this.presetNames.length) % this.presetNames.length;
+    input.value = this.presetNames[this.presetNameIndex];
+  }
+
+  updateMenuFocusVisuals() {
+    document.querySelectorAll('.gamepad-focus').forEach(el => el.classList.remove('gamepad-focus'));
+
+    // 1. Open Modal takes top priority
+    const activeModal = document.querySelector('.game-modal.active');
+    if (activeModal) {
+      const closeBtn = activeModal.querySelector('.modal-footer .modal-close') || activeModal.querySelector('.modal-close');
+      if (closeBtn) closeBtn.classList.add('gamepad-focus');
+      return;
+    }
+
+    // 2. Pause Menu
+    if (this.state === 'paused') {
+      const pauseButtons = ['btnResume', 'btnRestart', 'btnPauseMovelist', 'btnPauseExit'];
+      const targetId = pauseButtons[this.pauseMenuIndex] || pauseButtons[0];
+      const el = document.getElementById(targetId);
+      if (el) el.classList.add('gamepad-focus');
+      return;
+    }
+
+    // 3. Game Over / Victory & Defeat Overlay
+    if (this.state === 'match_over') {
+      const cpuWon = this.gameMode === 'cpu' && this.p2.wins >= 2;
+      if (cpuWon) {
+        const defeatButtons = ['btnDefeatRetry', 'btnDefeatMenu'];
+        const el = document.getElementById(defeatButtons[this.gameOverMenuIndex] || defeatButtons[0]);
+        if (el) el.classList.add('gamepad-focus');
+      } else {
+        const victoryItems = ['btnSubmitScore', 'winnerNameInput'];
+        const el = document.getElementById(victoryItems[this.gameOverMenuIndex] || victoryItems[0]);
+        if (el) el.classList.add('gamepad-focus');
+      }
+      return;
+    }
+
+    // 4. Main Menu
+    if (this.state === 'menu') {
+      let targetEl = null;
+      if (this.mainMenuRow === 0) {
+        targetEl = document.getElementById('btnMode2P');
+      } else if (this.mainMenuRow === 1) {
+        targetEl = document.getElementById('btnModeCPU');
+      } else if (this.mainMenuRow === 2) {
+        targetEl = document.querySelector(`.diff-btn[data-diff="${this.cpuDifficulty}"]`) || document.getElementById('diffNormal');
+      } else if (this.mainMenuRow === 3) {
+        targetEl = document.getElementById(this.mainMenuCol === 0 ? 'btnMovelist' : 'btnHighScores');
+      } else if (this.mainMenuRow === 4) {
+        targetEl = document.getElementById('btnMuteToggle');
+      }
+      if (targetEl) targetEl.classList.add('gamepad-focus');
+    }
+  }
+
+  handleControllerMenuNavigation(dt) {
+    const inp = window.input;
+    if (!inp) return;
+
+    // Directional step with hold auto-repeat
+    let heldDir = null;
+    if (inp.isAnyGamepadAction('menuUp')) heldDir = 'up';
+    else if (inp.isAnyGamepadAction('menuDown')) heldDir = 'down';
+    else if (inp.isAnyGamepadAction('menuLeft')) heldDir = 'left';
+    else if (inp.isAnyGamepadAction('menuRight')) heldDir = 'right';
+
+    let stepDir = null;
+    if (inp.isAnyGamepadActionJustPressed('menuUp')) {
+      stepDir = 'up';
+      this.navRepeatDir = 'up';
+      this.navRepeatTimer = 0.36;
+    } else if (inp.isAnyGamepadActionJustPressed('menuDown')) {
+      stepDir = 'down';
+      this.navRepeatDir = 'down';
+      this.navRepeatTimer = 0.36;
+    } else if (inp.isAnyGamepadActionJustPressed('menuLeft')) {
+      stepDir = 'left';
+      this.navRepeatDir = 'left';
+      this.navRepeatTimer = 0.36;
+    } else if (inp.isAnyGamepadActionJustPressed('menuRight')) {
+      stepDir = 'right';
+      this.navRepeatDir = 'right';
+      this.navRepeatTimer = 0.36;
+    } else if (heldDir && heldDir === this.navRepeatDir) {
+      this.navRepeatTimer -= dt;
+      if (this.navRepeatTimer <= 0) {
+        stepDir = heldDir;
+        this.navRepeatTimer = 0.15;
+      }
+    } else if (!heldDir) {
+      this.navRepeatDir = null;
+      this.navRepeatTimer = 0;
+    }
+
+    // 1. Open Modal (Movelist or High Scores): Scroll with Up/Down, Close with Button 3 (menuConfirm) or Back
+    const activeModal = document.querySelector('.game-modal.active');
+    if (activeModal) {
+      const modalBody = activeModal.querySelector('.modal-body');
+      if (modalBody && (heldDir === 'up' || heldDir === 'down')) {
+        modalBody.scrollTop += (heldDir === 'down' ? 1 : -1) * 340 * dt;
+      }
+      if (
+        inp.isAnyGamepadActionJustPressed('menuConfirm') ||
+        inp.isAnyGamepadActionJustPressed('menuBack')
+      ) {
+        activeModal.classList.remove('active');
+        this.updateMenuFocusVisuals();
+        this.updateCursorVisibility();
+      }
+      return;
+    }
+
+    // 2. Active Fight / Intro: Start button pauses the match
+    if (this.state === 'fight' || this.state === 'intro') {
+      if (inp.isAnyGamepadActionJustPressed('pause')) {
+        this.togglePause();
+      }
+      return;
+    }
+
+    // 3. Pause Menu: Start button resumes; Button 3 (menuConfirm) activates highlighted menu option
+    if (this.state === 'paused') {
+      if (inp.isAnyGamepadActionJustPressed('pause') || inp.isAnyGamepadActionJustPressed('menuBack')) {
+        this.resume();
+        return;
+      }
+
+      const pauseButtons = ['btnResume', 'btnRestart', 'btnPauseMovelist', 'btnPauseExit'];
+      if (stepDir === 'up') {
+        this.pauseMenuIndex = (this.pauseMenuIndex + pauseButtons.length - 1) % pauseButtons.length;
+        this.updateMenuFocusVisuals();
+      } else if (stepDir === 'down') {
+        this.pauseMenuIndex = (this.pauseMenuIndex + 1) % pauseButtons.length;
+        this.updateMenuFocusVisuals();
+      }
+
+      if (inp.isAnyGamepadActionJustPressed('menuConfirm')) {
+        const btn = document.getElementById(pauseButtons[this.pauseMenuIndex]);
+        if (btn) btn.click();
+      }
+      return;
+    }
+
+    // 4. Match Over (Victory Name Entry or CPU Defeat Retry/Quit): Button 3 (menuConfirm) activates
+    if (this.state === 'match_over') {
+      const cpuWon = this.gameMode === 'cpu' && this.p2.wins >= 2;
+      if (cpuWon) {
+        const defeatButtons = ['btnDefeatRetry', 'btnDefeatMenu'];
+        if (stepDir === 'left' || stepDir === 'right' || stepDir === 'up' || stepDir === 'down') {
+          this.gameOverMenuIndex = (this.gameOverMenuIndex + 1) % defeatButtons.length;
+          this.updateMenuFocusVisuals();
+        }
+        if (inp.isAnyGamepadActionJustPressed('menuConfirm')) {
+          const btn = document.getElementById(defeatButtons[this.gameOverMenuIndex]);
+          if (btn) btn.click();
+        }
+      } else {
+        // Human Victory: item 0 = Save Score, item 1 = Name Input (Left/Right cycles preset names)
+        if (stepDir === 'up' || stepDir === 'down') {
+          this.gameOverMenuIndex = (this.gameOverMenuIndex + 1) % 2;
+          this.updateMenuFocusVisuals();
+        } else if (stepDir === 'left' || stepDir === 'right') {
+          if (this.gameOverMenuIndex === 1) {
+            this.cycleWinnerPresetName(stepDir === 'right' ? 1 : -1);
+          } else {
+            this.gameOverMenuIndex = 1;
+            this.updateMenuFocusVisuals();
+          }
+        }
+        if (inp.isAnyGamepadActionJustPressed('menuConfirm')) {
+          this.submitHighScore();
+        }
+      }
+      return;
+    }
+
+    // 5. Main Menu: Button 3 (menuConfirm) activates the highlighted menu button
+    if (this.state === 'menu') {
+      if (stepDir) {
+        if (window.audio && !window.audio.bgmPlaying) {
+          window.audio.playTitleBGM();
+        }
+      }
+
+      if (stepDir === 'up') {
+        this.mainMenuRow = (this.mainMenuRow + 4) % 5;
+        this.updateMenuFocusVisuals();
+      } else if (stepDir === 'down') {
+        this.mainMenuRow = (this.mainMenuRow + 1) % 5;
+        this.updateMenuFocusVisuals();
+      } else if (stepDir === 'left' || stepDir === 'right') {
+        const delta = stepDir === 'right' ? 1 : -1;
+        if (this.mainMenuRow === 1 || this.mainMenuRow === 2) {
+          this.cycleCPUDifficulty(delta);
+          this.updateMenuFocusVisuals();
+        } else if (this.mainMenuRow === 3) {
+          this.mainMenuCol = (this.mainMenuCol + 1) % 2;
+          this.updateMenuFocusVisuals();
+        }
+      }
+
+      if (inp.isAnyGamepadActionJustPressed('select')) {
+        const btnMute = document.getElementById('btnMuteToggle');
+        if (btnMute) btnMute.click();
+        return;
+      }
+
+      if (inp.isAnyGamepadActionJustPressed('menuConfirm') || inp.isAnyGamepadActionJustPressed('start')) {
+        if (this.mainMenuRow === 0) {
+          this.startNewMatch('2p');
+        } else if (this.mainMenuRow === 1 || this.mainMenuRow === 2) {
+          this.startNewMatch('cpu');
+        } else if (this.mainMenuRow === 3) {
+          if (window.audio && !window.audio.bgmPlaying) {
+            window.audio.playTitleBGM();
+          }
+          if (this.mainMenuCol === 0) this.showMovelistModal();
+          else this.showHighScoresModal();
+        } else if (this.mainMenuRow === 4) {
+          const btnMute = document.getElementById('btnMuteToggle');
+          if (btnMute) btnMute.click();
+        }
+      }
     }
   }
 
@@ -374,14 +695,21 @@ class CatFightersGame {
     const gameOverOverlay = document.getElementById('gameOverOverlay');
     if (gameOverOverlay) gameOverOverlay.classList.remove('active');
 
-    this.showHighScoresModal();
     this.showMainMenu();
+    this.showHighScoresModal();
   }
 
   // --- GAME LOOP ---
   loop(currentTime) {
     const dt = Math.min(0.1, (currentTime - this.lastTime) / 1000);
     this.lastTime = currentTime;
+
+    // Poll connected game controllers at the start of each frame
+    window.input.pollGamepads();
+
+    // Handle Gamepad Menu Navigation, Modals, and Pause/Start
+    this.handleControllerMenuNavigation(dt);
+    this.updateCursorVisibility();
 
     this.update(dt);
     this.render();
@@ -588,6 +916,9 @@ class CatFightersGame {
     const isCPUMode = this.gameMode === 'cpu';
     const cpuWon = isCPUMode && this.p2.wins >= 2;
 
+    // Always stop level/battle BGM immediately when match ends
+    window.audio.stopBGM();
+
     const gameOverOverlay = document.getElementById('gameOverOverlay');
     const winnerTitle = document.getElementById('winnerTitle');
     const scoreDisplay = document.getElementById('matchScoreDisplay');
@@ -595,7 +926,6 @@ class CatFightersGame {
     const cpuDefeatActions = document.getElementById('cpuDefeatActions');
 
     if (cpuWon) {
-      window.audio.stopBGM();
       // CPU Won: NEVER allow high score entry for CPU!
       if (winnerTitle) {
         winnerTitle.textContent = '💀 DEFEAT! CPU WON';
@@ -635,6 +965,9 @@ class CatFightersGame {
     if (gameOverOverlay) {
       gameOverOverlay.classList.add('active');
     }
+    this.gameOverMenuIndex = 0;
+    this.updateMenuFocusVisuals();
+    this.updateCursorVisibility();
   }
 
   // --- RENDERING ---

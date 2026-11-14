@@ -257,3 +257,38 @@ button:active {
     0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
     100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
+
+
+/* Gamepad Controller Focus & Cursor Auto-Hide */
+.gamepad-focus {
+  outline: 3px solid #ffd600 !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 18px rgba(255, 214, 0, 0.8), 0 0 6px #ffffff !important;
+  transform: translateY(-2px) scale(1.03) !important;
+  transition: all 0.12s ease !important;
+  z-index: 20 !important;
+}
+body.hide-cursor,
+body.hide-cursor * {
+  cursor: none !important;
+}
+.gp-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: monospace, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #e2e8f0;
+  background: rgba(15, 23, 42, 0.78);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  padding: 4px 10px;
+  border-radius: 999px;
+  pointer-events: none;
+  user-select: none;
+  z-index: 9998;
+}
+.gp-status-badge.connected {
+  color: #4ade80;
+  border-color: rgba(74, 222, 128, 0.5);
+}

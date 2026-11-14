@@ -117,6 +117,37 @@ export class Game {
         this.keysPressed[keyCode] = isDown;
     }
 
+    isBtn(gp, idx) {
+        return Boolean(gp && gp.buttons && gp.buttons[idx] && (gp.buttons[idx].pressed || gp.buttons[idx].value > 0.3));
+    }
+
+    pollGamepadForPlayer(playerId) {
+        if (!navigator.getGamepads) return null;
+        const pads = Array.from(navigator.getGamepads()).filter(Boolean);
+        const gp = pads[playerId - 1];
+        if (!gp) return null;
+
+        const DZ = 0.32;
+        const ax0 = gp.axes[0] || 0;
+        const ax1 = gp.axes[1] || 0;
+        const ax2 = gp.axes[2] || 0;
+
+        let moveAmount = 0;
+        let turnAmount = 0;
+        if (Math.abs(ax1) > DZ) moveAmount = ax1;
+        else if (this.isBtn(gp, 12)) moveAmount = -1;
+        else if (this.isBtn(gp, 13)) moveAmount = 1;
+
+        if (Math.abs(ax0) > DZ) turnAmount = -ax0;
+        else if (Math.abs(ax2) > DZ) turnAmount = -ax2;
+        else if (this.isBtn(gp, 14)) turnAmount = 1;
+        else if (this.isBtn(gp, 15)) turnAmount = -1;
+
+        const actionPressed = this.isBtn(gp, 0) || this.isBtn(gp, 2) || this.isBtn(gp, 7);
+        const swapPressed = this.isBtn(gp, 1) || this.isBtn(gp, 3) || this.isBtn(gp, 4) || this.isBtn(gp, 5);
+        return { moveAmount, turnAmount, actionPressed, swapPressed };
+    }
+
     updatePlayers(dt) {
         for (let p of this.players) {
             if (p.isDead) continue;
@@ -150,6 +181,14 @@ export class Game {
                 if (this.keysPressed['Numpad6']) turnAmount = -1;
                 actionPressed = this.keysPressed['Numpad0'];
                 swapPressed = this.keysPressed['NumpadDecimal'];
+            }
+
+            const gpInput = this.pollGamepadForPlayer(p.id);
+            if (gpInput) {
+                if (gpInput.moveAmount !== 0) moveAmount = gpInput.moveAmount;
+                if (gpInput.turnAmount !== 0) turnAmount = gpInput.turnAmount;
+                if (gpInput.actionPressed) actionPressed = true;
+                if (gpInput.swapPressed) swapPressed = true;
             }
 
             // Tank Controls: Rotate player

@@ -803,3 +803,142 @@ class OfficeGame {
 window.addEventListener('DOMContentLoaded', () => {
   window.officeGame = new OfficeGame();
 });
+
+// ============================================================================
+// HTML5 Gamepad Controller Support for The Office
+// ============================================================================
+(function() {
+  const gpBadge = document.createElement('div');
+  gpBadge.id = 'gp-badge';
+  gpBadge.className = 'gp-status-badge';
+  gpBadge.style.cssText = 'position:fixed;bottom:10px;left:14px;';
+  gpBadge.textContent = '🎮 No Pad (Plug & Press)';
+  document.addEventListener('DOMContentLoaded', () => document.body.appendChild(gpBadge));
+  if (document.body) document.body.appendChild(gpBadge);
+
+  const presetNames = ['CHIEF_LEO', 'GUARD_ACE', 'COFFEE_PRO', 'WATCH_DOG', 'INSPECTOR'];
+  let presetIdx = 0;
+  let modalFocusIdx = 0;
+  let lastOpenModalId = '';
+  let prev = {
+    up: false, down: false, left: false, right: false,
+    b0: false, b1: false, b2: false, b3: false,
+    l1: false, r1: false, l2: false, r2: false, start: false
+  };
+
+  function isBtn(gp, idx) {
+    return Boolean(gp && gp.buttons && gp.buttons[idx] && (gp.buttons[idx].pressed || gp.buttons[idx].value > 0.3));
+  }
+
+  function getOpenModal() {
+    const modals = ['modal-pause', 'modal-day-end', 'modal-gameover', 'modal-highscores', 'modal-gallery', 'modal-help'];
+    for (const id of modals) {
+      const el = document.getElementById(id);
+      if (el && !el.classList.contains('hidden')) return el;
+    }
+    return null;
+  }
+
+  function updateModalFocus(modalEl) {
+    document.querySelectorAll('.gamepad-focus').forEach(el => el.classList.remove('gamepad-focus'));
+    if (!modalEl) return [];
+    const btns = Array.from(modalEl.querySelectorAll('button:not([disabled])')).filter(b => b.offsetParent !== null);
+    if (btns.length === 0) return [];
+    if (modalFocusIdx >= btns.length) modalFocusIdx = 0;
+    if (modalFocusIdx < 0) modalFocusIdx = btns.length - 1;
+    btns[modalFocusIdx].classList.add('gamepad-focus');
+    return btns;
+  }
+
+  function pollOfficeGamepad() {
+    const pads = navigator.getGamepads ? Array.from(navigator.getGamepads()).filter(Boolean) : [];
+    if (pads.length === 0) {
+      gpBadge.textContent = '🎮 No Pad (Plug & Press)';
+      gpBadge.classList.remove('connected');
+    } else {
+      gpBadge.textContent = '🎮 Controller Ready (Btn1/L1: Allow • Btn2/R1: Deny • Btn4: Coffee • Btn3: UV/Confirm)';
+      gpBadge.classList.add('connected');
+    }
+
+    const openModal = getOpenModal();
+    const openId = openModal ? openModal.id : '';
+    if (openId !== lastOpenModalId) {
+      lastOpenModalId = openId;
+      modalFocusIdx = 0;
+      updateModalFocus(openModal);
+    }
+
+    const gp = pads[0];
+    if (gp && window.officeGame) {
+      const game = window.officeGame;
+      const ax0 = gp.axes[0] || 0;
+      const ax1 = gp.axes[1] || 0;
+      const cur = {
+        up: ax1 < -0.5 || isBtn(gp, 12),
+        down: ax1 > 0.5 || isBtn(gp, 13),
+        left: ax0 < -0.5 || isBtn(gp, 14),
+        right: ax0 > 0.5 || isBtn(gp, 15),
+        b0: isBtn(gp, 0),
+        b1: isBtn(gp, 1),
+        b2: isBtn(gp, 2),
+        b3: isBtn(gp, 3),
+        l1: isBtn(gp, 4),
+        r1: isBtn(gp, 5),
+        l2: isBtn(gp, 6),
+        r2: isBtn(gp, 7),
+        start: isBtn(gp, 9) || isBtn(gp, 8)
+      };
+
+      if (window.officeAudio && Object.values(cur).some(Boolean)) {
+        window.officeAudio.init();
+      }
+
+      if (cur.start && !prev.start) {
+        game.togglePauseMenu();
+      } else if (openModal) {
+        const btns = updateModalFocus(openModal);
+        const nameInput = document.getElementById('input-player-name');
+        if (openModal.id === 'modal-gameover' && nameInput && nameInput.offsetParent !== null && ((cur.left && !prev.left) || (cur.right && !prev.right))) {
+          presetIdx = (presetIdx + (cur.right ? 1 : presetNames.length - 1)) % presetNames.length;
+          nameInput.value = presetNames[presetIdx];
+        } else if (btns.length > 1) {
+          if ((cur.left && !prev.left) || (cur.up && !prev.up)) {
+            modalFocusIdx = (modalFocusIdx + btns.length - 1) % btns.length;
+            updateModalFocus(openModal);
+          }
+          if ((cur.right && !prev.right) || (cur.down && !prev.down)) {
+            modalFocusIdx = (modalFocusIdx + 1) % btns.length;
+            updateModalFocus(openModal);
+          }
+        }
+        // Button 3 (b2) or Button 1 (b0) confirms highlighted modal button
+        if ((cur.b2 && !prev.b2) || (cur.b0 && !prev.b0)) {
+          if (btns[modalFocusIdx]) btns[modalFocusIdx].click();
+        } else if (cur.b1 && !prev.b1) {
+          // Button 2 (b1) closes secondary modals or resumes from Pause
+          if (openModal.id === 'modal-pause') game.togglePauseMenu(false);
+          else if (openModal.id !== 'modal-day-end' && openModal.id !== 'modal-gameover') openModal.classList.add('hidden');
+        }
+      } else if (!game.isPaused && !game.isGameOver) {
+        // Active Inspection Gameplay
+        if ((cur.b0 && !prev.b0) || (cur.l1 && !prev.l1) || (cur.left && !prev.left)) {
+          game.handleDecision(true);
+        } else if ((cur.b1 && !prev.b1) || (cur.r1 && !prev.r1) || (cur.right && !prev.right)) {
+          game.handleDecision(false);
+        } else if ((cur.b3 && !prev.b3) || (cur.up && !prev.up)) {
+          game.drinkCoffee();
+        } else if ((cur.b2 && !prev.b2) || (cur.down && !prev.down)) {
+          document.getElementById('btn-scanner')?.click();
+        } else if (cur.r2 && !prev.r2) {
+          game.isoScene.setZoom(game.isoScene.zoom + 0.12);
+        } else if (cur.l2 && !prev.l2) {
+          game.isoScene.setZoom(game.isoScene.zoom - 0.12);
+        }
+      }
+
+      prev = cur;
+    }
+    requestAnimationFrame(pollOfficeGamepad);
+  }
+  requestAnimationFrame(pollOfficeGamepad);
+})();

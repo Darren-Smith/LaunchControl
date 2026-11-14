@@ -147,4 +147,101 @@ document.addEventListener('DOMContentLoaded', () => {
         victoryScreen.classList.add('hidden');
         splashScreen.classList.remove('hidden');
     });
+
+    // Gamepad Menu Navigation & Status Badge
+    const gpBadge = document.createElement('div');
+    gpBadge.id = 'gp-badge';
+    gpBadge.className = 'gp-status-badge';
+    gpBadge.style.cssText = 'position:fixed;bottom:10px;left:14px;';
+    gpBadge.textContent = '🎮 No Pad (Plug & Press)';
+    document.body.appendChild(gpBadge);
+
+    const splashButtons = [
+        document.getElementById('btn-1p'),
+        document.getElementById('btn-2p'),
+        document.getElementById('btn-3p')
+    ];
+    let splashFocusIdx = 0;
+    let prevLeft = false, prevRight = false, prevConfirm = false, prevPause = false;
+
+    function updateSplashFocus() {
+        splashButtons.forEach((b, i) => {
+            if (b) b.classList.toggle('gamepad-focus', i === splashFocusIdx);
+        });
+    }
+    updateSplashFocus();
+
+    function isBtn(gp, idx) {
+        return Boolean(gp && gp.buttons && gp.buttons[idx] && (gp.buttons[idx].pressed || gp.buttons[idx].value > 0.3));
+    }
+
+    function gpMenuLoop() {
+        const pads = navigator.getGamepads ? Array.from(navigator.getGamepads()).filter(Boolean) : [];
+        if (pads.length === 0) {
+            gpBadge.textContent = '🎮 No Pad (Plug & Press)';
+            gpBadge.classList.remove('connected');
+        } else {
+            gpBadge.textContent = `🎮 ${pads.length} Controller${pads.length > 1 ? 's' : ''} Ready`;
+            gpBadge.classList.add('connected');
+        }
+
+        const inSplash = !splashScreen.classList.contains('hidden');
+        const inGameOver = !gameOverScreen.classList.contains('hidden');
+        const inVictory = !victoryScreen.classList.contains('hidden');
+        const inGameplay = game && game.isRunning && !inSplash && !inGameOver && !inVictory;
+
+        document.body.classList.toggle('hide-cursor', Boolean(inGameplay));
+
+        if (inGameOver) {
+            document.getElementById('btn-restart-lose')?.classList.add('gamepad-focus');
+        } else if (inVictory) {
+            document.getElementById('btn-restart-win')?.classList.add('gamepad-focus');
+        }
+
+        const gp = pads[0];
+        if (gp) {
+            const ax0 = gp.axes[0] || 0;
+            const ax1 = gp.axes[1] || 0;
+            const left = ax0 < -0.48 || ax1 < -0.48 || isBtn(gp, 14) || isBtn(gp, 12);
+            const right = ax0 > 0.48 || ax1 > 0.48 || isBtn(gp, 15) || isBtn(gp, 13);
+            const confirm = isBtn(gp, 2) || isBtn(gp, 0);
+            const pause = isBtn(gp, 9) || isBtn(gp, 8);
+
+            if (inSplash) {
+                if (left && !prevLeft) {
+                    splashFocusIdx = (splashFocusIdx + splashButtons.length - 1) % splashButtons.length;
+                    updateSplashFocus();
+                }
+                if (right && !prevRight) {
+                    splashFocusIdx = (splashFocusIdx + 1) % splashButtons.length;
+                    updateSplashFocus();
+                }
+                if (confirm && !prevConfirm) {
+                    splashButtons[splashFocusIdx]?.click();
+                }
+            } else if (inGameOver && confirm && !prevConfirm) {
+                document.getElementById('btn-restart-lose')?.click();
+            } else if (inVictory && confirm && !prevConfirm) {
+                document.getElementById('btn-restart-win')?.click();
+            } else if (pause && !prevPause && game && !inSplash && !inGameOver && !inVictory) {
+                if (game.isRunning) {
+                    game.isRunning = false;
+                    announcement.innerText = 'PAUSED (Press Start)';
+                    announcement.classList.remove('hidden');
+                } else {
+                    announcement.classList.add('hidden');
+                    game.isRunning = true;
+                    game.lastTime = performance.now();
+                    game.animate();
+                }
+            }
+
+            prevLeft = left;
+            prevRight = right;
+            prevConfirm = confirm;
+            prevPause = pause;
+        }
+        requestAnimationFrame(gpMenuLoop);
+    }
+    requestAnimationFrame(gpMenuLoop);
 });

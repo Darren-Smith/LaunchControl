@@ -4,38 +4,554 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HeroMaker</title>
+    <title>Hero Maker — Arcade Action RPG</title>
     <link rel="stylesheet" href="style.css">
+    <script src="/flask_sync.js"></script>
 </head>
 
 <body>
-    <div id="game-container">
-        <canvas id="gameCanvas" width="1000" height="800"></canvas>
+    <div id="game-wrapper">
+        <canvas id="game-canvas" width="1280" height="800"></canvas>
+
         <div id="ui-layer">
-            <!-- Hero Maker / Inventory Screen -->
-            <div id="hero-maker-screen" class="hidden">
-                <h2>Hero Maker</h2>
-                <div class="equipment-slots">
-                    <div class="slot" data-type="weapon">Weapon: <span id="weapon-name">None</span></div>
-                    <div class="slot" data-type="armor">Armor: <span id="armor-name">None</span></div>
+            <!-- Top In-Game HUD Bar -->
+            <div id="hud" class="hud-layer hidden">
+                <div class="hud-left">
+                    <div class="hud-stat">
+                        <span class="label">❤ HP</span>
+                        <div class="hud-hp-bar-bg">
+                            <div id="hud-hp-fill" class="hud-hp-bar-fill"></div>
+                        </div>
+                        <span id="hud-hp-text" class="value">100/100</span>
+                    </div>
+                    <div class="hud-stat">
+                        <span class="label">GOLD</span>
+                        <span id="hud-coins" class="value gold-text">💰 100</span>
+                    </div>
+                    <div id="hud-buffs" class="hud-buffs"></div>
                 </div>
-                <div class="shop-list" id="shop-list">
-                    <!-- Shop items will be populated here -->
+
+                <div class="hud-center">
+                    <div class="hud-objective-wrap">
+                        <span id="hud-objective" class="value-highlight">⚔ Minions Left: 13</span>
+                        <div id="hud-boss-bar-wrap" class="hud-boss-bar-bg hidden">
+                            <div id="hud-boss-bar-fill" class="hud-boss-bar-fill"></div>
+                        </div>
+                    </div>
                 </div>
-                <button id="close-hero-maker">Return to Game</button>
+
+                <div class="hud-right">
+                    <div class="hud-stat">
+                        <span class="label">TIME</span>
+                        <span id="hud-time" class="value">00:00</span>
+                    </div>
+                    <div class="hud-stat">
+                        <span class="label">SCORE</span>
+                        <span id="hud-score" class="value">00000</span>
+                    </div>
+                    <div class="hud-stat">
+                        <span class="label">BEST</span>
+                        <span id="hud-best" class="value">00000</span>
+                    </div>
+                    <div id="gamepad-badge" class="gamepad-pill" title="Gamepad Connection Status">
+                        🎮 Pad
+                    </div>
+                    <button id="hud-shop-btn" class="hud-icon-btn shop-pill-btn" title="Hero Maker Shop (E)">⚒ Shop</button>
+                    <button id="hud-info-btn" class="hud-icon-btn" title="How to Play &amp; Info (I)" aria-label="Information">ℹ</button>
+                    <button id="hud-pause-btn" class="hud-icon-btn" title="Pause Game (Esc / P)" aria-label="Pause">⏸</button>
+                </div>
+            </div>
+
+            <!-- Bottom Under-Floor Status Bar (Stage, Weapon Level, Armor Level) -->
+            <div id="hud-bottom" class="hud-bottom-layer hidden">
+                <div class="underfloor-card stage-card">
+                    <div class="uf-header">
+                        <span class="uf-label">🗺 GAME STAGE</span>
+                        <span id="hud-stage-badge" class="uf-badge">STAGE 1 / 10</span>
+                    </div>
+                    <div class="uf-main">
+                        <strong id="hud-stage" class="uf-title">1: Village</strong>
+                        <span id="hud-stage-boss" class="uf-sub">Boss: Rat-Fiend Lord</span>
+                    </div>
+                </div>
+
+                <div class="underfloor-card weapon-card">
+                    <div class="uf-header">
+                        <span class="uf-label">🗡 WEAPON LEVEL</span>
+                        <div id="hud-weapon-pips" class="uf-pips"></div>
+                    </div>
+                    <div class="uf-main">
+                        <strong id="hud-weapon-title" class="uf-title">Lv.1 Wooden Sword</strong>
+                        <span id="hud-weapon-stats" class="uf-sub">ATK: 15</span>
+                    </div>
+                </div>
+
+                <div class="underfloor-card armor-card">
+                    <div class="uf-header">
+                        <span class="uf-label">🛡 ARMOR LEVEL</span>
+                        <div id="hud-armor-pips" class="uf-pips"></div>
+                    </div>
+                    <div class="uf-main">
+                        <strong id="hud-armor-title" class="uf-title">Lv.1 Cloth Tunic</strong>
+                        <span id="hud-armor-stats" class="uf-sub">DEF: 0 | Max HP: 100</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1. Splash / Start Screen -->
+            <div id="splash-screen" class="modal-screen active">
+                <div class="splash-box modal-card">
+                    <div class="splash-badge">ACTION PLATFORMER RPG</div>
+                    <h1 class="game-title">HERO MAKER</h1>
+                    <p class="game-subtitle">Journey Across 10 Lands to Defeat Malgor &amp; Rescue the Missing Girl</p>
+
+                    <div class="splash-story">
+                        <p>Slay monsters, climb into the clouds for hidden treasure chests &amp; power-ups, forge legendary weapons &amp; armor, and conquer the 10 Lords of Fear!</p>
+                    </div>
+
+                    <div class="menu-actions">
+                        <button id="btn-play" class="ui-btn primary">Play Game</button>
+                        <button id="btn-splash-shop" class="ui-btn">Hero Maker Shop</button>
+                        <button id="btn-high-scores" class="ui-btn">High Scores</button>
+                        <button id="btn-info" class="ui-btn icon-btn" title="How to Play &amp; Info (I)" aria-label="Information">ℹ</button>
+                    </div>
+
+                    <div class="splash-controls-hint">
+                        <span>⌨ Arrows / WASD: Move &amp; Jump | Space / Z: Attack | E: Shop | P / Esc: Pause</span>
+                        <span id="splash-gamepad-status">🎮 Gamepad Supported — Button 3 (Blue) to Confirm, Start to Pause</span>
+                    </div>
+                </div>
+
+                <!-- Mandatory bottom-right version badge -->
+                <div class="version-tag" id="game-version">v1.5.1</div>
+            </div>
+
+            <!-- 2. Information & How-To-Play Modal -->
+            <div id="info-modal" class="modal-screen hidden" role="dialog" aria-modal="true" aria-labelledby="info-modal-title">
+                <div class="modal-card wide-card">
+                    <div class="modal-header">
+                        <h2 id="info-modal-title">Game Guide &amp; Information</h2>
+                        <button class="close-modal-btn" id="btn-info-close" data-close="info-modal" aria-label="Close">✕</button>
+                    </div>
+                    <div class="modal-body scrollable">
+                        <div class="info-meta">
+                            <span class="badge">Version <span class="info-version-text">v1.5.1</span></span>
+                            <span class="badge badge-accent">CharaGen Animated Hero &amp; Refit Engine</span>
+                            <span class="badge badge-gold">Full Gamepad Support</span>
+                        </div>
+
+                        <section class="info-section">
+                            <h3>Story &amp; Objective</h3>
+                            <p>A mysterious girl you met in the village has vanished—captured by the forces of <strong>Malgor, Lord of Fear</strong>. Battle through 10 perilous lands (from the Village and Forest to the Volcano and Malgor's Lair) to rescue her!</p>
+                        </section>
+
+                        <section class="info-section">
+                            <h3>How to Play, Wardrobe Refit &amp; Cloud Exploration</h3>
+                            <ul class="info-list">
+                                <li><strong>Minion Shield Mechanic:</strong> Each land's Boss is protected by a cyan invulnerability shield until all minions in that stage are defeated.</li>
+                                <li><strong>Jump into the Clouds:</strong> Climb the platforms high into the sky cloud islands to find hidden <strong>Treasure Chests</strong>, <strong>Health Potions</strong>, and temporary <strong>Power-Up Orbs</strong> (2× Attack Fury, Swift Speed, and Aegis Shield)!</li>
+                                <li><strong>Hero Maker Wardrobe &amp; Refit:</strong> Open the <strong>Hero Maker Wardrobe &amp; Armory</strong> anytime (<kbd>E</kbd> key or HUD button) to inspect your Hero's 5 equipment slots around the live preview, see individual stat contributions &amp; derived totals, click any gear card to buy/equip, or forge custom gear!</li>
+                            </ul>
+                        </section>
+
+                        <section class="info-section">
+                            <h3>Controls Reference</h3>
+                            <table class="controls-table">
+                                <thead>
+                                    <tr>
+                                        <th>Action</th>
+                                        <th>Keyboard</th>
+                                        <th>Gamepad</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Move Left / Right</td>
+                                        <td><kbd>←</kbd> <kbd>→</kbd> or <kbd>A</kbd> <kbd>D</kbd></td>
+                                        <td>Left Stick / D-Pad Left &amp; Right</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Jump</td>
+                                        <td><kbd>↑</kbd> or <kbd>W</kbd></td>
+                                        <td>Button 1 (A/Cross) / L1 / Stick Up</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sword Attack</td>
+                                        <td><kbd>Space</kbd> or <kbd>Z</kbd></td>
+                                        <td>Button 2 / Button 3 / R1 / R2</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Hero Maker Wardrobe</td>
+                                        <td><kbd>E</kbd> or <kbd>B</kbd></td>
+                                        <td>Button 4 (Y/Triangle)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Menu Confirm</td>
+                                        <td><kbd>Enter</kbd> / <kbd>Space</kbd></td>
+                                        <td>Button 3 (Blue) / Button 1</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Menu Back / Close</td>
+                                        <td><kbd>Escape</kbd></td>
+                                        <td>Button 2 (Red/Circle)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pause / Resume</td>
+                                        <td><kbd>P</kbd> / <kbd>Escape</kbd></td>
+                                        <td>Start Button (Strictly Pause/Resume)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Game Guide (Info)</td>
+                                        <td><kbd>I</kbd> or <kbd>?</kbd></td>
+                                        <td>HUD ℹ Button / Pause Menu</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="btn-info-done" class="ui-btn primary">Got It!</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Pause Menu Modal -->
+            <div id="pause-modal" class="modal-screen hidden" role="dialog" aria-modal="true" aria-labelledby="pause-modal-title">
+                <div class="modal-card menu-card">
+                    <h2 id="pause-modal-title">Game Paused</h2>
+                    <div class="pause-menu-actions">
+                        <button id="btn-pause-resume" class="ui-btn primary">Resume Game</button>
+                        <button id="btn-pause-shop" class="ui-btn accent">⚒ Hero Wardrobe &amp; Refit</button>
+                        <button id="btn-pause-restart" class="ui-btn">Restart Stage</button>
+                        <div class="setting-row">
+                            <span>Sound FX</span>
+                            <button id="toggle-sfx" class="toggle-btn on">ON</button>
+                        </div>
+                        <div class="setting-row">
+                            <span>Music</span>
+                            <button id="toggle-music" class="toggle-btn on">ON</button>
+                        </div>
+                        <button id="btn-pause-info" class="ui-btn">How to Play (ℹ)</button>
+                        <button id="btn-pause-scores" class="ui-btn">High Scores</button>
+                        <button id="btn-pause-quit" class="ui-btn danger">Quit to Main Menu</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Hero Maker — Paper-Doll Refit Arena, Derived Stat Totals & Clickable Item Cards -->
+            <div id="hero-maker-screen" class="modal-screen hidden" role="dialog" aria-modal="true" aria-labelledby="shop-modal-title">
+                <div class="modal-card refit-card">
+                    <div class="modal-header">
+                        <div class="refit-title-group">
+                            <h2 id="shop-modal-title">⚒ Hero Maker — Wardrobe, Refit &amp; Armory</h2>
+                            <span class="refit-subtitle">Click any slot around the Hero to filter, or click any Gear Card on the right to Equip / Buy &amp; Equip</span>
+                        </div>
+                        <div class="refit-header-right">
+                            <span id="shop-coins" class="gold-text refit-gold-pill">💰 100</span>
+                            <button class="close-modal-btn" id="close-hero-maker-x" aria-label="Close">✕</button>
+                        </div>
+                    </div>
+
+                    <div class="refit-workspace">
+                        <!-- Left Column: Paper-Doll Arena (Slots Around Hero) + Current Derived Stat Totals -->
+                        <div class="refit-preview-col">
+                            <div class="paperdoll-arena">
+                                <!-- Left Body Slots: Headwear, Chest Armor, Leg Greaves -->
+                                <div class="paperdoll-side left-slots">
+                                    <button type="button" class="equipped-slot-btn paperdoll-slot" data-slot-filter="headwear" title="Click to filter Headwear">
+                                        <div class="slot-top-row">
+                                            <span class="slot-label">🪖 HEADWEAR</span>
+                                            <span id="headwear-tier" class="slot-tier-badge">Lv.1</span>
+                                        </div>
+                                        <div class="slot-body-row">
+                                            <div class="slot-thumb"><img id="slot-img-headwear" alt="Headwear" /></div>
+                                            <div class="slot-info">
+                                                <strong id="headwear-name">Adventurer Bandana</strong>
+                                                <span id="headwear-stats" class="slot-contrib">🛡 +2 DEF | ❤ +10 HP</span>
+                                            </div>
+                                        </div>
+                                    </button>
+
+                                    <button type="button" class="equipped-slot-btn paperdoll-slot" data-slot-filter="topBody" title="Click to filter Chest Armor">
+                                        <div class="slot-top-row">
+                                            <span class="slot-label">🛡 CHEST ARMOR</span>
+                                            <span id="armor-tier" class="slot-tier-badge">Lv.1</span>
+                                        </div>
+                                        <div class="slot-body-row">
+                                            <div class="slot-thumb"><img id="slot-img-topBody" alt="Chest Armor" /></div>
+                                            <div class="slot-info">
+                                                <strong id="armor-name">Cloth Tunic</strong>
+                                                <span id="armor-stats" class="slot-contrib">🛡 +0 DEF | ❤ +0 HP</span>
+                                            </div>
+                                        </div>
+                                    </button>
+
+                                    <button type="button" class="equipped-slot-btn paperdoll-slot" data-slot-filter="legs" title="Click to filter Leg Greaves">
+                                        <div class="slot-top-row">
+                                            <span class="slot-label">🦿 LEG GREAVES</span>
+                                            <span id="legs-tier" class="slot-tier-badge">Lv.1</span>
+                                        </div>
+                                        <div class="slot-body-row">
+                                            <div class="slot-thumb"><img id="slot-img-legs" alt="Leg Greaves" /></div>
+                                            <div class="slot-info">
+                                                <strong id="legs-name">Cloth Breeches</strong>
+                                                <span id="legs-stats" class="slot-contrib">🛡 +1 DEF | ❤ +5 HP</span>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+
+                                <!-- Center: Larger Live Animated CharaGen Hero Preview Window -->
+                                <div class="paperdoll-center">
+                                    <div class="preview-stage-box">
+                                        <div class="preview-hero-badge">LIVE HERO REFIT</div>
+                                        <canvas id="refit-preview-canvas" width="240" height="270"></canvas>
+                                        <div class="preview-anim-bar" role="group" aria-label="Preview Animation Pose">
+                                            <button type="button" class="pose-btn active" data-pose="Idle 1">Idle</button>
+                                            <button type="button" class="pose-btn" data-pose="Walk">Walk</button>
+                                            <button type="button" class="pose-btn" data-pose="Run">Run</button>
+                                            <button type="button" class="pose-btn" data-pose="Attack 1">Attack</button>
+                                            <button type="button" class="pose-btn" data-pose="Jump">Jump</button>
+                                            <button type="button" class="pose-btn" data-pose="Defend 1">Guard</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Right Body Slots: Main Weapon, Footwear / Boots -->
+                                <div class="paperdoll-side right-slots">
+                                    <button type="button" class="equipped-slot-btn paperdoll-slot" data-slot-filter="mainWeapon" title="Click to filter Weapons">
+                                        <div class="slot-top-row">
+                                            <span class="slot-label">🗡 MAIN WEAPON</span>
+                                            <span id="weapon-tier" class="slot-tier-badge">Lv.1</span>
+                                        </div>
+                                        <div class="slot-body-row">
+                                            <div class="slot-thumb"><img id="slot-img-mainWeapon" alt="Main Weapon" /></div>
+                                            <div class="slot-info">
+                                                <strong id="weapon-name">Wooden Sword</strong>
+                                                <span id="weapon-stats" class="slot-contrib">⚔ +10 ATK</span>
+                                            </div>
+                                        </div>
+                                    </button>
+
+                                    <button type="button" class="equipped-slot-btn paperdoll-slot" data-slot-filter="feet" title="Click to filter Boots">
+                                        <div class="slot-top-row">
+                                            <span class="slot-label">🥾 FOOTWEAR</span>
+                                            <span id="feet-tier" class="slot-tier-badge">Lv.1</span>
+                                        </div>
+                                        <div class="slot-body-row">
+                                            <div class="slot-thumb"><img id="slot-img-feet" alt="Boots" /></div>
+                                            <div class="slot-info">
+                                                <strong id="feet-name">Leather Boots</strong>
+                                                <span id="feet-stats" class="slot-contrib">🛡 +1 DEF | ⚡ +10 SPD</span>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Current Derived Stat Totals Breakdown Banner -->
+                            <div class="derived-stats-panel" id="shop-hero-stats">
+                                <div class="derived-stats-header">CURRENT DERIVED STAT TOTALS (BASE + 5 EQUIPPED SLOTS)</div>
+                                <div class="refit-stats-grid">
+                                    <div class="stat-box">
+                                        <span class="stat-label">❤ MAX HEALTH</span>
+                                        <strong id="stat-total-hp" class="stat-val hp-val">115 / 115</strong>
+                                        <span id="stat-sub-hp" class="stat-breakdown">Base 100 + Gear +15</span>
+                                    </div>
+                                    <div class="stat-box">
+                                        <span class="stat-label">🛡 ARMOR / DEF</span>
+                                        <strong id="stat-total-def" class="stat-val def-val">4</strong>
+                                        <span id="stat-sub-def" class="stat-breakdown">Dmg Reduction -4</span>
+                                    </div>
+                                    <div class="stat-box">
+                                        <span class="stat-label">⚔ ATTACK DMG</span>
+                                        <strong id="stat-total-atk" class="stat-val atk-val">15</strong>
+                                        <span id="stat-sub-atk" class="stat-breakdown">Base 5 + Gear +10</span>
+                                    </div>
+                                    <div class="stat-box">
+                                        <span class="stat-label">⚡ MOVE SPEED</span>
+                                        <strong id="stat-total-spd" class="stat-val spd-val">265</strong>
+                                        <span id="stat-sub-spd" class="stat-breakdown">Base 255 + Gear +10</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Category Tabs, Clickable Gear Cards Grid & Custom Item Forge -->
+                        <div class="refit-inventory-col">
+                            <div class="wardrobe-tabs" role="tablist">
+                                <button type="button" class="wardrobe-tab active" data-tab="all">All Cards</button>
+                                <button type="button" class="wardrobe-tab" data-tab="mainWeapon">🗡 Weapons</button>
+                                <button type="button" class="wardrobe-tab" data-tab="headwear">🪖 Head</button>
+                                <button type="button" class="wardrobe-tab" data-tab="topBody">🛡 Chest</button>
+                                <button type="button" class="wardrobe-tab" data-tab="legs">🦿 Legs</button>
+                                <button type="button" class="wardrobe-tab" data-tab="feet">🥾 Boots</button>
+                                <button type="button" class="wardrobe-tab forge-tab-btn" id="btn-toggle-forge" data-tab="forge">🎨 Forge Item</button>
+                            </div>
+
+                            <div id="shop-feedback" class="shop-feedback" aria-live="polite">
+                                Click any Gear Card below to Equip (if owned) or Buy &amp; Equip onto your Hero!
+                            </div>
+
+                            <!-- Clickable Gear Cards Grid -->
+                            <div class="shop-list gear-card-grid scrollable" id="shop-list">
+                                <!-- Populated dynamically by UI.initShop() -->
+                            </div>
+
+                            <!-- Custom Item Forge Panel (Hidden unless "Forge Item" tab is selected) -->
+                            <div id="forge-panel" class="forge-panel hidden">
+                                <div class="forge-grid">
+                                    <div class="forge-fields">
+                                        <label class="forge-label">Item Name
+                                            <input type="text" id="forge-item-name" maxlength="20" placeholder="Dragon Crown" value="Sunfire Blade" />
+                                        </label>
+                                        <div class="forge-row-2">
+                                            <label class="forge-label">Body Slot
+                                                <select id="forge-item-slot">
+                                                    <option value="mainWeapon">🗡 Main Weapon</option>
+                                                    <option value="headwear">🪖 Headwear</option>
+                                                    <option value="topBody">🛡 Chest Armor</option>
+                                                    <option value="legs">🦿 Leg Greaves</option>
+                                                    <option value="feet">🥾 Boots</option>
+                                                </select>
+                                            </label>
+                                            <label class="forge-label">Power Tier (Lv.1–5)
+                                                <select id="forge-item-tier">
+                                                    <option value="1">Lv.1 Apprentice (Free)</option>
+                                                    <option value="2">Lv.2 Journeyman (150 💰)</option>
+                                                    <option value="3" selected>Lv.3 Veteran (350 💰)</option>
+                                                    <option value="4">Lv.4 Masterwork (700 💰)</option>
+                                                    <option value="5">Lv.5 Mythic (1400 💰)</option>
+                                                </select>
+                                            </label>
+                                        </div>
+                                        <div class="forge-row-2">
+                                            <label class="forge-label">Primary Color
+                                                <input type="color" id="forge-item-color" value="#f59e0b" />
+                                            </label>
+                                            <div class="forge-stat-preview" id="forge-stat-preview">
+                                                ⚔ ATK +34 | Cost: 💰 350
+                                            </div>
+                                        </div>
+                                        <p class="forge-hint">Draw custom pixel/sprite art on the canvas (optional) or leave blank to auto-generate a stylized CharaGen vector piece!</p>
+                                        <div class="forge-actions">
+                                            <button type="button" id="btn-forge-create" class="ui-btn primary">⚒ Forge &amp; Equip Item</button>
+                                            <button type="button" id="btn-forge-clear" class="ui-btn">Clear Canvas</button>
+                                        </div>
+                                    </div>
+                                    <div class="forge-canvas-box">
+                                        <span class="forge-canvas-title">Custom Sprite Pad (Optional)</span>
+                                        <canvas id="forge-canvas" width="96" height="96"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer refit-footer">
+                        <input type="file" id="charagen-file-input" accept="application/json" style="display: none;" />
+                        <button id="btn-import-charagen" class="ui-btn" title="Import a custom CharaGen .json character profile">📂 Import CharaGen JSON</button>
+                        <button id="close-hero-maker" class="ui-btn primary">Return to Adventure</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Level Complete Modal -->
+            <div id="level-complete-modal" class="modal-screen hidden" role="dialog" aria-modal="true">
+                <div class="modal-card">
+                    <h2 id="level-complete-title" class="gold-heading">Stage Cleared!</h2>
+                    <p id="level-complete-subtitle" class="modal-subtitle">Boss Defeated &amp; All Remaining Coins Collected!</p>
+                    <div class="stats-summary">
+                        <div class="summary-row"><span>Enemies Defeated:</span> <strong id="lc-enemies">0</strong></div>
+                        <div class="summary-row"><span>Gold Collected:</span> <strong id="lc-coins" class="gold-text">0</strong></div>
+                        <div class="summary-row"><span>Stage Time:</span> <strong id="lc-time">00:00</strong></div>
+                        <div class="summary-row"><span>Current Score:</span> <strong id="lc-score">0</strong></div>
+                    </div>
+                    <div class="modal-actions">
+                        <button id="btn-next-level" class="ui-btn primary">Next Stage ➔</button>
+                        <button id="btn-lc-shop" class="ui-btn accent">⚒ Hero Maker Shop</button>
+                        <button id="btn-lc-menu" class="ui-btn">Main Menu</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. High Score Name Entry Modal -->
+            <div id="score-entry-modal" class="modal-screen hidden" role="dialog" aria-modal="true">
+                <div class="modal-card">
+                    <h2 class="gold-heading">🎉 New High Score! 🎉</h2>
+                    <p class="final-score-display">Your Score: <span id="entry-score-num">0</span></p>
+                    <form id="score-entry-form">
+                        <label for="player-name-input">Enter Your Hero Name (Max 10 chars):</label>
+                        <input type="text" id="player-name-input" maxlength="10" placeholder="HERO" required autocomplete="off" />
+                        <p class="input-hint">Type name or use Gamepad Left/Right for presets, then press Enter / Button 3</p>
+                        <div class="entry-actions">
+                            <button type="submit" id="btn-save-score" class="ui-btn primary">Save Score</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 7. Victory / Defeat (Game Over) Modal -->
+            <div id="game-over-modal" class="modal-screen hidden" role="dialog" aria-modal="true">
+                <div class="modal-card">
+                    <h2 id="game-over-title">Mission Failed</h2>
+                    <p id="game-over-subtitle" class="modal-subtitle">You fell in battle...</p>
+                    <div class="stats-summary">
+                        <div class="summary-row"><span>Final Score:</span> <strong id="summary-score">0</strong></div>
+                        <div class="summary-row"><span>Stage Reached:</span> <strong id="summary-stage">1 / 10</strong></div>
+                        <div class="summary-row"><span>Enemies Defeated:</span> <strong id="summary-kills">0</strong></div>
+                        <div class="summary-row"><span>Total Time:</span> <strong id="summary-time">00:00</strong></div>
+                    </div>
+                    <div class="modal-actions">
+                        <button id="btn-game-over-retry" class="ui-btn primary">Play Again</button>
+                        <button id="btn-game-over-scores" class="ui-btn">High Scores</button>
+                        <button id="btn-game-over-menu" class="ui-btn">Main Menu</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. High Scores Leaderboard Modal -->
+            <div id="high-scores-modal" class="modal-screen hidden" role="dialog" aria-modal="true">
+                <div class="modal-card wide-card">
+                    <div class="modal-header">
+                        <h2>🏆 Hall of Heroes — High Scores</h2>
+                        <button class="close-modal-btn" id="btn-scores-close" data-close="high-scores-modal" aria-label="Close">✕</button>
+                    </div>
+                    <div class="modal-body scrollable">
+                        <table class="scores-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Hero</th>
+                                    <th>Score</th>
+                                    <th>Stage</th>
+                                    <th>Time</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="high-scores-tbody">
+                                <!-- Populated by HighScoreManager -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="btn-scores-back" class="ui-btn primary">Back</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Scripts -->
-    <script src="js/items.js?v=2"></script>
-    <script src="js/camera.js?v=2"></script>
-    <script src="js/engine.js?v=2"></script>
-    <script src="js/entities.js?v=2"></script>
-    <script src="js/levels.js?v=2"></script>
-    <script src="js/ui.js?v=2"></script>
-    <script src="js/game.js?v=2"></script>
-    <script src="js/main.js?v=2"></script>
+    <script src="js/items.js?v=8"></script>
+    <script src="js/camera.js?v=8"></script>
+    <script src="js/engine.js?v=8"></script>
+    <script src="js/character.js?v=8"></script>
+    <script src="js/entities.js?v=8"></script>
+    <script src="js/levels.js?v=8"></script>
+    <script src="js/ui.js?v=8"></script>
+    <script src="js/game.js?v=8"></script>
+    <script src="js/main.js?v=8"></script>
 </body>
 
 </html>

@@ -360,7 +360,8 @@ window.addEventListener('keydown', (e) => {
 
     if (!gameState.isPlaying || gameState.isPaused) return;
     
-    const key = e.key;
+    const arrowMap = { ArrowDown: '2', ArrowLeft: '4', ArrowRight: '6', ArrowUp: '8' };
+    const key = arrowMap[e.key] || e.key;
     if (keyMapping[key]) {
         let hit = false;
         for (let i = 0; i < gameState.notes.length; i++) {
@@ -511,3 +512,146 @@ function startMusic() {
 function stopMusic() {
     clearInterval(beatInterval);
 }
+
+// ----------------------------------------------------
+// HTML5 Gamepad Controller Support (Dance Tracks & Menus)
+// ----------------------------------------------------
+const gpBadge = document.createElement('div');
+gpBadge.id = 'gp-badge';
+gpBadge.className = 'gp-status-badge';
+gpBadge.style.cssText = 'position:fixed;bottom:10px;left:14px;';
+gpBadge.textContent = '🎮 No Pad (Plug & Press)';
+document.body.appendChild(gpBadge);
+
+const presetCatNames = ['DJ_PAWS', 'FUNK_CAT', 'NEON_MEOW', 'DISCO_LEO', 'GROOVE_99'];
+let presetNameIdx = 0;
+let menuFocusIndex = 0;
+let lastActiveScreen = '';
+let prevGpState = {
+    up: false, down: false, left: false, right: false,
+    b0: false, b1: false, b2: false, b3: false, l1: false, r1: false, start: false
+};
+
+function isGpBtn(gp, idx) {
+    return Boolean(gp && gp.buttons && gp.buttons[idx] && (gp.buttons[idx].pressed || gp.buttons[idx].value > 0.3));
+}
+
+function triggerTrackKey(trackKey) {
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: trackKey }));
+}
+
+function getActiveMenuButtons() {
+    if (screens.start.classList.contains('active')) {
+        return [...Array.from(document.querySelectorAll('.char-btn')), document.getElementById('view-leaderboard-btn')].filter(Boolean);
+    }
+    if (screens.pause.classList.contains('active')) {
+        return [document.getElementById('resume-btn'), document.getElementById('restart-level-btn'), document.getElementById('quit-menu-btn')].filter(Boolean);
+    }
+    if (screens.end.classList.contains('active')) {
+        return [document.getElementById('next-level-btn')].filter(Boolean);
+    }
+    if (screens.nameEntry.classList.contains('active')) {
+        return [document.getElementById('submit-score-btn')].filter(Boolean);
+    }
+    if (screens.leaderboard.classList.contains('active')) {
+        return [document.getElementById('back-to-main-btn')].filter(Boolean);
+    }
+    return [];
+}
+
+function updateMenuFocusHighlight() {
+    document.querySelectorAll('.gamepad-focus').forEach(el => el.classList.remove('gamepad-focus'));
+    const btns = getActiveMenuButtons();
+    if (btns.length === 0) return;
+    if (menuFocusIndex >= btns.length) menuFocusIndex = 0;
+    if (menuFocusIndex < 0) menuFocusIndex = btns.length - 1;
+    btns[menuFocusIndex].classList.add('gamepad-focus');
+}
+
+function pollDiscoGamepad() {
+    const pads = navigator.getGamepads ? Array.from(navigator.getGamepads()).filter(Boolean) : [];
+    if (pads.length === 0) {
+        gpBadge.textContent = '🎮 No Pad (Plug & Press)';
+        gpBadge.classList.remove('connected');
+    } else {
+        gpBadge.textContent = '🎮 Controller Ready (D-Pad/Buttons 1-4: Dance • Btn 3: Confirm • Start: Pause)';
+        gpBadge.classList.add('connected');
+    }
+
+    const activeScreenKey = Object.keys(screens).find(k => screens[k].classList.contains('active')) || '';
+    if (activeScreenKey !== lastActiveScreen) {
+        lastActiveScreen = activeScreenKey;
+        menuFocusIndex = 0;
+        updateMenuFocusHighlight();
+    }
+
+    document.body.classList.toggle('hide-cursor', Boolean(gameState.isPlaying && !gameState.isPaused));
+
+    const gp = pads[0];
+    if (gp) {
+        const ax0 = gp.axes[0] || 0;
+        const ax1 = gp.axes[1] || 0;
+        const cur = {
+            up: ax1 < -0.52 || isGpBtn(gp, 12),
+            down: ax1 > 0.52 || isGpBtn(gp, 13),
+            left: ax0 < -0.52 || isGpBtn(gp, 14),
+            right: ax0 > 0.52 || isGpBtn(gp, 15),
+            b0: isGpBtn(gp, 0),
+            b1: isGpBtn(gp, 1),
+            b2: isGpBtn(gp, 2),
+            b3: isGpBtn(gp, 3),
+            l1: isGpBtn(gp, 4),
+            r1: isGpBtn(gp, 5),
+            start: isGpBtn(gp, 9) || isGpBtn(gp, 8)
+        };
+
+        if (audioCtx.state === 'suspended' && Object.values(cur).some(Boolean)) {
+            audioCtx.resume();
+        }
+
+        // Start button strictly toggles Pause / Resume
+        if (cur.start && !prevGpState.start && (gameState.isPlaying || gameState.isPaused)) {
+            if (gameState.isPaused) resumeGame();
+            else pauseGame();
+        } else if (gameState.isPlaying && !gameState.isPaused) {
+            // Rhythm Gameplay: D-Pad / Stick / Buttons 1-4 trigger tracks 2, 4, 6, 8
+            if ((cur.down && !prevGpState.down) || (cur.b0 && !prevGpState.b0)) triggerTrackKey('2');
+            if ((cur.left && !prevGpState.left) || (cur.b2 && !prevGpState.b2) || (cur.l1 && !prevGpState.l1)) triggerTrackKey('4');
+            if ((cur.right && !prevGpState.right) || (cur.b1 && !prevGpState.b1) || (cur.r1 && !prevGpState.r1)) triggerTrackKey('6');
+            if ((cur.up && !prevGpState.up) || (cur.b3 && !prevGpState.b3)) triggerTrackKey('8');
+        } else {
+            // Menu / Modal Navigation
+            const btns = getActiveMenuButtons();
+            if (screens.nameEntry.classList.contains('active')) {
+                if ((cur.left && !prevGpState.left) || (cur.right && !prevGpState.right)) {
+                    presetNameIdx = (presetNameIdx + (cur.right ? 1 : presetCatNames.length - 1)) % presetCatNames.length;
+                    ui.playerNameInput.value = presetCatNames[presetNameIdx];
+                }
+            } else if (btns.length > 1) {
+                if ((cur.left && !prevGpState.left) || (cur.up && !prevGpState.up)) {
+                    menuFocusIndex = (menuFocusIndex + btns.length - 1) % btns.length;
+                    updateMenuFocusHighlight();
+                }
+                if ((cur.right && !prevGpState.right) || (cur.down && !prevGpState.down)) {
+                    menuFocusIndex = (menuFocusIndex + 1) % btns.length;
+                    updateMenuFocusHighlight();
+                }
+            }
+
+            // Button 3 (b2) or Button 1 (b0) confirms highlighted button
+            if ((cur.b2 && !prevGpState.b2) || (cur.b0 && !prevGpState.b0)) {
+                if (btns[menuFocusIndex]) btns[menuFocusIndex].click();
+            } else if (cur.b1 && !prevGpState.b1) {
+                // Button 2 (b1) cancels/resumes from pause or returns from leaderboard
+                if (screens.pause.classList.contains('active')) resumeGame();
+                else if (screens.leaderboard.classList.contains('active')) switchScreen('start');
+            }
+        }
+
+        prevGpState = cur;
+    }
+
+    requestAnimationFrame(pollDiscoGamepad);
+}
+updateMenuFocusHighlight();
+requestAnimationFrame(pollDiscoGamepad);

@@ -28,6 +28,15 @@ export default class Player {
             w: false, s: false, a: false, d: false,
             ' ': false
         };
+        this.gamepad = {
+            up: false,
+            down: false,
+            left: false,
+            right: false,
+            axisX: 0,
+            axisY: 0,
+            shoot: false
+        };
         // Reference to canvas for dynamic reset positioning
         this.canvas = null;
     }
@@ -36,6 +45,26 @@ export default class Player {
         if (Object.prototype.hasOwnProperty.call(this.keys, key)) {
             this.keys[key] = isPressed;
         }
+    }
+
+    setGamepadInput(gpState) {
+        if (!gpState) {
+            this.gamepad.up = false;
+            this.gamepad.down = false;
+            this.gamepad.left = false;
+            this.gamepad.right = false;
+            this.gamepad.axisX = 0;
+            this.gamepad.axisY = 0;
+            this.gamepad.shoot = false;
+            return;
+        }
+        this.gamepad.up = Boolean(gpState.up);
+        this.gamepad.down = Boolean(gpState.down);
+        this.gamepad.left = Boolean(gpState.left);
+        this.gamepad.right = Boolean(gpState.right);
+        this.gamepad.axisX = Number(gpState.axisX) || 0;
+        this.gamepad.axisY = Number(gpState.axisY) || 0;
+        this.gamepad.shoot = Boolean(gpState.shoot);
     }
 
     setCanvas(canvas) {
@@ -56,15 +85,16 @@ export default class Player {
         this.health = 100;
         this.bullets = [];
         this.powerLevel = 1;
+        this.setGamepadInput(null);
     }
 
     update(deltaTime, canvas) {
         const factor = deltaTime ? deltaTime / 16.67 : 1;
-        // Movement
-        if (this.keys.ArrowUp || this.keys.w) this.dy -= this.thrust * factor;
-        if (this.keys.ArrowDown || this.keys.s) this.dy += this.thrust * factor;
-        if (this.keys.ArrowLeft || this.keys.a) this.dx -= this.thrust * factor;
-        if (this.keys.ArrowRight || this.keys.d) this.dx += this.thrust * factor;
+        // Movement (Keyboard + Gamepad simultaneously)
+        if (this.keys.ArrowUp || this.keys.w || this.gamepad.up) this.dy -= this.thrust * factor;
+        if (this.keys.ArrowDown || this.keys.s || this.gamepad.down) this.dy += this.thrust * factor;
+        if (this.keys.ArrowLeft || this.keys.a || this.gamepad.left) this.dx -= this.thrust * factor;
+        if (this.keys.ArrowRight || this.keys.d || this.gamepad.right) this.dx += this.thrust * factor;
         this.dx *= Math.pow(this.friction, factor);
         this.dy *= Math.pow(this.friction, factor);
         this.x += this.dx * factor;
@@ -75,7 +105,7 @@ export default class Player {
         if (this.y < 0) this.y = 0;
         if (this.y + this.height > canvas.height) this.y = canvas.height - this.height;
         // Shooting
-        if (this.keys[' ']) {
+        if (this.keys[' '] || this.gamepad.shoot) {
             const now = Date.now();
             if (now - this.lastShot > this.shootDelay) {
                 this.shoot();

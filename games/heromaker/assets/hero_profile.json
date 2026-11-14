@@ -1,0 +1,2515 @@
+{
+  "$schema": "https://charagen.dev/schemas/character-profile.v2.json",
+  "name": "HeroMaker_Vanguard",
+  "templateClass": "Based on Humanoid",
+  "classCategory": "humanoid",
+  "version": "2.0.0",
+  "metadata": {
+    "author": "CharaGen",
+    "createdTimestamp": 1794175888357,
+    "compatibleGames": [
+      "HeroMaker"
+    ]
+  },
+  "skinState": {
+    "active": true,
+    "materialColor": "#f4c29f"
+  },
+  "graph": {
+    "joints": [
+      {
+        "id": "pelvis",
+        "label": "Pelvis",
+        "x": 0,
+        "y": -144,
+        "radius": 18
+      },
+      {
+        "id": "spine",
+        "label": "Spine",
+        "x": 1.745,
+        "y": -193.97,
+        "radius": 16
+      },
+      {
+        "id": "chest",
+        "label": "Chest",
+        "x": 4.362,
+        "y": -243.901,
+        "radius": 20
+      },
+      {
+        "id": "neck",
+        "label": "Neck",
+        "x": 5.06,
+        "y": -263.889,
+        "radius": 10
+      },
+      {
+        "id": "head",
+        "label": "Head",
+        "x": 6.456,
+        "y": -303.865,
+        "radius": 24
+      },
+      {
+        "id": "shoulder_l",
+        "label": "Shoulder L",
+        "x": -5.638,
+        "y": -243.901,
+        "radius": 13
+      },
+      {
+        "id": "elbow_l",
+        "label": "Elbow L",
+        "x": -33.806,
+        "y": -190.924,
+        "radius": 11
+      },
+      {
+        "id": "hand_l",
+        "label": "Hand L",
+        "x": -5.127,
+        "y": -149.966,
+        "radius": 9
+      },
+      {
+        "id": "fingers_l",
+        "label": "Fingers L",
+        "x": 4.873,
+        "y": -132.645,
+        "radius": 7
+      },
+      {
+        "id": "shoulder_r",
+        "label": "Shoulder R",
+        "x": 14.362,
+        "y": -243.901,
+        "radius": 13
+      },
+      {
+        "id": "elbow_r",
+        "label": "Elbow R",
+        "x": 51.302,
+        "y": -196.62,
+        "radius": 11
+      },
+      {
+        "id": "hand_r",
+        "label": "Hand R",
+        "x": 98.855,
+        "y": -212.071,
+        "radius": 9
+      },
+      {
+        "id": "fingers_r",
+        "label": "Fingers R",
+        "x": 118.418,
+        "y": -216.229,
+        "radius": 7
+      },
+      {
+        "id": "hip_l",
+        "label": "Hip L",
+        "x": -5,
+        "y": -144,
+        "radius": 14
+      },
+      {
+        "id": "knee_l",
+        "label": "Knee L",
+        "x": -20.593,
+        "y": -70.639,
+        "radius": 12
+      },
+      {
+        "id": "foot_l",
+        "label": "Foot L",
+        "x": -23.036,
+        "y": -0.682,
+        "radius": 10
+      },
+      {
+        "id": "toe_l",
+        "label": "Toe L",
+        "x": -8.036,
+        "y": -0.682,
+        "radius": 8
+      },
+      {
+        "id": "hip_r",
+        "label": "Hip R",
+        "x": 5,
+        "y": -144,
+        "radius": 14
+      },
+      {
+        "id": "knee_r",
+        "label": "Knee R",
+        "x": 20.593,
+        "y": -70.639,
+        "radius": 12
+      },
+      {
+        "id": "foot_r",
+        "label": "Foot R",
+        "x": 23.036,
+        "y": -0.682,
+        "radius": 10
+      },
+      {
+        "id": "toe_r",
+        "label": "Toe R",
+        "x": 38.036,
+        "y": -0.682,
+        "radius": 8
+      }
+    ],
+    "connections": [
+      {
+        "id": "pelvis_spine",
+        "label": "pelvis_spine",
+        "jointA": "pelvis",
+        "jointB": "spine"
+      },
+      {
+        "id": "spine_chest",
+        "label": "spine_chest",
+        "jointA": "spine",
+        "jointB": "chest"
+      },
+      {
+        "id": "chest_neck",
+        "label": "chest_neck",
+        "jointA": "chest",
+        "jointB": "neck"
+      },
+      {
+        "id": "neck_head",
+        "label": "neck_head",
+        "jointA": "neck",
+        "jointB": "head"
+      },
+      {
+        "id": "clavicle_l",
+        "label": "clavicle_l",
+        "jointA": "chest",
+        "jointB": "shoulder_l"
+      },
+      {
+        "id": "arm_u_l",
+        "label": "arm_u_l",
+        "jointA": "shoulder_l",
+        "jointB": "elbow_l"
+      },
+      {
+        "id": "arm_l_l",
+        "label": "arm_l_l",
+        "jointA": "elbow_l",
+        "jointB": "hand_l"
+      },
+      {
+        "id": "fingers_conn_l",
+        "label": "fingers_conn_l",
+        "jointA": "hand_l",
+        "jointB": "fingers_l"
+      },
+      {
+        "id": "clavicle_r",
+        "label": "clavicle_r",
+        "jointA": "chest",
+        "jointB": "shoulder_r"
+      },
+      {
+        "id": "arm_u_r",
+        "label": "arm_u_r",
+        "jointA": "shoulder_r",
+        "jointB": "elbow_r"
+      },
+      {
+        "id": "arm_l_r",
+        "label": "arm_l_r",
+        "jointA": "elbow_r",
+        "jointB": "hand_r"
+      },
+      {
+        "id": "fingers_conn_r",
+        "label": "fingers_conn_r",
+        "jointA": "hand_r",
+        "jointB": "fingers_r"
+      },
+      {
+        "id": "pelvis_l",
+        "label": "pelvis_l",
+        "jointA": "pelvis",
+        "jointB": "hip_l"
+      },
+      {
+        "id": "leg_u_l",
+        "label": "leg_u_l",
+        "jointA": "hip_l",
+        "jointB": "knee_l"
+      },
+      {
+        "id": "leg_l_l",
+        "label": "leg_l_l",
+        "jointA": "knee_l",
+        "jointB": "foot_l"
+      },
+      {
+        "id": "toe_conn_l",
+        "label": "toe_conn_l",
+        "jointA": "foot_l",
+        "jointB": "toe_l"
+      },
+      {
+        "id": "pelvis_r",
+        "label": "pelvis_r",
+        "jointA": "pelvis",
+        "jointB": "hip_r"
+      },
+      {
+        "id": "leg_u_r",
+        "label": "leg_u_r",
+        "jointA": "hip_r",
+        "jointB": "knee_r"
+      },
+      {
+        "id": "leg_l_r",
+        "label": "leg_l_r",
+        "jointA": "knee_r",
+        "jointB": "foot_r"
+      },
+      {
+        "id": "toe_conn_r",
+        "label": "toe_conn_r",
+        "jointA": "foot_r",
+        "jointB": "toe_r"
+      }
+    ]
+  },
+  "anchorPoints": [
+    {
+      "anchorId": "anchor_headwear",
+      "connectionId": "neck_head",
+      "slotType": "headwear",
+      "positionPercent": 0.85,
+      "rotationOffset": 1.57,
+      "scale": 0.95
+    },
+    {
+      "anchorId": "anchor_top_body",
+      "connectionId": "spine_chest",
+      "slotType": "topBody",
+      "positionPercent": 0.45,
+      "rotationOffset": 1.57,
+      "scale": 0.95
+    },
+    {
+      "anchorId": "anchor_leg_l",
+      "connectionId": "leg_u_l",
+      "slotType": "legs",
+      "positionPercent": 0.5,
+      "rotationOffset": -1.57,
+      "scale": 0.85
+    },
+    {
+      "anchorId": "anchor_leg_r",
+      "connectionId": "leg_u_r",
+      "slotType": "legs",
+      "positionPercent": 0.5,
+      "rotationOffset": -1.57,
+      "scale": 0.85
+    },
+    {
+      "anchorId": "anchor_foot_l",
+      "connectionId": "toe_conn_l",
+      "slotType": "feet",
+      "positionPercent": 0.35,
+      "rotationOffset": 0.0,
+      "scale": 0.85
+    },
+    {
+      "anchorId": "anchor_foot_r",
+      "connectionId": "toe_conn_r",
+      "slotType": "feet",
+      "positionPercent": 0.35,
+      "rotationOffset": 0.0,
+      "scale": 0.85
+    },
+    {
+      "anchorId": "anchor_main_weapon",
+      "connectionId": "fingers_conn_r",
+      "slotType": "mainWeapon",
+      "positionPercent": 0.5,
+      "rotationOffset": 1.57,
+      "scale": 0.95
+    }
+  ],
+  "equipmentSlots": {
+    "headwear": {
+      "itemId": "hero_helm_cloth",
+      "itemClass": "headwear"
+    },
+    "topBody": {
+      "itemId": "hero_tunic_cloth",
+      "itemClass": "topBody"
+    },
+    "legs": {
+      "itemId": "hero_greaves_cloth",
+      "itemClass": "legs"
+    },
+    "feet": {
+      "itemId": "hero_boots_leather",
+      "itemClass": "feet"
+    },
+    "mainWeapon": {
+      "itemId": "sword_wood",
+      "itemClass": "mainWeapon"
+    }
+  },
+  "inventory": {
+    "headwear": [
+      {
+        "id": "hero_helm_cloth",
+        "name": "Adventurer Bandana",
+        "pivotX": 0.5,
+        "pivotY": 0.65,
+        "assetUri": "data:image/svg+xml;utf8,<svg width='70' height='60' xmlns='http://www.w3.org/2000/svg'><path d='M10,38 Q35,6 60,38 Z' fill='%23f59e0b' stroke='%2378350f' stroke-width='3'/><rect x='8' y='34' width='54' height='9' rx='4' fill='%23b45309'/><circle cx='48' cy='26' r='4' fill='%23fef08a'/></svg>"
+      }
+    ],
+    "topBody": [
+      {
+        "id": "hero_tunic_cloth",
+        "name": "Cloth Tunic",
+        "pivotX": 0.5,
+        "pivotY": 0.45,
+        "assetUri": "data:image/svg+xml;utf8,<svg width='76' height='110' xmlns='http://www.w3.org/2000/svg'><rect x='12' y='8' width='52' height='92' rx='14' fill='%23eab308' stroke='%23713f12' stroke-width='3'/><rect x='10' y='64' width='56' height='12' rx='3' fill='%2378350f'/><rect x='32' y='62' width='12' height='16' rx='2' fill='%23fde047'/></svg>"
+      }
+    ],
+    "legs": [
+      {
+        "id": "hero_greaves_cloth",
+        "name": "Ranger Greaves",
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "assetUri": "data:image/svg+xml;utf8,<svg width='40' height='76' xmlns='http://www.w3.org/2000/svg'><rect x='6' y='4' width='28' height='68' rx='8' fill='%2378350f' stroke='%23451a03' stroke-width='2.5'/></svg>"
+      }
+    ],
+    "feet": [
+      {
+        "id": "hero_boots_leather",
+        "name": "Traveler Boots",
+        "pivotX": 0.35,
+        "pivotY": 0.5,
+        "assetUri": "data:image/svg+xml;utf8,<svg width='52' height='36' xmlns='http://www.w3.org/2000/svg'><path d='M8,6 L30,6 L46,24 L46,32 L8,32 Z' fill='%23451a03' stroke='%2327272a' stroke-width='2'/></svg>"
+      }
+    ],
+    "mainWeapon": [
+      {
+        "id": "sword_wood",
+        "name": "Wooden Sword",
+        "pivotX": 0.5,
+        "pivotY": 0.86,
+        "assetUri": "data:image/svg+xml;utf8,<svg width='48' height='160' xmlns='http://www.w3.org/2000/svg'><polygon points='24,4 33,24 31,122 17,122 15,24' fill='%23deb887' stroke='%2378350f' stroke-width='2.5'/><line x1='24' y1='14' x2='24' y2='118' stroke='%23fef3c7' stroke-width='2'/><rect x='8' y='120' width='32' height='10' rx='3' fill='%23f59e0b' stroke='%2378350f' stroke-width='2'/><rect x='20' y='130' width='8' height='22' rx='2' fill='%2378350f'/><circle cx='24' cy='154' r='5' fill='%23fbbf24'/></svg>"
+      }
+    ]
+  },
+  "movementProfiles": {
+    "Idle 1": {
+      "frameRate": 30,
+      "loop": true,
+      "keyframes": [
+        {
+          "time": 0,
+          "poseData": {
+            "pelvis": {
+              "localX": 0,
+              "localY": -144
+            },
+            "spine": {
+              "localX": 1.745,
+              "localY": -49.97
+            },
+            "chest": {
+              "localX": 2.617,
+              "localY": -49.931
+            },
+            "neck": {
+              "localX": 0.698,
+              "localY": -19.988
+            },
+            "head": {
+              "localX": 1.396,
+              "localY": -39.976
+            },
+            "shoulder_l": {
+              "localX": -10,
+              "localY": 0
+            },
+            "elbow_l": {
+              "localX": -28.168,
+              "localY": 52.977
+            },
+            "hand_l": {
+              "localX": 28.679,
+              "localY": 40.958
+            },
+            "fingers_l": {
+              "localX": 10.0,
+              "localY": 17.321
+            },
+            "shoulder_r": {
+              "localX": 10,
+              "localY": 0
+            },
+            "elbow_r": {
+              "localX": 36.94,
+              "localY": 47.281
+            },
+            "hand_r": {
+              "localX": 47.553,
+              "localY": -15.451
+            },
+            "fingers_r": {
+              "localX": 19.563,
+              "localY": -4.158
+            },
+            "hip_l": {
+              "localX": -5,
+              "localY": 0
+            },
+            "knee_l": {
+              "localX": -15.593,
+              "localY": 73.361
+            },
+            "foot_l": {
+              "localX": -2.443,
+              "localY": 69.957
+            },
+            "toe_l": {
+              "localX": 15.0,
+              "localY": 0.0
+            },
+            "hip_r": {
+              "localX": 5,
+              "localY": 0
+            },
+            "knee_r": {
+              "localX": 15.593,
+              "localY": 73.361
+            },
+            "foot_r": {
+              "localX": 2.443,
+              "localY": 69.957
+            },
+            "toe_r": {
+              "localX": 15.0,
+              "localY": 0.0
+            }
+          }
+        },
+        {
+          "time": 30,
+          "poseData": {
+            "pelvis": {
+              "localX": 0,
+              "localY": -140
+            },
+            "spine": {
+              "localX": 4.358,
+              "localY": -49.81
+            },
+            "chest": {
+              "localX": 5.226,
+              "localY": -49.726
+            },
+            "neck": {
+              "localX": 1.395,
+              "localY": -19.951
+            },
+            "head": {
+              "localX": 3.486,
+              "localY": -39.848
+            },
+            "shoulder_l": {
+              "localX": -10,
+              "localY": 0
+            },
+            "elbow_l": {
+              "localX": -33.552,
+              "localY": 49.742
+            },
+            "hand_l": {
+              "localX": 23.474,
+              "localY": 44.147
+            },
+            "fingers_l": {
+              "localX": 8.135,
+              "localY": 18.271
+            },
+            "shoulder_r": {
+              "localX": 10,
+              "localY": 0
+            },
+            "elbow_r": {
+              "localX": 31.795,
+              "localY": 50.883
+            },
+            "hand_r": {
+              "localX": 49.24,
+              "localY": -8.682
+            },
+            "fingers_r": {
+              "localX": 19.924,
+              "localY": -1.743
+            },
+            "hip_l": {
+              "localX": -5,
+              "localY": 0
+            },
+            "knee_l": {
+              "localX": -19.411,
+              "localY": 72.444
+            },
+            "foot_l": {
+              "localX": 1.222,
+              "localY": 69.989
+            },
+            "toe_l": {
+              "localX": 15.0,
+              "localY": 0.0
+            },
+            "hip_r": {
+              "localX": 5,
+              "localY": 0
+            },
+            "knee_r": {
+              "localX": 19.411,
+              "localY": 72.444
+            },
+            "foot_r": {
+              "localX": -1.222,
+              "localY": 69.989
+            },
+            "toe_r": {
+              "localX": 15.0,
+              "localY": 0.0
+            }
+          }
+        },
+        {
+          "time": 59,
+          "poseData": {
+            "pelvis": {
+              "localX": 0,
+              "localY": -144
+            },
+            "spine": {
+              "localX": 1.745,
+              "localY": -49.97
+            },
+            "chest": {
+              "localX": 2.617,
+              "localY": -49.931
+            },
+            "neck": {
+              "localX": 0.698,
+              "localY": -19.988
+            },
+            "head": {
+              "localX": 1.396,
+              "localY": -39.976
+            },
+            "shoulder_l": {
+              "localX": -10,
+              "localY": 0
+            },
+            "elbow_l": {
+              "localX": -28.168,
+              "localY": 52.977
+            },
+            "hand_l": {
+              "localX": 28.679,
+              "localY": 40.958
+            },
+            "fingers_l": {
+              "localX": 10.0,
+              "localY": 17.321
+            },
+            "shoulder_r": {
+              "localX": 10,
+              "localY": 0
+            },
+            "elbow_r": {
+              "localX": 36.94,
+              "localY": 47.281
+            },
+            "hand_r": {
+              "localX": 47.553,
+              "localY": -15.451
+            },
+            "fingers_r": {
+              "localX": 19.563,
+              "localY": -4.158
+            },
+            "hip_l": {
+              "localX": -5,
+              "localY": 0
+            },
+            "knee_l": {
+              "localX": -15.593,
+              "localY": 73.361
+            },
+            "foot_l": {
+              "localX": -2.443,
+              "localY": 69.957
+            },
+            "toe_l": {
+              "localX": 15.0,
+              "localY": 0.0
+            },
+            "hip_r": {
+              "localX": 5,
+              "localY": 0
+            },
+            "knee_r": {
+              "localX": 15.593,
+              "localY": 73.361
+            },
+            "foot_r": {
+              "localX": 2.443,
+              "localY": 69.957
+            },
+            "toe_r": {
+              "localX": 15.0,
+              "localY": 0.0
+            }
+          }
+        }
+      ],
+      "easing": "ease-in-out",
+      "repoFrames": 0
+    },
+    "Walk": {
+      "frameRate": 30,
+      "loop": true,
+      "keyframes": [
+        {
+          "time": 0,
+          "poseData": {
+            "pelvis": {
+              "localX": 0,
+              "localY": -142
+            },
+            "spine": {
+              "localX": 4.358,
+              "localY": -49.81
+            },
+            "chest": {
+              "localX": 5.226,
+              "localY": -49.726
+            },
+            "neck": {
+              "localX": 1.395,
+              "localY": -19.951
+            },
+            "head": {
+              "localX": 2.79,
+              "localY": -39.903
+            },
+            "shoulder_l": {
+              "localX": -10,
+              "localY": 0
+            },
+            "elbow_l": {
+              "localX": 34.415,
+              "localY": 49.149
+            },
+            "hand_l": {
+              "localX": 48.296,
+              "localY": 12.941
+            },
+            "fingers_l": {
+              "localX": 18.794,
+              "localY": 6.84
+            },
+            "shoulder_r": {
+              "localX": 10,
+              "localY": 0
+            },
+            "elbow_r": {
+              "localX": -31.795,
+              "localY": 50.883
+            },
+            "hand_r": {
+              "localX": 12.941,
+              "localY": 48.296
+            },
+            "fingers_r": {
+              "localX": 5.176,
+              "localY": 19.319
+            },
+            "hip_l": {
+              "localX": -5,
+              "localY": 0
+            },
+            "knee_l": {
+              "localX": -35.21,
+              "localY": 66.221
+            },
+            "foot_l": {
+              "localX": -43.096,
+              "localY": 55.161
+            },
+            "toe_l": {
+              "localX": 14.489,
+              "localY": 3.882
+            },
+            "hip_r": {
+              "localX": 5,
+              "localY": 0
+            },
+            "knee_r": {
+              "localX": 35.21,
+              "localY": 66.221
+            },
+            "foot_r": {
+              "localX": 14.554,
+              "localY": 68.47
+            },
+            "toe_r": {
+              "localX": 14.854,
+              "localY": -2.088
+            }
+          }
+        },
+        {
+          "time": 15,
+          "poseData": {
+            "pelvis": {
+              "localX": 0,
+              "localY": -146
+            },
+            "spine": {
+              "localX": 2.617,
+              "localY": -49.931
+            },
+            "chest": {
+              "localX": 3.488,
+              "localY": -49.878
+            },
+            "neck": {
+              "localX": 1.047,
+              "localY": -19.973
+            },
+            "head": {
+              "localX": 2.093,
+              "localY": -39.945
+            },
+            "shoulder_l": {
+              "localX": -10,
+              "localY": 0
+            },
+            "elbow_l": {
+              "localX": 2.094,
+              "localY": 59.963
+            },
+            "hand_l": {
+              "localX": 35.355,
+              "localY": 35.355
+            },
+            "fingers_l": {
+              "localX": 14.142,
+              "localY": 14.142
+            },
+            "shoulder_r": {
+              "localX": 10,
+              "localY": 0
+            },
+            "elbow_r": {
+              "localX": 2.094,
+              "localY": 59.963
+            },
+            "hand_r": {
+              "localX": 40.958,
+              "localY": 28.679
+            },
+            "fingers_r": {
+              "localX": 16.383,
+              "localY": 11.472
+            },
+            "hip_l": {
+              "localX": -5,
+              "localY": 0
+            },
+            "knee_l": {
+              "localX": 6.537,
+              "localY": 74.715
+            },
+            "foot_l": {
+              "localX": -49.497,
+              "localY": 49.497
+            },
+            "toe_l": {
+              "localX": 14.095,
+              "localY": 5.13
+            },
+            "hip_r": {
+              "localX": 5,
+              "localY": 0
+            },
+            "knee_r": {
+              "localX": 2.617,
+              "localY": 74.954
+            },
+            "foot_r": {
+              "localX": 0.0,
+              "localY": 70.0
+            },
+            "toe_r": {
+              "localX": 15.0,
+              "localY": 0.0
+            }
+          }
+        },
+        {
+          "time": 30,
+          "poseData": {
+            "pelvis": {
+              "localX": 0,
+              "localY": -142
+            },
+            "spine": {
+              "localX": 4.358,
+              "localY": -49.81
+            },
+            "chest": {
+              "localX": 5.226,
+              "localY": -49.726
+            },
+            "neck": {
+              "localX": 1.395,
+              "localY": -19.951
+            },
+            "head": {
+              "localX": 2.79,
+              "localY": -39.903
+            },
+            "shoulder_l": {
+              "localX": -10,
+              "localY": 0
+            },
+            "elbow_l": {
+              "localX": -31.795,
+              "localY": 50.883
+            },
+            "hand_l": {
+              "localX": 12.941,
+              "localY": 48.296
+            },
+            "fingers_l": {
+              "localX": 5.176,
+              "localY": 19.319
+            },
+            "shoulder_r": {
+              "localX": 10,
+              "localY": 0
+            },
+            "elbow_r": {
+              "localX": 34.415,
+              "localY": 49.149
+            },
+            "hand_r": {
+              "localX": 48.296,
+              "localY": 12.941
+            },
+            "fingers_r": {
+              "localX": 18.794,
+              "localY": 6.84
+            },
+            "hip_l": {
+              "localX": -5,
+              "localY": 0
+            },
+            "knee_l": {
+              "localX": 35.21,
+              "localY": 66.221
+            },
+            "foot_l": {
+              "localX": 14.554,
+              "localY": 68.47
+            },
+            "toe_l": {
+              "localX": 14.854,
+              "localY": -2.088
+            },
+            "hip_r": {
+              "localX": 5,
+              "localY": 0
+            },
+            "knee_r": {
+              "localX": -35.21,
+              "localY": 66.221
+            },
+            "foot_r": {
+              "localX": -43.096,
+              "localY": 55.161
+            },
+            "toe_r": {
+              "localX": 14.489,
+              "localY": 3.882
+            }
+          }
+        },
+        {
+          "time": 45,
+          "poseData": {
+            "pelvis": {
+              "localX": 0,
+              "localY": -146
+            },
+            "spine": {
+              "localX": 2.617,
+              "localY": -49.931
+            },
+            "chest": {
+              "localX": 3.488,
+              "localY": -49.878
+            },
+            "neck": {
+              "localX": 1.047,
+              "localY": -19.973
+            },
+            "head": {
+              "localX": 2.093,
+              "localY": -39.945
+            },
+            "shoulder_l": {
+              "localX": -10,
+              "localY": 0
+            },
+            "elbow_l": {
+              "localX": 2.094,
+              "localY": 59.963
+            },
+            "hand_l": {
+              "localX": 35.355,
+              "localY": 35.355
+            },
+            "fingers_l": {
+              "localX": 14.142,
+              "localY": 14.142
+            },
+            "shoulder_r": {
+              "localX": 10,
+              "localY": 0
+            },
+            "elbow_r": {
+              "localX": 2.094,
+              "localY": 59.963
+            },
+            "hand_r": {
+              "localX": 40.958,
+              "localY": 28.679
+            },
+            "fingers_r": {
+              "localX": 16.383,
+              "localY": 11.472
+            },
+            "hip_l": {
+              "localX": -5,
+              "localY": 0
+            },
+            "knee_l": {
+              "localX": 2.617,
+              "localY": 74.954
+            },
+            "foot_l": {
+              "localX": 0.0,
+              "localY": 70.0
+            },
+            "toe_l": {
+              "localX": 15.0,
+              "localY": 0.0
+            },
+            "hip_r": {
+              "localX": 5,
+              "localY": 0
+            },
+            "knee_r": {
+              "localX": 6.537,
+              "localY": 74.715
+            },
+            "foot_r": {
+              "localX": -49.497,
+              "localY": 49.497
+            },
+            "toe_r": {
+              "localX": 14.095,
+              "localY": 5.13
+            }
+          }
+        },
+        {
+          "time": 59,
+          "poseData": {
+            "pelvis": {
+              "localX": 0,
+              "localY": -142
+            },
+            "spine": {
+              "localX": 4.358,
+              "localY": -49.81
+            },
+            "chest": {
+              "localX": 5.226,
+              "localY": -49.726
+            },
+            "neck": {
+              "localX": 1.395,
+              "localY": -19.951
+            },
+            "head": {
+              "localX": 2.79,
+              "localY": -39.903
+            },
+            "shoulder_l": {
+              "localX": -10,
+              "localY": 0
+            },
+            "elbow_l": {
+              "localX": 34.415,
+              "localY": 49.149
+            },
+            "hand_l": {
+              "localX": 48.296,
+              "localY": 12.941
+            },
+            "fingers_l": {
+              "localX": 18.794,
+              "localY": 6.84
+            },
+            "shoulder_r": {
+              "localX": 10,
+              "localY": 0
+            },
+            "elbow_r": {
+              "localX": -31.795,
+              "localY": 50.883
+            },
+            "hand_r": {
+              "localX": 12.941,
+              "localY": 48.296
+            },
+            "fingers_r": {
+              "localX": 5.176,
+              "localY": 19.319
+            },
+            "hip_l": {
+              "localX": -5,
+              "localY": 0
+            },
+            "knee_l": {
+              "localX": -35.21,
+              "localY": 66.221
+            },
+            "foot_l": {
+              "localX": -43.096,
+              "localY": 55.161
+            },
+            "toe_l": {
+              "localX": 14.489,
+              "localY": 3.882
+            },
+            "hip_r": {
+              "localX": 5,
+              "localY": 0
+            },
+            "knee_r": {
+              "localX": 35.21,
+              "localY": 66.221
+            },
+            "foot_r": {
+              "localX": 14.554,
+              "localY": 68.47
+            },
+            "toe_r": {
+              "localX": 14.854,
+              "localY": -2.088
+            }
+          }
+        }
+      ],
+      "easing": "linear",
+      "repoFrames": 0
+    },
+    "Run": {
+      "frameRate": 45,
+      "loop": true,
+      "keyframes": [
+        {
+          "time": 0,
+          "poseData": {
+            "pelvis": {
+              "localX": 0,
+              "localY": -136
+            },
+            "spine": {
+              "localX": 12.096,
+              "localY": -48.515
+            },
+            "chest": {
+              "localX": 13.782,
+              "localY": -48.063
+            },
+            "neck": {
+              "localX": 3.473,
+              "localY": -19.696
+            },
+            "head": {
+              "localX": 4.181,
+              "localY": -39.781
+            },
+            "shoulder_l": {
+              "localX": -10,
+              "localY": 0
+            },
+            "elbow_l": {
+              "localX": 50.883,
+              "localY": 31.795
+            },
+            "hand_l": {
+              "localX": 45.315,
+              "localY": -21.131
+            },
+            "fingers_l": {
+              "localX": 18.794,
+              "localY": -6.84
+            },
+            "shoulder_r": {
+              "localX": 10,
+              "localY": 0
+            },
+            "elbow_r": {
+              "localX": -47.281,
+              "localY": 36.94
+            },
+            "hand_r": {
+              "localX": 4.358,
+              "localY": 49.81
+            },
+            "fingers_r": {
+              "localX": 1.743,
+              "localY": 19.924
+            },
+            "hip_l": {
+              "localX": -5,
+              "localY": 0
+            },
+            "knee_l": {
+              "localX": -50.185,
+              "localY": 55.736
+            },
+            "foot_l": {
+              "localX": -63.442,
+              "localY": 29.583
+            },
+            "toe_l": {
+              "localX": 13.595,
+              "localY": 6.339
+            },
+            "hip_r": {
+              "localX": 5,
+              "localY": 0
+            },
+            "knee_r": {
+              "localX": 55.736,
+              "localY": 50.185
+            },
+            "foot_r": {
+              "localX": 21.631,
+              "localY": 66.574
+            },
+            "toe_r": {
+              "localX": 14.489,
+              "localY": -3.882
+            }
+          }
+        },
+        {
+          "time": 15,
+          "poseData": {
+            "pelvis": {
+              "localX": 0,
+              "localY": -146
+            },
+            "spine": {
+              "localX": 10.396,
+              "localY": -48.907
+            },
+            "chest": {
+              "localX": 12.096,
+              "localY": -48.515
+            },
+            "neck": {
+              "localX": 2.783,
+              "localY": -19.805
+            },
+            "head": {
+              "localX": 3.486,
+              "localY": -39.848
+            },
+            "shoulder_l": {
+              "localX": -10,
+              "localY": 0
+            },
+            "elbow_l": {
+              "localX": 5.229,
+              "localY": 59.772
+            },
+            "hand_l": {
+              "localX": 45.315,
+              "localY": 21.131
+            },
+            "fingers_l": {
+              "localX": 18.126,
+              "localY": 8.452
+            },
+            "shoulder_r": {
+              "localX": 10,
+              "localY": 0
+            },
+            "elbow_r": {
+              "localX": 5.229,
+              "localY": 59.772
+            },
+            "hand_r": {
+              "localX": 46.985,
+              "localY": 17.101
+            },
+            "fingers_r": {
+              "localX": 18.794,
+              "localY": 6.84
+            },
+            "hip_l": {
+              "localX": -5,
+              "localY": 0
+            },
+            "knee_l": {
+              "localX": 23.176,
+              "localY": 71.329
+            },
+            "foot_l": {
+              "localX": -57.341,
+              "localY": 40.15
+            },
+            "toe_l": {
+              "localX": 14.095,
+              "localY": 5.13
+            },
+            "hip_r": {
+              "localX": 5,
+              "localY": 0
+            },
+            "knee_r": {
+              "localX": 2.617,
+              "localY": 74.954
+            },
+            "foot_r": {
+              "localX": -7.317,
+              "localY": 69.617
+            },
+            "toe_r": {
+              "localX": 14.943,
+              "localY": 1.307
+            }
+          }
+        },
+        {
+          "time": 30,
+          "poseData": {
+            "pelvis": {
+              "localX": 0,
+              "localY": -136
+            },
+            "spine": {
+              "localX": 12.096,
+              "localY": -48.515
+            },
+            "chest": {
+              "localX": 13.782,
+              "localY": -48.063
+            },
+            "neck": {
+              "localX": 3.473,
+              "localY": -19.696
+            },
+            "head": {
+              "localX": 4.181,
+              "localY": -39.781
+            },
+            "shoulder_l": {
+              "localX": -10,
+              "localY": 0
+            },
+            "elbow_l": {
+              "localX": -47.281,
+              "localY": 36.94
+            },
+            "hand_l": {
+              "localX": 4.358,
+              "localY": 49.81
+            },
+            "fingers_l": {
+              "localX": 1.743,
+              "localY": 19.924
+            },
+            "shoulder_r": {
+              "localX": 10,
+              "localY": 0
+            },
+            "elbow_r": {
+              "localX": 50.883,
+              "localY": 31.795
+            },
+            "hand_r": {
+              "localX": 45.315,
+              "localY": -21.131
+            },
+            "fingers_r": {
+              "localX": 18.794,
+              "localY": -6.84
+            },
+            "hip_l": {
+              "localX": -5,
+              "localY": 0
+            },
+            "knee_l": {
+              "localX": 55.736,
+              "localY": 50.185
+            },
+            "foot_l": {
+              "localX": 21.631,
+              "localY": 66.574
+            },
+            "toe_l": {
+              "localX": 14.489,
+              "localY": -3.882
+            },
+            "hip_r": {
+              "localX": 5,
+              "localY": 0
+            },
+            "knee_r": {
+              "localX": -50.185,
+              "localY": 55.736
+            },
+            "foot_r": {
+              "localX": -63.442,
+              "localY": 29.583
+            },
+            "toe_r": {
+              "localX": 13.595,
+              "localY": 6.339
+            }
+          }
+        },
+        {
+          "time": 45,
+          "poseData": {
+            "pelvis": {
+              "localX": 0,
+              "localY": -146
+            },
+            "spine": {
+              "localX": 10.396,
+              "localY": -48.907
+            },
+            "chest": {
+              "localX": 12.096,
+              "localY": -48.515
+            },
+            "neck": {
+              "localX": 2.783,
+              "localY": -19.805
+            },
+            "head": {
+              "localX": 3.486,
+              "localY": -39.848
+            },
+            "shoulder_l": {
+              "localX": -10,
+              "localY": 0
+            },
+            "elbow_l": {
+              "localX": 5.229,
+              "localY": 59.772
+            },
+            "hand_l": {
+              "localX": 45.315,
+              "localY": 21.131
+            },
+            "fingers_l": {
+              "localX": 18.126,
+              "localY": 8.452
+            },
+            "shoulder_r": {
+              "localX": 10,
+              "localY": 0
+            },
+            "elbow_r": {
+              "localX": 5.229,
+              "localY": 59.772
+            },
+            "hand_r": {
+              "localX": 46.985,
+              "localY": 17.101
+            },
+            "fingers_r": {
+              "localX": 18.794,
+              "localY": 6.84
+            },
+            "hip_l": {
+              "localX": -5,
+              "localY": 0
+            },
+            "knee_l": {
+              "localX": 2.617,
+              "localY": 74.954
+            },
+            "foot_l": {
+              "localX": -7.317,
+              "localY": 69.617
+            },
+            "toe_l": {
+              "localX": 14.943,
+              "localY": 1.307
+            },
+            "hip_r": {
+              "localX": 5,
+              "localY": 0
+            },
+            "knee_r": {
+              "localX": 23.176,
+              "localY": 71.329
+            },
+            "foot_r": {
+              "localX": -57.341,
+              "localY": 40.15
+            },
+            "toe_r": {
+              "localX": 14.095,
+              "localY": 5.13
+            }
+          }
+        },
+        {
+          "time": 59,
+          "poseData": {
+            "pelvis": {
+              "localX": 0,
+              "localY": -136
+            },
+            "spine": {
+              "localX": 12.096,
+              "localY": -48.515
+            },
+            "chest": {
+              "localX": 13.782,
+              "localY": -48.063
+            },
+            "neck": {
+              "localX": 3.473,
+              "localY": -19.696
+            },
+            "head": {
+              "localX": 4.181,
+              "localY": -39.781
+            },
+            "shoulder_l": {
+              "localX": -10,
+              "localY": 0
+            },
+            "elbow_l": {
+              "localX": 50.883,
+              "localY": 31.795
+            },
+            "hand_l": {
+              "localX": 45.315,
+              "localY": -21.131
+            },
+            "fingers_l": {
+              "localX": 18.794,
+              "localY": -6.84
+            },
+            "shoulder_r": {
+              "localX": 10,
+              "localY": 0
+            },
+            "elbow_r": {
+              "localX": -47.281,
+              "localY": 36.94
+            },
+            "hand_r": {
+              "localX": 4.358,
+              "localY": 49.81
+            },
+            "fingers_r": {
+              "localX": 1.743,
+              "localY": 19.924
+            },
+            "hip_l": {
+              "localX": -5,
+              "localY": 0
+            },
+            "knee_l": {
+              "localX": -50.185,
+              "localY": 55.736
+            },
+            "foot_l": {
+              "localX": -63.442,
+              "localY": 29.583
+            },
+            "toe_l": {
+              "localX": 13.595,
+              "localY": 6.339
+            },
+            "hip_r": {
+              "localX": 5,
+              "localY": 0
+            },
+            "knee_r": {
+              "localX": 55.736,
+              "localY": 50.185
+            },
+            "foot_r": {
+              "localX": 21.631,
+              "localY": 66.574
+            },
+            "toe_r": {
+              "localX": 14.489,
+              "localY": -3.882
+            }
+          }
+        }
+      ],
+      "easing": "linear",
+      "repoFrames": 0
+    },
+    "Attack 1": {
+      "frameRate": 60,
+      "loop": false,
+      "keyframes": [
+        {
+          "time": 0,
+          "poseData": {
+            "pelvis": {
+              "localX": 0,
+              "localY": -144
+            },
+            "spine": {
+              "localX": 1.745,
+              "localY": -49.97
+            },
+            "chest": {
+              "localX": 2.617,
+              "localY": -49.931
+            },
+            "neck": {
+              "localX": 0.698,
+              "localY": -19.988
+            },
+            "head": {
+              "localX": 1.396,
+              "localY": -39.976
+            },
+            "shoulder_l": {
+              "localX": -10,
+              "localY": 0
+            },
+            "elbow_l": {
+              "localX": -28.168,
+              "localY": 52.977
+            },
+            "hand_l": {
+              "localX": 28.679,
+              "localY": 40.958
+            },
+            "fingers_l": {
+              "localX": 10.0,
+              "localY": 17.321
+            },
+            "shoulder_r": {
+              "localX": 10,
+              "localY": 0
+            },
+            "elbow_r": {
+              "localX": 36.94,
+              "localY": 47.281
+            },
+            "hand_r": {
+              "localX": 47.553,
+              "localY": -15.451
+            },
+            "fingers_r": {
+              "localX": 19.563,
+              "localY": -4.158
+            },
+            "hip_l": {
+              "localX": -5,
+              "localY": 0
+            },
+            "knee_l": {
+              "localX": -15.593,
+              "localY": 73.361
+            },
+            "foot_l": {
+              "localX": -2.443,
+              "localY": 69.957
+            },
+            "toe_l": {
+              "localX": 15.0,
+              "localY": 0.0
+            },
+            "hip_r": {
+              "localX": 5,
+              "localY": 0
+            },
+            "knee_r": {
+              "localX": 15.593,
+              "localY": 73.361
+            },
+            "foot_r": {
+              "localX": 2.443,
+              "localY": 69.957
+            },
+            "toe_r": {
+              "localX": 15.0,
+              "localY": 0.0
+            }
+          }
+        },
+        {
+          "time": 12,
+          "poseData": {
+            "pelvis": {
+              "localX": -4,
+              "localY": -142
+            },
+            "spine": {
+              "localX": -5.226,
+              "localY": -49.726
+            },
+            "chest": {
+              "localX": -6.959,
+              "localY": -49.513
+            },
+            "neck": {
+              "localX": -0.698,
+              "localY": -19.988
+            },
+            "head": {
+              "localX": 1.396,
+              "localY": -39.976
+            },
+            "shoulder_l": {
+              "localX": -10,
+              "localY": 0
+            },
+            "elbow_l": {
+              "localX": -42.426,
+              "localY": 42.426
+            },
+            "hand_l": {
+              "localX": 4.358,
+              "localY": 49.81
+            },
+            "fingers_l": {
+              "localX": 1.743,
+              "localY": 19.924
+            },
+            "shoulder_r": {
+              "localX": 10,
+              "localY": 0
+            },
+            "elbow_r": {
+              "localX": 25.357,
+              "localY": -54.378
+            },
+            "hand_r": {
+              "localX": -21.131,
+              "localY": -45.315
+            },
+            "fingers_r": {
+              "localX": -6.84,
+              "localY": -18.794
+            },
+            "hip_l": {
+              "localX": -5,
+              "localY": 0
+            },
+            "knee_l": {
+              "localX": -28.095,
+              "localY": 69.539
+            },
+            "foot_l": {
+              "localX": -7.317,
+              "localY": 69.617
+            },
+            "toe_l": {
+              "localX": 15.0,
+              "localY": 0.0
+            },
+            "hip_r": {
+              "localX": 5,
+              "localY": 0
+            },
+            "knee_r": {
+              "localX": 28.095,
+              "localY": 69.539
+            },
+            "foot_r": {
+              "localX": 6.101,
+              "localY": 69.734
+            },
+            "toe_r": {
+              "localX": 15.0,
+              "localY": 0.0
+            }
+          }
+        },
+        {
+          "time": 26,
+          "poseData": {
+            "pelvis": {
+              "localX": 8,
+              "localY": -136
+            },
+            "spine": {
+              "localX": 15.451,
+              "localY": -47.553
+            },
+            "chest": {
+              "localX": 18.73,
+              "localY": -46.359
+            },
+            "neck": {
+              "localX": 4.158,
+              "localY": -19.563
+            },
+            "head": {
+              "localX": 5.567,
+              "localY": -39.611
+            },
+            "shoulder_l": {
+              "localX": -10,
+              "localY": 0
+            },
+            "elbow_l": {
+              "localX": -50.883,
+              "localY": 31.795
+            },
+            "hand_l": {
+              "localX": -17.101,
+              "localY": 46.985
+            },
+            "fingers_l": {
+              "localX": -6.84,
+              "localY": 18.794
+            },
+            "shoulder_r": {
+              "localX": 10,
+              "localY": 0
+            },
+            "elbow_r": {
+              "localX": 58.689,
+              "localY": 12.475
+            },
+            "hand_r": {
+              "localX": 49.513,
+              "localY": 6.959
+            },
+            "fingers_r": {
+              "localX": 19.924,
+              "localY": 1.743
+            },
+            "hip_l": {
+              "localX": -5,
+              "localY": 0
+            },
+            "knee_l": {
+              "localX": -39.744,
+              "localY": 63.604
+            },
+            "foot_l": {
+              "localX": -18.117,
+              "localY": 67.615
+            },
+            "toe_l": {
+              "localX": 14.772,
+              "localY": 2.605
+            },
+            "hip_r": {
+              "localX": 5,
+              "localY": 0
+            },
+            "knee_r": {
+              "localX": 43.018,
+              "localY": 61.436
+            },
+            "foot_r": {
+              "localX": 9.742,
+              "localY": 69.319
+            },
+            "toe_r": {
+              "localX": 15.0,
+              "localY": 0.0
+            }
+          }
+        },
+        {
+          "time": 42,
+          "poseData": {
+            "pelvis": {
+              "localX": 6,
+              "localY": -138
+            },
+            "spine": {
+              "localX": 12.941,
+              "localY": -48.296
+            },
+            "chest": {
+              "localX": 15.451,
+              "localY": -47.553
+            },
+            "neck": {
+              "localX": 3.473,
+              "localY": -19.696
+            },
+            "head": {
+              "localX": 4.181,
+              "localY": -39.781
+            },
+            "shoulder_l": {
+              "localX": -10,
+              "localY": 0
+            },
+            "elbow_l": {
+              "localX": -44.589,
+              "localY": 40.148
+            },
+            "hand_l": {
+              "localX": -4.358,
+              "localY": 49.81
+            },
+            "fingers_l": {
+              "localX": -1.743,
+              "localY": 19.924
+            },
+            "shoulder_r": {
+              "localX": 10,
+              "localY": 0
+            },
+            "elbow_r": {
+              "localX": 44.589,
+              "localY": 40.148
+            },
+            "hand_r": {
+              "localX": 40.958,
+              "localY": 28.679
+            },
+            "fingers_r": {
+              "localX": 17.321,
+              "localY": 10.0
+            },
+            "hip_l": {
+              "localX": -5,
+              "localY": 0
+            },
+            "knee_l": {
+              "localX": -31.696,
+              "localY": 67.973
+            },
+            "foot_l": {
+              "localX": -9.742,
+              "localY": 69.319
+            },
+            "toe_l": {
+              "localX": 14.943,
+              "localY": 1.307
+            },
+            "hip_r": {
+              "localX": 5,
+              "localY": 0
+            },
+            "knee_r": {
+              "localX": 32.878,
+              "localY": 67.41
+            },
+            "foot_r": {
+              "localX": 4.883,
+              "localY": 69.829
+            },
+            "toe_r": {
+              "localX": 15.0,
+              "localY": 0.0
+            }
+          }
+        },
+        {
+          "time": 59,
+          "poseData": {
+            "pelvis": {
+              "localX": 0,
+              "localY": -144
+            },
+            "spine": {
+              "localX": 1.745,
+              "localY": -49.97
+            },
+            "chest": {
+              "localX": 2.617,
+              "localY": -49.931
+            },
+            "neck": {
+              "localX": 0.698,
+              "localY": -19.988
+            },
+            "head": {
+              "localX": 1.396,
+              "localY": -39.976
+            },
+            "shoulder_l": {
+              "localX": -10,
+              "localY": 0
+            },
+            "elbow_l": {
+              "localX": -28.168,
+              "localY": 52.977
+            },
+            "hand_l": {
+              "localX": 28.679,
+              "localY": 40.958
+            },
+            "fingers_l": {
+              "localX": 10.0,
+              "localY": 17.321
+            },
+            "shoulder_r": {
+              "localX": 10,
+              "localY": 0
+            },
+            "elbow_r": {
+              "localX": 36.94,
+              "localY": 47.281
+            },
+            "hand_r": {
+              "localX": 47.553,
+              "localY": -15.451
+            },
+            "fingers_r": {
+              "localX": 19.563,
+              "localY": -4.158
+            },
+            "hip_l": {
+              "localX": -5,
+              "localY": 0
+            },
+            "knee_l": {
+              "localX": -15.593,
+              "localY": 73.361
+            },
+            "foot_l": {
+              "localX": -2.443,
+              "localY": 69.957
+            },
+            "toe_l": {
+              "localX": 15.0,
+              "localY": 0.0
+            },
+            "hip_r": {
+              "localX": 5,
+              "localY": 0
+            },
+            "knee_r": {
+              "localX": 15.593,
+              "localY": 73.361
+            },
+            "foot_r": {
+              "localX": 2.443,
+              "localY": 69.957
+            },
+            "toe_r": {
+              "localX": 15.0,
+              "localY": 0.0
+            }
+          }
+        }
+      ],
+      "easing": "ease-out",
+      "repoFrames": 0
+    },
+    "Jump": {
+      "frameRate": 30,
+      "loop": true,
+      "keyframes": [
+        {
+          "time": 0,
+          "poseData": {
+            "pelvis": {
+              "localX": 0,
+              "localY": -152
+            },
+            "spine": {
+              "localX": 6.959,
+              "localY": -49.513
+            },
+            "chest": {
+              "localX": 8.682,
+              "localY": -49.24
+            },
+            "neck": {
+              "localX": 2.091,
+              "localY": -19.89
+            },
+            "head": {
+              "localX": 3.486,
+              "localY": -39.848
+            },
+            "shoulder_l": {
+              "localX": -10,
+              "localY": 0
+            },
+            "elbow_l": {
+              "localX": -42.426,
+              "localY": 42.426
+            },
+            "hand_l": {
+              "localX": 4.358,
+              "localY": 49.81
+            },
+            "fingers_l": {
+              "localX": 1.743,
+              "localY": 19.924
+            },
+            "shoulder_r": {
+              "localX": 10,
+              "localY": 0
+            },
+            "elbow_r": {
+              "localX": 54.378,
+              "localY": -25.357
+            },
+            "hand_r": {
+              "localX": 28.679,
+              "localY": -40.958
+            },
+            "fingers_r": {
+              "localX": 12.856,
+              "localY": -15.321
+            },
+            "hip_l": {
+              "localX": -5,
+              "localY": 0
+            },
+            "knee_l": {
+              "localX": -31.696,
+              "localY": 67.973
+            },
+            "foot_l": {
+              "localX": -57.341,
+              "localY": 40.15
+            },
+            "toe_l": {
+              "localX": 13.595,
+              "localY": 6.339
+            },
+            "hip_r": {
+              "localX": 5,
+              "localY": 0
+            },
+            "knee_r": {
+              "localX": 53.033,
+              "localY": 53.033
+            },
+            "foot_r": {
+              "localX": -32.863,
+              "localY": 61.806
+            },
+            "toe_r": {
+              "localX": 14.489,
+              "localY": 3.882
+            }
+          }
+        },
+        {
+          "time": 30,
+          "poseData": {
+            "pelvis": {
+              "localX": 0,
+              "localY": -148
+            },
+            "spine": {
+              "localX": 5.226,
+              "localY": -49.726
+            },
+            "chest": {
+              "localX": 6.959,
+              "localY": -49.513
+            },
+            "neck": {
+              "localX": 1.743,
+              "localY": -19.924
+            },
+            "head": {
+              "localX": 2.79,
+              "localY": -39.903
+            },
+            "shoulder_l": {
+              "localX": -10,
+              "localY": 0
+            },
+            "elbow_l": {
+              "localX": -34.415,
+              "localY": 49.149
+            },
+            "hand_l": {
+              "localX": 12.941,
+              "localY": 48.296
+            },
+            "fingers_l": {
+              "localX": 5.176,
+              "localY": 19.319
+            },
+            "shoulder_r": {
+              "localX": 10,
+              "localY": 0
+            },
+            "elbow_r": {
+              "localX": 57.956,
+              "localY": 15.529
+            },
+            "hand_r": {
+              "localX": 45.315,
+              "localY": -21.131
+            },
+            "fingers_r": {
+              "localX": 18.794,
+              "localY": -6.84
+            },
+            "hip_l": {
+              "localX": -5,
+              "localY": 0
+            },
+            "knee_l": {
+              "localX": -19.411,
+              "localY": 72.444
+            },
+            "foot_l": {
+              "localX": -44.995,
+              "localY": 53.623
+            },
+            "toe_l": {
+              "localX": 14.095,
+              "localY": 5.13
+            },
+            "hip_r": {
+              "localX": 5,
+              "localY": 0
+            },
+            "knee_r": {
+              "localX": 39.744,
+              "localY": 63.604
+            },
+            "foot_r": {
+              "localX": -18.117,
+              "localY": 67.615
+            },
+            "toe_r": {
+              "localX": 14.772,
+              "localY": 2.605
+            }
+          }
+        },
+        {
+          "time": 59,
+          "poseData": {
+            "pelvis": {
+              "localX": 0,
+              "localY": -152
+            },
+            "spine": {
+              "localX": 6.959,
+              "localY": -49.513
+            },
+            "chest": {
+              "localX": 8.682,
+              "localY": -49.24
+            },
+            "neck": {
+              "localX": 2.091,
+              "localY": -19.89
+            },
+            "head": {
+              "localX": 3.486,
+              "localY": -39.848
+            },
+            "shoulder_l": {
+              "localX": -10,
+              "localY": 0
+            },
+            "elbow_l": {
+              "localX": -42.426,
+              "localY": 42.426
+            },
+            "hand_l": {
+              "localX": 4.358,
+              "localY": 49.81
+            },
+            "fingers_l": {
+              "localX": 1.743,
+              "localY": 19.924
+            },
+            "shoulder_r": {
+              "localX": 10,
+              "localY": 0
+            },
+            "elbow_r": {
+              "localX": 54.378,
+              "localY": -25.357
+            },
+            "hand_r": {
+              "localX": 28.679,
+              "localY": -40.958
+            },
+            "fingers_r": {
+              "localX": 12.856,
+              "localY": -15.321
+            },
+            "hip_l": {
+              "localX": -5,
+              "localY": 0
+            },
+            "knee_l": {
+              "localX": -31.696,
+              "localY": 67.973
+            },
+            "foot_l": {
+              "localX": -57.341,
+              "localY": 40.15
+            },
+            "toe_l": {
+              "localX": 13.595,
+              "localY": 6.339
+            },
+            "hip_r": {
+              "localX": 5,
+              "localY": 0
+            },
+            "knee_r": {
+              "localX": 53.033,
+              "localY": 53.033
+            },
+            "foot_r": {
+              "localX": -32.863,
+              "localY": 61.806
+            },
+            "toe_r": {
+              "localX": 14.489,
+              "localY": 3.882
+            }
+          }
+        }
+      ],
+      "easing": "ease-in-out",
+      "repoFrames": 0
+    },
+    "Defend 1": {
+      "frameRate": 30,
+      "loop": true,
+      "keyframes": [
+        {
+          "time": 0,
+          "poseData": {
+            "pelvis": {
+              "localX": -3,
+              "localY": -138
+            },
+            "spine": {
+              "localX": 3.488,
+              "localY": -49.878
+            },
+            "chest": {
+              "localX": 4.358,
+              "localY": -49.81
+            },
+            "neck": {
+              "localX": 1.395,
+              "localY": -19.951
+            },
+            "head": {
+              "localX": 2.79,
+              "localY": -39.903
+            },
+            "shoulder_l": {
+              "localX": -10,
+              "localY": 0
+            },
+            "elbow_l": {
+              "localX": 42.426,
+              "localY": 42.426
+            },
+            "hand_l": {
+              "localX": 35.355,
+              "localY": -35.355
+            },
+            "fingers_l": {
+              "localX": 14.142,
+              "localY": -14.142
+            },
+            "shoulder_r": {
+              "localX": 10,
+              "localY": 0
+            },
+            "elbow_r": {
+              "localX": 49.149,
+              "localY": 34.415
+            },
+            "hand_r": {
+              "localX": 21.131,
+              "localY": -45.315
+            },
+            "fingers_r": {
+              "localX": 10.0,
+              "localY": -17.321
+            },
+            "hip_l": {
+              "localX": -5,
+              "localY": 0
+            },
+            "knee_l": {
+              "localX": -28.095,
+              "localY": 69.539
+            },
+            "foot_l": {
+              "localX": -6.101,
+              "localY": 69.734
+            },
+            "toe_l": {
+              "localX": 15.0,
+              "localY": 0.0
+            },
+            "hip_r": {
+              "localX": 5,
+              "localY": 0
+            },
+            "knee_r": {
+              "localX": 28.095,
+              "localY": 69.539
+            },
+            "foot_r": {
+              "localX": 2.443,
+              "localY": 69.957
+            },
+            "toe_r": {
+              "localX": 15.0,
+              "localY": 0.0
+            }
+          }
+        },
+        {
+          "time": 59,
+          "poseData": {
+            "pelvis": {
+              "localX": -3,
+              "localY": -138
+            },
+            "spine": {
+              "localX": 3.488,
+              "localY": -49.878
+            },
+            "chest": {
+              "localX": 4.358,
+              "localY": -49.81
+            },
+            "neck": {
+              "localX": 1.395,
+              "localY": -19.951
+            },
+            "head": {
+              "localX": 2.79,
+              "localY": -39.903
+            },
+            "shoulder_l": {
+              "localX": -10,
+              "localY": 0
+            },
+            "elbow_l": {
+              "localX": 42.426,
+              "localY": 42.426
+            },
+            "hand_l": {
+              "localX": 35.355,
+              "localY": -35.355
+            },
+            "fingers_l": {
+              "localX": 14.142,
+              "localY": -14.142
+            },
+            "shoulder_r": {
+              "localX": 10,
+              "localY": 0
+            },
+            "elbow_r": {
+              "localX": 49.149,
+              "localY": 34.415
+            },
+            "hand_r": {
+              "localX": 21.131,
+              "localY": -45.315
+            },
+            "fingers_r": {
+              "localX": 10.0,
+              "localY": -17.321
+            },
+            "hip_l": {
+              "localX": -5,
+              "localY": 0
+            },
+            "knee_l": {
+              "localX": -28.095,
+              "localY": 69.539
+            },
+            "foot_l": {
+              "localX": -6.101,
+              "localY": 69.734
+            },
+            "toe_l": {
+              "localX": 15.0,
+              "localY": 0.0
+            },
+            "hip_r": {
+              "localX": 5,
+              "localY": 0
+            },
+            "knee_r": {
+              "localX": 28.095,
+              "localY": 69.539
+            },
+            "foot_r": {
+              "localX": 2.443,
+              "localY": 69.957
+            },
+            "toe_r": {
+              "localX": 15.0,
+              "localY": 0.0
+            }
+          }
+        }
+      ],
+      "easing": "linear",
+      "repoFrames": 0
+    }
+  }
+}

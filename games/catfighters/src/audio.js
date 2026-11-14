@@ -25,8 +25,12 @@ class ChiptuneAudioEngine {
     };
     this.audioBuffers = {};
     this.currentBgmSource = null;
+    this.activeBgmSources = new Set();
+    this.bgmRequestId = 0;
+    this.bgmLoadingTrack = null;
     this.currentTrackName = null;
     this.loadingPromises = {};
+    this.tracksPreloaded = false;
 
     // Load saved settings
     try {
@@ -104,7 +108,8 @@ class ChiptuneAudioEngine {
 
   preloadAllTracks() {
     this.ensureContext();
-    if (this.ctx) {
+    if (this.ctx && !this.tracksPreloaded) {
+      this.tracksPreloaded = true;
       Object.keys(this.tracks).forEach(key => this.loadTrackBuffer(key));
     }
   }
@@ -600,13 +605,18 @@ class ChiptuneAudioEngine {
 
   playVictory() {
     this.ensureContext();
-    if (!this.ctx || this.isMuted) return;
+    if (!this.ctx) return;
+
+    // Always stop any active battle/level BGM first, even if muted
+    this.stopBGM();
 
     // Use Tunic8-Bit rendered Victory Jingle if available
     if (this.audioBuffers['victory'] || this.tracks['victory']) {
       this.playVictoryBGM();
       return;
     }
+
+    if (this.isMuted) return;
 
     // Procedural fanfare fallback
     const now = this.ctx.currentTime;
@@ -639,28 +649,66 @@ class ChiptuneAudioEngine {
 
   // --- TUNIC8-BIT BGM PLAYER & PROCEDURAL FALLBACK ---
 
+  stopAllBgmSources() {
+    if (this.currentBgmSource) {
+      this.activeBgmSources.add(this.currentBgmSource);
+      this.currentBgmSource = null;
+    }
+
+    for (const src of this.activeBgmSources) {
+      try {
+        src.onended = null;
+        src.stop();
+      } catch (e) {}
+      try {
+        src.disconnect();
+      } catch (e) {}
+    }
+    this.activeBgmSources.clear();
+
+    if (this.timerId) {
+      clearTimeout(this.timerId);
+      this.timerId = null;
+    }
+  }
+
   async playBGM(key, loop = true) {
     this.ensureContext();
     if (!this.ctx) return;
 
-    // If already playing this track in looping mode, do not restart
-    if (this.bgmPlaying && this.currentTrackName === key && loop && this.currentBgmSource) {
+    // If already playing (or currently loading) this exact looping track, do not start a duplicate
+    if (
+      loop &&
+      this.bgmPlaying &&
+      this.currentTrackName === key &&
+      (this.currentBgmSource || this.bgmLoadingTrack === key)
+    ) {
       return;
     }
 
-    // Stop current track without wiping currentTrackName intent
+    // Stop current track and invalidate any in-flight BGM load requests
     this.stopBGM(false);
 
+    const requestId = ++this.bgmRequestId;
     this.bgmPlaying = true;
     this.currentTrackName = key;
 
     let buffer = this.audioBuffers[key];
     if (!buffer) {
+      this.bgmLoadingTrack = key;
       buffer = await this.loadTrackBuffer(key);
+      if (this.bgmLoadingTrack === key) {
+        this.bgmLoadingTrack = null;
+      }
     }
 
-    // Guard against race conditions if track changed while loading
-    if (!this.bgmPlaying || this.currentTrackName !== key) return;
+    // Guard against race conditions if another BGM call or stopBGM() occurred while awaiting
+    if (this.bgmRequestId !== requestId || !this.bgmPlaying || this.currentTrackName !== key) {
+      return;
+    }
+
+    // Ensure no previous BGM source is still playing before starting the new source
+    this.stopAllBgmSources();
 
     if (buffer) {
       try {
@@ -669,19 +717,18 @@ class ChiptuneAudioEngine {
         source.loop = loop;
         source.connect(this.musicGain);
 
+        this.activeBgmSources.add(source);
+        this.currentBgmSource = source;
+
         source.onended = () => {
-          if (loop && this.bgmPlaying && this.currentTrackName === key) {
-            // Failsafe auto-loop: if browser ends playback despite loop=true, immediately re-loop
-            this.currentBgmSource = null;
-            this.playBGM(key, true);
-          } else if (!loop && this.currentBgmSource === source) {
+          this.activeBgmSources.delete(source);
+          if (!loop && this.bgmRequestId === requestId && this.currentBgmSource === source) {
             this.currentBgmSource = null;
             this.bgmPlaying = false;
           }
         };
 
         source.start(0);
-        this.currentBgmSource = source;
       } catch (err) {
         console.warn(`[Tunic8-Bit] Error playing audio buffer '${key}':`, err);
         if (key === 'battle') this.startProceduralBGM();
@@ -712,23 +759,13 @@ class ChiptuneAudioEngine {
   }
 
   stopBGM(resetTrackName = true) {
+    this.bgmRequestId++;
     this.bgmPlaying = false;
+    this.bgmLoadingTrack = null;
     if (resetTrackName) {
       this.currentTrackName = null;
     }
-
-    if (this.currentBgmSource) {
-      try {
-        this.currentBgmSource.stop();
-        this.currentBgmSource.disconnect();
-      } catch (e) {}
-      this.currentBgmSource = null;
-    }
-
-    if (this.timerId) {
-      clearTimeout(this.timerId);
-      this.timerId = null;
-    }
+    this.stopAllBgmSources();
   }
 
   startProceduralBGM() {

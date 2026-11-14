@@ -14,11 +14,11 @@ const MAX_LEVELS = 3;
 
 // BGM
 const bgmMenu = new Audio('sounds/bgm_menu.wav'); bgmMenu.loop = true;
-const bgmLevel1 = new Audio('sounds/bmg-Level.ogg'); bgmLevel1.loop = true;
-const bgmLevel2 = new Audio('sounds/bmg-Level.ogg'); bgmLevel2.loop = true;
-const bgmLevel3 = new Audio('sounds/bmg-Level.ogg'); bgmLevel3.loop = true;
+const bgmLevel1 = new Audio('sounds/bmg-Level.wav'); bgmLevel1.loop = true;
+const bgmLevel2 = new Audio('sounds/bmg-Level.wav'); bgmLevel2.loop = true;
+const bgmLevel3 = new Audio('sounds/bmg-Level.wav'); bgmLevel3.loop = true;
 const bgmLevelComplete = new Audio('sounds/bgm_level_complete.wav');
-const bgmVictory = new Audio('sounds/bgm_victory.ogg'); bgmVictory.loop = true;
+const bgmVictory = new Audio('sounds/bgm_victory.wav'); bgmVictory.loop = true;
 const bgmGameOver = new Audio('sounds/bgm_game_over.wav');
 
 // SFX
@@ -225,7 +225,25 @@ const mouse = { x: 0, y: 0, isDown: false };
    INPUT LISTENERS
    ========================================================================== */
 
+function isNameEntryActive() {
+    const overlay = document.getElementById('name-entry-overlay');
+    return Boolean(overlay && !overlay.classList.contains('hidden'));
+}
+
+function isModalOpen(id) {
+    const el = document.getElementById(id);
+    return Boolean(el && !el.classList.contains('hidden'));
+}
+
 window.addEventListener('keydown', (e) => {
+    // Allow normal typing when entering high score name
+    if (isNameEntryActive()) {
+        if (e.code === 'Escape') {
+            e.preventDefault();
+        }
+        return;
+    }
+
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
         e.preventDefault();
     }
@@ -235,20 +253,70 @@ window.addEventListener('keydown', (e) => {
         keys[e.key] = true;
     }
 
+    // Info modal close or toggle ('I' or '?')
+    if ((e.code === 'KeyI' || e.key === '?') && !e.repeat) {
+        if (isModalOpen('info-modal')) {
+            closeInfoModal();
+        } else if (!isModalOpen('highscore-modal')) {
+            openInfoModal();
+        }
+        return;
+    }
+
+    // Escape handling: close topmost modal first, otherwise toggle pause
+    if (e.code === 'Escape' && !e.repeat) {
+        if (isModalOpen('info-modal')) {
+            closeInfoModal();
+            return;
+        }
+        if (isModalOpen('highscore-modal')) {
+            closeHighScoreModal();
+            return;
+        }
+        togglePause();
+        return;
+    }
+
+    // Keyboard menu navigation when not actively playing
+    if (gameState !== STATE_PLAYING || isModalOpen('info-modal') || isModalOpen('highscore-modal')) {
+        if (isModalOpen('info-modal') && (e.code === 'ArrowUp' || e.code === 'ArrowDown')) {
+            const body = document.getElementById('info-modal-body');
+            if (body) body.scrollTop += (e.code === 'ArrowDown' ? 48 : -48);
+            return;
+        }
+        if (e.code === 'ArrowUp' || e.code === 'ArrowLeft') {
+            moveMenuFocus(-1);
+            return;
+        }
+        if (e.code === 'ArrowDown' || e.code === 'ArrowRight') {
+            moveMenuFocus(1);
+            return;
+        }
+        if (e.code === 'Enter' && !e.repeat) {
+            e.preventDefault();
+            activateFocusedMenuElement();
+            return;
+        }
+    }
+
+    // Toggle Pause with P
+    if (e.code === 'KeyP' && !e.repeat) {
+        if (!isModalOpen('info-modal') && !isModalOpen('highscore-modal')) {
+            togglePause();
+        }
+        return;
+    }
+
+    // Developer toggle for colliders on F3
+    if (e.code === 'F3' && !e.repeat) {
+        e.preventDefault();
+        showColliders = !showColliders;
+    }
+
     // Toggle Auto-Aim with Shift key - only on first press, not repeat
     if ((e.code === 'ShiftLeft' || e.code === 'ShiftRight') && !e.repeat) {
         autoAimEnabled = !autoAimEnabled;
         updateAutoAimIndicator();
-    }
-
-    // Toggle Pause with Escape
-    if ((e.code === 'Escape') && !e.repeat) {
-        togglePause();
-    }
-
-    // Toggle Colliders with P
-    if (e.code === 'KeyP' && !e.repeat) {
-        showColliders = !showColliders;
     }
 
     // Throw Grenade on E or G
@@ -267,6 +335,7 @@ window.addEventListener('keydown', (e) => {
     if (gameState === STATE_PLAYING) {
         if (e.code === 'KeyC') {
             activeCoins += 25;
+            totalCoinsCollected += 25;
             updateHUD();
         }
         if (e.code === 'KeyK') {
@@ -287,10 +356,12 @@ window.addEventListener('keyup', (e) => {
 });
 
 // Update mouse coordinates relative to canvas bounding client rect
+let lastMouseMoveAt = 0;
 function updateMouseCoords(e) {
     const rect = canvas.getBoundingClientRect();
     mouse.x = (e.clientX - rect.left) * (canvas.width / rect.width);
     mouse.y = (e.clientY - rect.top) * (canvas.height / rect.height);
+    lastMouseMoveAt = performance.now();
 }
 
 canvas.addEventListener('mousemove', updateMouseCoords);
@@ -318,7 +389,7 @@ window.addEventListener('mouseup', (e) => {
 
 // Button Actions
 startBtn.addEventListener('click', () => { playSound(sfxUiClick); startLevel(1); });
-restartBtn.addEventListener('click', () => { playSound(sfxUiClick); startLevel(currentLevel); });
+restartBtn.addEventListener('click', () => { playSound(sfxUiClick); startLevel(1); });
 nextLevelBtn.addEventListener('click', () => { playSound(sfxUiClick); startLevel(currentLevel + 1); });
 winRestartBtn.addEventListener('click', () => { playSound(sfxUiClick); startLevel(1); });
 
@@ -327,13 +398,49 @@ document.getElementById('main-menu-btn').addEventListener('click', () => { playS
 document.getElementById('win-menu-btn').addEventListener('click', () => { playSound(sfxUiClick); goToMainMenu(); });
 document.getElementById('lc-menu-btn').addEventListener('click', () => { playSound(sfxUiClick); goToMainMenu(); });
 
-// Pause Menu Buttons
+// Pause Menu & HUD Action Buttons
 document.getElementById('pause-continue-btn').addEventListener('click', () => { playSound(sfxUiClick); resumeGame(); });
+document.getElementById('pause-restart-btn').addEventListener('click', () => { playSound(sfxUiClick); restartCurrentLevel(); });
+document.getElementById('pause-info-btn').addEventListener('click', () => { playSound(sfxUiClick); openInfoModal(); });
 document.getElementById('pause-menu-btn').addEventListener('click', () => { playSound(sfxUiClick); goToMainMenu(); });
 document.getElementById('pause-highscore-btn').addEventListener('click', () => { playSound(sfxUiClick); showHighScoreModal(false); });
 
+document.getElementById('hud-pause-btn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    playSound(sfxUiClick);
+    togglePause();
+});
+document.getElementById('hud-info-btn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    playSound(sfxUiClick);
+    openInfoModal();
+});
+
+// Splash & End-Screen Modal Buttons
+document.getElementById('info-btn').addEventListener('click', () => { playSound(sfxUiClick); openInfoModal(); });
+document.getElementById('info-close-btn').addEventListener('click', () => { playSound(sfxUiClick); closeInfoModal(); });
+document.getElementById('info-close-top-btn').addEventListener('click', () => { playSound(sfxUiClick); closeInfoModal(); });
+document.getElementById('info-modal').addEventListener('click', (e) => {
+    if (e.target.id === 'info-modal') {
+        playSound(sfxUiClick);
+        closeInfoModal();
+    }
+});
+
+document.getElementById('highscores-btn').addEventListener('click', () => { playSound(sfxUiClick); showHighScoreModal(false); });
+document.getElementById('win-highscore-btn').addEventListener('click', () => { playSound(sfxUiClick); showHighScoreModal(false); });
+document.getElementById('gameover-highscore-btn').addEventListener('click', () => { playSound(sfxUiClick); showHighScoreModal(false); });
+document.getElementById('highscore-close-top').addEventListener('click', () => { playSound(sfxUiClick); closeHighScoreModal(); });
+document.getElementById('highscore-modal').addEventListener('click', (e) => {
+    if (e.target.id === 'highscore-modal') {
+        playSound(sfxUiClick);
+        closeHighScoreModal();
+    }
+});
+
 document.getElementById('sfx-toggle').addEventListener('click', function() {
     soundEffectsEnabled = !soundEffectsEnabled;
+    this.setAttribute('aria-checked', String(soundEffectsEnabled));
     if (soundEffectsEnabled) {
         this.classList.add('on');
         playSound(sfxUiClick);
@@ -344,6 +451,7 @@ document.getElementById('sfx-toggle').addEventListener('click', function() {
 
 document.getElementById('music-toggle').addEventListener('click', function() {
     musicEnabled = !musicEnabled;
+    this.setAttribute('aria-checked', String(musicEnabled));
     if (musicEnabled) {
         this.classList.add('on');
         playSound(sfxUiClick);
@@ -359,8 +467,29 @@ document.getElementById('music-toggle').addEventListener('click', function() {
     }
 });
 
-// Highscores button on main menu screen
-document.getElementById('highscores-btn').addEventListener('click', () => { playSound(sfxUiClick); showHighScoreModal(false); });
+function openInfoModal() {
+    if (gameState === STATE_PLAYING) {
+        togglePause();
+    }
+    document.getElementById('info-modal').classList.remove('hidden');
+    syncMenuFocus();
+    updateCursorVisibility();
+}
+
+function closeInfoModal() {
+    document.getElementById('info-modal').classList.add('hidden');
+    syncMenuFocus();
+    updateCursorVisibility();
+}
+
+function restartCurrentLevel() {
+    document.getElementById('pause-screen').classList.add('hidden');
+    // Restore score/kills to start of current level so restarting doesn't inflate score
+    zombiesKilled = levelStartZombiesKilled;
+    totalCoinsCollected = levelStartTotalCoins;
+    activeCoins = levelStartActiveCoins;
+    startLevel(currentLevel, true);
+}
 
 function togglePause() {
     if (gameState === STATE_PLAYING) {
@@ -370,7 +499,8 @@ function togglePause() {
         document.getElementById('pause-stat-coins').textContent = totalCoinsCollected;
         document.getElementById('pause-stat-time').textContent = timeSurvived.toFixed(1) + 's';
         document.getElementById('pause-stat-lives').textContent = player ? player.lives : 0;
-        canvasWrapper.classList.remove('playing');
+        syncMenuFocus();
+        updateCursorVisibility();
     } else if (gameState === STATE_PAUSED) {
         resumeGame();
     }
@@ -378,9 +508,12 @@ function togglePause() {
 
 function resumeGame() {
     if (gameState === STATE_PAUSED) {
+        closeInfoModal();
+        closeHighScoreModal();
         gameState = STATE_PLAYING;
         document.getElementById('pause-screen').classList.add('hidden');
-        canvasWrapper.classList.add('playing');
+        clearMenuFocus();
+        updateCursorVisibility();
     }
 }
 
@@ -391,10 +524,14 @@ function goToMainMenu() {
     document.getElementById('level-complete-screen').classList.add('hidden');
     document.getElementById('win-screen').classList.add('hidden');
     document.getElementById('pause-screen').classList.add('hidden');
+    document.getElementById('info-modal').classList.add('hidden');
+    document.getElementById('highscore-modal').classList.add('hidden');
+    document.getElementById('name-entry-overlay').classList.add('hidden');
     
     introScreen.classList.remove('hidden');
     hud.classList.add('hud-hidden');
-    canvasWrapper.classList.remove('playing');
+    syncMenuFocus();
+    updateCursorVisibility();
 }
 
 /* ==========================================================================
@@ -658,7 +795,7 @@ class Player {
     }
 
     update(dt) {
-        // 8-Way Directional Input Handling
+        // 8-Way Directional Input Handling (Keyboard + Gamepad)
         let moveX = 0;
         let moveY = 0;
 
@@ -667,11 +804,16 @@ class Player {
         if (keys['KeyA'] || keys['a'] || keys['ArrowLeft']) moveX -= 1;
         if (keys['KeyD'] || keys['d'] || keys['ArrowRight']) moveX += 1;
 
+        if (typeof gpState !== 'undefined') {
+            moveX += gpState.moveX;
+            moveY += gpState.moveY;
+        }
+
         // Normalization to prevent faster diagonal speeds (vector math)
-        if (moveX !== 0 && moveY !== 0) {
-            const length = Math.sqrt(moveX * moveX + moveY * moveY);
-            moveX /= length;
-            moveY /= length;
+        const moveLen = Math.sqrt(moveX * moveX + moveY * moveY);
+        if (moveLen > 1) {
+            moveX /= moveLen;
+            moveY /= moveLen;
         }
 
         // Store previous position
@@ -693,10 +835,16 @@ class Player {
             this.y = prevY;
         }
 
-        // Aiming: follow mouse cursor only when auto-aim is OFF
-        // When auto-aim is ON, the autoAim() function in the game loop handles angle
+        // Aiming when auto-aim is OFF (or when all zombies are cleared):
+        // Right Stick controls direction of fire (player rotation); Left Stick strictly controls movement only
         if (!autoAimEnabled) {
-            this.angle = Math.atan2((mouse.y + camera.y) - this.y, (mouse.x + camera.x) - this.x);
+            if (typeof gpState !== 'undefined' && gpState.aimActive) {
+                this.angle = gpState.aimAngle;
+            } else if (typeof gpState === 'undefined' || lastMouseMoveAt > gpState.lastActiveAt) {
+                this.angle = Math.atan2((mouse.y + camera.y) - this.y, (mouse.x + camera.x) - this.x);
+            }
+        } else if (zombies.length === 0 && typeof gpState !== 'undefined' && gpState.aimActive) {
+            this.angle = gpState.aimAngle;
         }
 
         // Update Invincibility Frame Timers
@@ -722,8 +870,9 @@ class Player {
             this.takeDamage(dotDamage);
         }
 
-        // Continuous shooting when left-clicking
-        if (mouse.isDown && gameState === STATE_PLAYING) {
+        // Continuous shooting when left-clicking, holding Space, or holding Gamepad shoot button
+        const gpShooting = (typeof gpState !== 'undefined' && gpState.shootDown);
+        if ((mouse.isDown || keys['Space'] || gpShooting) && gameState === STATE_PLAYING) {
             fireBullet();
         }
     }
@@ -738,6 +887,9 @@ class Player {
 
         // Add subtle red tint overlay when damaged
         screenShake = Math.max(screenShake, 3);
+        if (typeof triggerGamepadRumble === 'function') {
+            triggerGamepadRumble(80, 0.35, 0.5);
+        }
 
         if (this.health <= 0) {
             this.die();
@@ -749,6 +901,9 @@ class Player {
     die() {
         this.lives--;
         screenShake = 18;
+        if (typeof triggerGamepadRumble === 'function') {
+            triggerGamepadRumble(320, 0.8, 1.0);
+        }
 
         // Spawn green blood explosion centered on player to signify death
         spawnSplatter(this.x, this.y, '#900c3f', 20);
@@ -1431,6 +1586,9 @@ class Grenade {
     detonate() {
         playSound(sfxExplosion);
         screenShake = Math.max(screenShake, 24);
+        if (typeof triggerGamepadRumble === 'function') {
+            triggerGamepadRumble(220, 0.65, 0.9);
+        }
 
         // 1. Apply AoE (Area of Effect) Damage and knockback to all surrounding zombies
         const explosionRadius = 120;
@@ -1772,7 +1930,12 @@ class FloatingText {
    GAME ENGINE STATE MANAGERS
    ========================================================================== */
 
-function startLevel(level) {
+let levelStartZombiesKilled = 0;
+let levelStartTotalCoins = 0;
+let levelStartActiveCoins = 0;
+let loopStarted = false;
+
+function startLevel(level, isRestart = false) {
     if (level === 1) playBGM(bgmLevel1);
     else if (level === 2) playBGM(bgmLevel2);
     else if (level === 3) playBGM(bgmLevel3);
@@ -1781,13 +1944,18 @@ function startLevel(level) {
     gameState = STATE_PLAYING;
     timeSurvived = 0;
 
-    if (level === 1) {
+    if (level === 1 && !isRestart) {
         zombiesKilled = 0;
         totalCoinsCollected = 0;
         activeCoins = 0;
     }
 
-    lastGrenadeAwardAt = 0;
+    // Snapshot stats at start of level for fair "Restart Level"
+    levelStartZombiesKilled = zombiesKilled;
+    levelStartTotalCoins = totalCoinsCollected;
+    levelStartActiveCoins = activeCoins;
+
+    lastGrenadeAwardAt = Math.floor(totalCoinsCollected / 50) * 50;
     gameElapsedTime = 0;
     screenShake = 0;
 
@@ -1829,11 +1997,9 @@ function startLevel(level) {
     }
 
     if (level === 3) {
-        // Hardcode keys to the 4 corners of the castle layout
-        // Corners of the outer corridor are roughly at c=4,r=4; c=67,r=4; c=4,r=55; c=67,r=55
-        // tileSize = 50, so: (200, 200), (3350, 200), (200, 2750), (3350, 2750)
+        // Hardcode keys to the 4 corners of the castle layout (Top-Right moved down clear of the minimap)
         levelKeys.push(new Key(250, 250, 0)); // Top-Left
-        levelKeys.push(new Key(3350, 250, 1)); // Top-Right
+        levelKeys.push(new Key(3350, 600, 1)); // Top-Right (below minimap)
         levelKeys.push(new Key(250, 2750, 2)); // Bottom-Left
         levelKeys.push(new Key(3350, 2750, 3)); // Bottom-Right
     } else {
@@ -1844,7 +2010,7 @@ function startLevel(level) {
                 kX = keyRegions[i].minX + Math.random() * (keyRegions[i].maxX - keyRegions[i].minX);
                 kY = keyRegions[i].minY + Math.random() * (keyRegions[i].maxY - keyRegions[i].minY);
                 attempts++;
-            } while (isInsideCollider(kX, kY) && attempts < 100);
+            } while ((isInsideCollider(kX, kY) || (kX > WORLD_WIDTH - 320 && kY < 350)) && attempts < 100);
             levelKeys.push(new Key(kX, kY, i));
         }
     }
@@ -1910,20 +2076,27 @@ function startLevel(level) {
     gameOverScreen.classList.add('hidden');
     levelCompleteScreen.classList.add('hidden');
     winScreen.classList.add('hidden');
+    document.getElementById('pause-screen').classList.add('hidden');
+    document.getElementById('info-modal').classList.add('hidden');
+    document.getElementById('highscore-modal').classList.add('hidden');
+    document.getElementById('name-entry-overlay').classList.add('hidden');
     hud.classList.remove('hud-hidden');
-    canvasWrapper.classList.add('playing');
 
     levelLabel.textContent = `LEVEL ${level}`;
     levelNameLabel.textContent = level === 1 ? 'CITY STREETS' : level === 2 ? 'COUNTRYSIDE' : 'CASTLE INTERIOR';
 
+    clearMenuFocus();
+    updateCursorVisibility();
     updateHUD();
 
-    // Spawn 200 zombies
+    // Spawn level zombies
     spawnLevelZombies();
 
-    // Start request animation frame loop
     lastTime = performance.now();
-    requestAnimationFrame(gameLoop);
+    if (!loopStarted) {
+        loopStarted = true;
+        requestAnimationFrame(gameLoop);
+    }
 }
 
 function spawnLevelZombies() {
@@ -1963,8 +2136,6 @@ function spawnLevelZombies() {
 
     if (currentLevel === 3) {
         // Spawn boss in the center of the Throne Room
-        // Throne room is roughly c=36 to 62, r=12 to 48. Center is c=49, r=30.
-        // tileSize = 50 -> x=2450, y=1500
         const boss = new BossZombie(2450, 1500);
         zombies.push(boss);
     }
@@ -1973,15 +2144,19 @@ function spawnLevelZombies() {
 function endLevel() {
     gameState = STATE_LEVEL_COMPLETE;
     lcStatZombies.textContent = zombiesKilled;
-    lcStatCoins.textContent = activeCoins;
+    lcStatCoins.textContent = totalCoinsCollected;
     lcStatTime.textContent = timeSurvived.toFixed(1) + 's';
 
     if (currentLevel === MAX_LEVELS) {
         playBGM(bgmVictory);
         winScreen.classList.remove('hidden');
         winStatZombies.textContent = zombiesKilled;
-        winStatCoins.textContent = activeCoins;
+        winStatCoins.textContent = totalCoinsCollected;
         winStatTime.textContent = timeSurvived.toFixed(1) + 's';
+
+        const isNewHs = isHighScore(totalCoinsCollected);
+        const hsBadge = document.getElementById('win-new-hs-badge');
+        if (hsBadge) hsBadge.classList.toggle('hidden', !isNewHs);
 
         // High-score handling on victory
         handleHighScore(totalCoinsCollected);
@@ -1990,22 +2165,34 @@ function endLevel() {
         levelCompleteScreen.classList.remove('hidden');
         document.getElementById('level-complete-subtitle').textContent = `Zone ${currentLevel} cleared. Get ready for the next one.`;
     }
+    syncMenuFocus();
+    updateCursorVisibility();
 }
 
 function endGame() {
     playBGM(bgmGameOver);
     gameState = STATE_GAMEOVER;
     hud.classList.add('hud-hidden');
-    canvasWrapper.classList.remove('playing');
     gameOverScreen.classList.remove('hidden');
 
     // Display final stats summary
     statZombies.textContent = zombiesKilled;
     statCoins.textContent = totalCoinsCollected;
     statTime.textContent = timeSurvived.toFixed(1) + 's';
+    const statZoneEl = document.getElementById('stat-zone');
+    if (statZoneEl) {
+        const zoneName = currentLevel === 1 ? 'City Streets' : currentLevel === 2 ? 'Countryside' : 'Castle Interior';
+        statZoneEl.textContent = `Zone ${currentLevel} (${zoneName})`;
+    }
+
+    const isNewHs = isHighScore(totalCoinsCollected);
+    const hsBadge = document.getElementById('gameover-new-hs-badge');
+    if (hsBadge) hsBadge.classList.toggle('hidden', !isNewHs);
 
     // High‑score handling
     handleHighScore(totalCoinsCollected);
+    syncMenuFocus();
+    updateCursorVisibility();
 }
 
 function updateHUD() {
@@ -2030,6 +2217,17 @@ function updateHUD() {
     grenadeCountText.textContent = player.grenades;
     keyCountText.textContent = `${keysCollected}/4`;
 
+    // 2.5 Update Score & Best Score in HUD
+    const hudScoreVal = document.getElementById('hud-score-val');
+    const hudBestVal = document.getElementById('hud-best-val');
+    if (hudScoreVal) hudScoreVal.textContent = totalCoinsCollected.toLocaleString();
+    if (hudBestVal) {
+        const scores = loadHighScores();
+        const topStored = scores.length > 0 ? scores[0].score : 0;
+        const bestVal = Math.max(topStored, totalCoinsCollected);
+        hudBestVal.textContent = bestVal.toLocaleString();
+    }
+
     // 3. Unlock Grenades check (at 50 total coins collected)
     if (!grenadeUnlocked && activeCoins >= 50) {
         unlockGrenades();
@@ -2042,7 +2240,7 @@ function updateHUD() {
             progressFill.style.width = '100%';
         } else {
             const coinsTowardsNext = totalCoinsCollected - lastGrenadeAwardAt;
-            const progressPercent = (coinsTowardsNext / 50) * 100;
+            const progressPercent = Math.max(0, Math.min(100, (coinsTowardsNext / 50) * 100));
             progressFill.style.width = `${progressPercent}%`;
         }
     }
@@ -2052,7 +2250,6 @@ function unlockGrenades() {
     // Grenades are always unlocked; ensure UI reflects this.
     grenadeUnlocked = true;
     grenadesContainer.classList.remove('locked');
-    // Optional: could show toast for award, but not needed per spec.
 }
 
 /* ==========================================================================
@@ -2077,13 +2274,40 @@ function drawMinimap() {
     mctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
     mctx.strokeRect(camera.x * scaleX, camera.y * scaleY, canvas.width * scaleX, canvas.height * scaleY);
 
-
-
     // Draw Zombies (red dots)
     mctx.fillStyle = '#ef4444';
     zombies.forEach(z => {
         mctx.fillRect(z.x * scaleX, z.y * scaleY, 2, 2);
     });
+
+    // Upon clearing the level of zombies, display remaining uncollected Keys on the minimap
+    if (zombies.length === 0 && typeof levelKeys !== 'undefined') {
+        const pulse = 0.65 + 0.35 * Math.sin(Date.now() / 180);
+        levelKeys.forEach(k => {
+            if (!k.collected) {
+                const kx = k.x * scaleX;
+                const ky = k.y * scaleY;
+
+                mctx.save();
+                // Pulsing golden outer beacon ring
+                mctx.beginPath();
+                mctx.arc(kx, ky, 6 + pulse * 3, 0, Math.PI * 2);
+                mctx.strokeStyle = `rgba(251, 191, 36, ${0.45 + pulse * 0.45})`;
+                mctx.lineWidth = 2;
+                mctx.stroke();
+
+                // Bright gold key marker dot
+                mctx.beginPath();
+                mctx.arc(kx, ky, 4.5, 0, Math.PI * 2);
+                mctx.fillStyle = '#fbbf24';
+                mctx.fill();
+                mctx.lineWidth = 1.5;
+                mctx.strokeStyle = '#000000';
+                mctx.stroke();
+                mctx.restore();
+            }
+        });
+    }
 
     // Draw Player (green dot)
     if (player) {
@@ -2266,6 +2490,19 @@ function handleCollisions() {
                 showDialogue(player, "lets get to the gate!", 3);
             }
             activeCoins += 100; // Bonus for key
+            totalCoinsCollected += 100;
+            // Check if key bonus crossed a 50-coin grenade threshold
+            if (totalCoinsCollected - lastGrenadeAwardAt >= 50) {
+                const thresholds = Math.floor((totalCoinsCollected - lastGrenadeAwardAt) / 50);
+                const spaceLeft = 10 - player.grenades;
+                const grant = Math.min(thresholds, spaceLeft);
+                if (grant > 0) {
+                    player.grenades += grant;
+                    grenadesContainer.classList.add('pulse');
+                    setTimeout(() => grenadesContainer.classList.remove('pulse'), 600);
+                }
+                lastGrenadeAwardAt += thresholds * 50;
+            }
             spawnSplatter(keyObj.x, keyObj.y, '#fbbf24', 15);
             updateHUD();
         }
@@ -2723,91 +2960,172 @@ function autoAim() {
 }
 
 function gameLoop(time) {
-    if (gameState === STATE_PAUSED) {
-        lastTime = time;
-        requestAnimationFrame(gameLoop);
-        return;
-    }
-    if (gameState !== STATE_PLAYING) return;
-
-    // Calculate frame delta time in seconds
-    let dt = (time - lastTime) / 1000;
+    let dt = lastTime ? (time - lastTime) / 1000 : 0.016;
     lastTime = time;
+    if (dt > 0.1 || dt < 0) dt = 0.016;
 
-    // Safeguard physics from collapsing when switching tab / freezing (clamp dt)
-    if (dt > 0.1) dt = 0.1;
+    // Poll Gamepad Controllers every animation frame across all states
+    pollGamepads(dt);
 
-    autoAim();
-    update(dt);
-    draw();
+    // Update gameplay only when actively playing and no blocking modal is open
+    if (gameState === STATE_PLAYING && !isModalOpen('info-modal') && !isModalOpen('highscore-modal') && !isNameEntryActive()) {
+        autoAim();
+        update(dt);
+        draw();
+    }
 
     requestAnimationFrame(gameLoop);
 }
 
 // ---------------------------------------------------------------------
-// High Score Logic (overlay prompt + modal)
+// High Score System (Top 10 Persistence, Auto-Focus Input & Highlight)
 // ---------------------------------------------------------------------
 
+const HIGHSCORE_STORAGE_KEY = 'zombie_apocalypse_high_scores';
+const LEGACY_HIGHSCORE_KEY = 'highScores';
+const MAX_HIGHSCORES = 10;
+let lastInsertedScoreId = null;
+
+function getDefaultHighScores() {
+    return [
+        { id: 'def_1', name: 'LEO', score: 850, date: '2026-01-01' },
+        { id: 'def_2', name: 'REX', score: 600, date: '2026-01-01' },
+        { id: 'def_3', name: 'ZOE', score: 400, date: '2026-01-01' },
+        { id: 'def_4', name: 'MAX', score: 250, date: '2026-01-01' },
+        { id: 'def_5', name: 'ASH', score: 120, date: '2026-01-01' }
+    ];
+}
+
 function loadHighScores() {
-    const data = localStorage.getItem('highScores');
-    return data ? JSON.parse(data) : [];
+    try {
+        const raw = localStorage.getItem(HIGHSCORE_STORAGE_KEY) || localStorage.getItem(LEGACY_HIGHSCORE_KEY);
+        if (!raw) return getDefaultHighScores();
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed) || parsed.length === 0) return getDefaultHighScores();
+        return parsed.map((entry, idx) => ({
+            id: entry.id || `legacy_${idx}`,
+            name: String(entry.name || 'ANON').toUpperCase().slice(0, 10),
+            score: Number(entry.score) || 0,
+            date: entry.date || '2026-01-01'
+        })).sort((a, b) => b.score - a.score).slice(0, MAX_HIGHSCORES);
+    } catch {
+        return getDefaultHighScores();
+    }
 }
 
 function saveHighScores(scores) {
-    localStorage.setItem('highScores', JSON.stringify(scores));
+    try {
+        localStorage.setItem(HIGHSCORE_STORAGE_KEY, JSON.stringify(scores));
+        localStorage.setItem(LEGACY_HIGHSCORE_KEY, JSON.stringify(scores));
+    } catch (e) {
+        console.log('HighScore save error:', e);
+    }
+}
+
+function isHighScore(score) {
+    if (score <= 0) return false;
+    const scores = loadHighScores();
+    if (scores.length < MAX_HIGHSCORES) return true;
+    return score > scores[scores.length - 1].score;
+}
+
+function addHighScoreEntry(name, score) {
+    const scores = loadHighScores();
+    const entryId = 'score_' + Date.now();
+    const cleanName = (String(name || '').trim().toUpperCase() || 'LEO').slice(0, 10);
+    const today = new Date().toISOString().split('T')[0];
+
+    scores.push({
+        id: entryId,
+        name: cleanName,
+        score: Math.floor(score),
+        date: today
+    });
+    scores.sort((a, b) => b.score - a.score);
+    if (scores.length > MAX_HIGHSCORES) {
+        scores.length = MAX_HIGHSCORES;
+    }
+    lastInsertedScoreId = entryId;
+    saveHighScores(scores);
+    return entryId;
+}
+
+function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, (ch) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+    }[ch]));
 }
 
 function showHighScoreModal(fromGameOver = true) {
     const modal = document.getElementById('highscore-modal');
-    const list = document.getElementById('highscore-list');
+    const tbody = document.getElementById('highscore-tbody');
     const scores = loadHighScores();
-    list.innerHTML = '';
-    if (scores.length === 0) {
-        const li = document.createElement('li');
-        li.innerHTML = '<span class="hs-rank">—</span><span class="hs-name">No scores yet. Be the first!</span>';
-        list.appendChild(li);
-    } else {
-        scores.forEach((entry, idx) => {
-            const li = document.createElement('li');
-            li.innerHTML = `<span class="hs-rank">${idx + 1}.</span><span class="hs-name">${entry.name}</span><span class="hs-score">${entry.score}</span>`;
-            list.appendChild(li);
-        });
+    if (tbody) {
+        tbody.innerHTML = scores.map((entry, idx) => {
+            const isNew = entry.id === lastInsertedScoreId;
+            return `
+                <tr class="${isNew ? 'row-new-entry' : ''}">
+                    <td class="col-rank">#${idx + 1}</td>
+                    <td class="col-name">${escapeHtml(entry.name)}${isNew ? ' <span class="new-pill">NEW!</span>' : ''}</td>
+                    <td class="col-score">${entry.score.toLocaleString()}</td>
+                    <td class="col-date">${escapeHtml(entry.date || '2026-01-01')}</td>
+                </tr>
+            `;
+        }).join('');
     }
     modal.classList.remove('hidden');
+    syncMenuFocus();
+    updateCursorVisibility();
 }
 
 function closeHighScoreModal() {
     document.getElementById('highscore-modal').classList.add('hidden');
+    syncMenuFocus();
+    updateCursorVisibility();
 }
 
+const PRESET_CALLSIGNS = ['LEO', 'ACE', 'SLAYER', 'HUNTER', 'NOVA', 'REX', 'ZOE', 'BLAZE', 'VIPER', 'GHOST'];
+let presetCallsignIndex = 0;
+
 function handleHighScore(score) {
-    const scores = loadHighScores();
-    // Qualify if fewer than 12 entries or score beats the lowest
-    const qualifies = scores.length < 12 || score > scores[scores.length - 1].score;
-    if (qualifies) {
-        // Show the HTML name-entry overlay instead of native prompt
+    if (isHighScore(score)) {
         const overlay = document.getElementById('name-entry-overlay');
         const input = document.getElementById('player-name-input');
+        const scoreNumEl = document.getElementById('entry-score-num');
+        const form = document.getElementById('score-entry-form');
+
+        if (scoreNumEl) scoreNumEl.textContent = Math.floor(score).toLocaleString();
+        presetCallsignIndex = 0;
         input.value = '';
         overlay.classList.remove('hidden');
-        // Focus after a brief delay so it catches properly
-        setTimeout(() => input.focus(), 100);
+        updateCursorVisibility();
 
-        const submitName = () => {
-            const name = input.value.trim() || 'Anonymous';
+        setTimeout(() => {
+            input.focus();
+            input.select();
+        }, 60);
+
+        const submitName = (ev) => {
+            if (ev) ev.preventDefault();
+            if (overlay.classList.contains('hidden')) return;
+            playSound(sfxUiClick);
+            const name = input.value.trim() || 'LEO';
             overlay.classList.add('hidden');
-            scores.push({ name, score });
-            scores.sort((a, b) => b.score - a.score);
-            if (scores.length > 12) scores.pop();
-            saveHighScores(scores);
+            addHighScoreEntry(name, score);
+            updateHUD();
             showHighScoreModal(true);
         };
 
+        if (form) {
+            form.onsubmit = submitName;
+        }
         document.getElementById('name-submit-btn').onclick = submitName;
-        input.onkeydown = (ev) => { if (ev.key === 'Enter') submitName(); };
     } else {
-        // Score doesn't qualify — just show the board
-        showHighScoreModal(true);
+        lastInsertedScoreId = null;
     }
 }
 
@@ -2820,3 +3138,357 @@ function updateAutoAimIndicator() {
 
 // Close button for highscore modal
 document.getElementById('highscore-close').addEventListener('click', () => { playSound(sfxUiClick); closeHighScoreModal(); });
+
+// ---------------------------------------------------------------------
+// Cursor Visibility & Modal / Menu Focus Navigation
+// ---------------------------------------------------------------------
+
+function updateCursorVisibility() {
+    const hasOpenModal = isModalOpen('info-modal') || isModalOpen('highscore-modal') || isNameEntryActive();
+    const isActiveGameplay = (gameState === STATE_PLAYING) && !hasOpenModal;
+    canvasWrapper.classList.toggle('playing', isActiveGameplay);
+    document.body.classList.toggle('in-game-playing', isActiveGameplay);
+    document.body.classList.toggle('hide-cursor', isActiveGameplay);
+}
+
+let currentFocusIndex = 0;
+
+function getActiveMenuElements() {
+    if (isNameEntryActive()) {
+        const btn = document.getElementById('name-submit-btn');
+        return btn ? [btn] : [];
+    }
+    if (isModalOpen('info-modal')) {
+        return [document.getElementById('info-close-btn')].filter(Boolean);
+    }
+    if (isModalOpen('highscore-modal')) {
+        return [document.getElementById('highscore-close')].filter(Boolean);
+    }
+    if (gameState === STATE_PAUSED) {
+        return [
+            document.getElementById('pause-continue-btn'),
+            document.getElementById('pause-restart-btn'),
+            document.getElementById('sfx-toggle'),
+            document.getElementById('music-toggle'),
+            document.getElementById('pause-info-btn'),
+            document.getElementById('pause-highscore-btn'),
+            document.getElementById('pause-menu-btn')
+        ].filter(Boolean);
+    }
+    if (gameState === STATE_LEVEL_COMPLETE) {
+        if (!winScreen.classList.contains('hidden')) {
+            return [
+                document.getElementById('win-restart-btn'),
+                document.getElementById('win-highscore-btn'),
+                document.getElementById('win-menu-btn')
+            ].filter(Boolean);
+        }
+        return [
+            document.getElementById('next-level-btn'),
+            document.getElementById('lc-menu-btn')
+        ].filter(Boolean);
+    }
+    if (gameState === STATE_GAMEOVER) {
+        return [
+            document.getElementById('restart-btn'),
+            document.getElementById('gameover-highscore-btn'),
+            document.getElementById('main-menu-btn')
+        ].filter(Boolean);
+    }
+    if (gameState === STATE_INTRO) {
+        return [
+            document.getElementById('start-btn'),
+            document.getElementById('highscores-btn'),
+            document.getElementById('info-btn')
+        ].filter(Boolean);
+    }
+    return [];
+}
+
+function clearMenuFocus() {
+    document.querySelectorAll('.gamepad-focus').forEach(el => el.classList.remove('gamepad-focus'));
+}
+
+function syncMenuFocus() {
+    clearMenuFocus();
+    const items = getActiveMenuElements();
+    if (items.length === 0) return;
+    currentFocusIndex = 0;
+    items[0].classList.add('gamepad-focus');
+}
+
+function moveMenuFocus(delta) {
+    const items = getActiveMenuElements();
+    if (items.length === 0) return;
+    clearMenuFocus();
+    currentFocusIndex = (currentFocusIndex + delta + items.length) % items.length;
+    const target = items[currentFocusIndex];
+    target.classList.add('gamepad-focus');
+    playSound(sfxUiClick);
+}
+
+function activateFocusedMenuElement() {
+    const items = getActiveMenuElements();
+    if (items.length === 0) return;
+    if (currentFocusIndex < 0 || currentFocusIndex >= items.length) {
+        currentFocusIndex = 0;
+    }
+    const target = items[currentFocusIndex];
+    if (target) {
+        target.click();
+    }
+}
+
+// ---------------------------------------------------------------------
+// HTML5 Gamepad Controller Support (1-Player + Full Menu Navigation)
+// ---------------------------------------------------------------------
+
+const gpState = {
+    connectedCount: -1,
+    moveX: 0,
+    moveY: 0,
+    aimActive: false,
+    aimAngle: 0,
+    shootDown: false,
+    lastActiveAt: 0,
+    prevActions: {},
+    holdTimer: 0,
+    repeatTimer: 0
+};
+
+function isGpButtonPressed(gp, index, threshold = 0.3) {
+    if (!gp || !gp.buttons || !gp.buttons[index]) return false;
+    const btn = gp.buttons[index];
+    return Boolean(btn.pressed || (typeof btn.value === 'number' && btn.value > threshold));
+}
+
+function triggerGamepadRumble(durationMs = 120, weakMagnitude = 0.5, strongMagnitude = 0.7) {
+    try {
+        if (!navigator.getGamepads) return;
+        const pads = Array.from(navigator.getGamepads()).filter(Boolean);
+        const gp = pads[0];
+        if (gp && gp.vibrationActuator && typeof gp.vibrationActuator.playEffect === 'function') {
+            gp.vibrationActuator.playEffect('dual-rumble', {
+                startDelay: 0,
+                duration: durationMs,
+                weakMagnitude,
+                strongMagnitude
+            }).catch(() => {});
+        }
+    } catch {
+        // Ignore rumble errors on unsupported controllers
+    }
+}
+
+function updateGamepadBadges(count) {
+    const splashBadge = document.getElementById('splash-gamepad-badge');
+    const hudBadge = document.getElementById('hud-gamepad-badge');
+    const isConnected = count > 0;
+
+    if (splashBadge) {
+        splashBadge.textContent = isConnected ? '🎮 1 Controller Ready (P1)' : '🎮 No Pad (Plug & Press)';
+        splashBadge.classList.toggle('ready', isConnected);
+    }
+    if (hudBadge) {
+        hudBadge.textContent = isConnected ? '🎮 Pad Ready' : '🎮 No Pad';
+        hudBadge.classList.toggle('ready', isConnected);
+    }
+}
+
+window.addEventListener('gamepadconnected', () => {
+    const pads = navigator.getGamepads ? Array.from(navigator.getGamepads()).filter(Boolean) : [];
+    gpState.connectedCount = pads.length;
+    updateGamepadBadges(pads.length);
+});
+
+window.addEventListener('gamepaddisconnected', () => {
+    const pads = navigator.getGamepads ? Array.from(navigator.getGamepads()).filter(Boolean) : [];
+    gpState.connectedCount = pads.length;
+    updateGamepadBadges(pads.length);
+});
+
+function pollGamepads(dt) {
+    if (!navigator.getGamepads) return;
+    const pads = Array.from(navigator.getGamepads()).filter(Boolean);
+    if (pads.length !== gpState.connectedCount) {
+        gpState.connectedCount = pads.length;
+        updateGamepadBadges(pads.length);
+    }
+
+    const gp = pads[0];
+    if (!gp) {
+        gpState.moveX = 0;
+        gpState.moveY = 0;
+        gpState.aimActive = false;
+        gpState.shootDown = false;
+        gpState.prevActions = {};
+        return;
+    }
+
+    const axisX = gp.axes && gp.axes.length > 0 ? gp.axes[0] : 0;
+    const axisY = gp.axes && gp.axes.length > 1 ? gp.axes[1] : 0;
+
+    // On raw 0810:0001 Twin USB Gamepads (non-standard mapping), axes[2] is ABS_Z (Right Stick Y) and axes[3] is ABS_RZ (Right Stick X)
+    const isRawTwinUsb = gp.mapping !== 'standard' && /0810/i.test(gp.id || '');
+    const rawAxis2 = gp.axes && gp.axes.length > 2 ? gp.axes[2] : 0;
+    const rawAxis3 = gp.axes && gp.axes.length > 3 ? gp.axes[3] : 0;
+    const rightX = isRawTwinUsb ? rawAxis3 : rawAxis2;
+    const rightY = isRawTwinUsb ? rawAxis2 : rawAxis3;
+
+    const hatX = (gp.mapping !== 'standard' && gp.axes && gp.axes.length > 4) ? gp.axes[4] : 0;
+    const hatY = (gp.mapping !== 'standard' && gp.axes && gp.axes.length > 5) ? gp.axes[5] : 0;
+
+    const dpadUp = isGpButtonPressed(gp, 12) || hatY < -0.5;
+    const dpadDown = isGpButtonPressed(gp, 13) || hatY > 0.5;
+    const dpadLeft = isGpButtonPressed(gp, 14) || hatX < -0.5;
+    const dpadRight = isGpButtonPressed(gp, 15) || hatX > 0.5;
+
+    // Left Stick / D-Pad controls movement strictly
+    let mx = Math.abs(axisX) > 0.35 ? axisX : 0;
+    let my = Math.abs(axisY) > 0.35 ? axisY : 0;
+    if (dpadLeft) mx = -1;
+    if (dpadRight) mx = 1;
+    if (dpadUp) my = -1;
+    if (dpadDown) my = 1;
+
+    gpState.moveX = mx;
+    gpState.moveY = my;
+
+    // Right Stick controls aiming direction (player rotation) when auto-aim is OFF
+    const rightMag = Math.sqrt(rightX * rightX + rightY * rightY);
+    gpState.aimActive = rightMag > 0.35;
+    if (gpState.aimActive) {
+        gpState.aimAngle = Math.atan2(rightY, rightX);
+    }
+
+    // Actions mapping per Gamepad Controller Support specification
+    const actions = {
+        menuUp: axisY < -0.48 || dpadUp,
+        menuDown: axisY > 0.48 || dpadDown,
+        menuLeft: axisX < -0.48 || dpadLeft,
+        menuRight: axisX > 0.48 || dpadRight,
+        // Button 3 (buttons[2], blue button) primary confirm + Button 1 (buttons[0]) fallback
+        menuConfirm: isGpButtonPressed(gp, 2) || isGpButtonPressed(gp, 0),
+        // Button 2 (buttons[1]) back/cancel
+        menuBack: isGpButtonPressed(gp, 1),
+        // Start button (buttons[9] or buttons[8]) strictly for pause/resume
+        pause: isGpButtonPressed(gp, 9) || isGpButtonPressed(gp, 8),
+        // Gameplay attacks
+        shoot: isGpButtonPressed(gp, 0) || isGpButtonPressed(gp, 7, 0.3) || isGpButtonPressed(gp, 2),
+        grenade: isGpButtonPressed(gp, 1) || isGpButtonPressed(gp, 5),
+        // Auto-Aim toggles strictly on Button 4 (buttons[3])
+        autoAim: isGpButtonPressed(gp, 3) && !gpState.aimActive
+    };
+
+    const justPressed = {};
+    for (const k of Object.keys(actions)) {
+        justPressed[k] = Boolean(actions[k] && !gpState.prevActions[k]);
+    }
+    gpState.prevActions = { ...actions };
+
+    const anyInput = Object.values(actions).some(Boolean) || Math.abs(mx) > 0.1 || Math.abs(my) > 0.1 || gpState.aimActive;
+    if (anyInput) {
+        gpState.lastActiveAt = performance.now();
+        initAudio();
+    }
+
+    // 1. Name Entry Overlay Gamepad Controls
+    if (isNameEntryActive()) {
+        if (justPressed.menuLeft || justPressed.menuRight) {
+            const dir = justPressed.menuRight ? 1 : -1;
+            presetCallsignIndex = (presetCallsignIndex + dir + PRESET_CALLSIGNS.length) % PRESET_CALLSIGNS.length;
+            const input = document.getElementById('player-name-input');
+            if (input) input.value = PRESET_CALLSIGNS[presetCallsignIndex];
+            playSound(sfxUiClick);
+        }
+        if (justPressed.menuConfirm) {
+            const submitBtn = document.getElementById('name-submit-btn');
+            if (submitBtn) submitBtn.click();
+        }
+        return;
+    }
+
+    // 2. Open Sub-Modals (Info Modal / High Scores Modal)
+    if (isModalOpen('info-modal')) {
+        if (actions.menuUp || actions.menuDown) {
+            const body = document.getElementById('info-modal-body');
+            if (body) body.scrollTop += (actions.menuDown ? 260 : -260) * dt;
+        }
+        if (justPressed.menuConfirm || justPressed.menuBack) {
+            playSound(sfxUiClick);
+            closeInfoModal();
+        }
+        return;
+    }
+
+    if (isModalOpen('highscore-modal')) {
+        if (justPressed.menuConfirm || justPressed.menuBack) {
+            playSound(sfxUiClick);
+            closeHighScoreModal();
+        }
+        return;
+    }
+
+    // 3. Pause / Resume via Start Button
+    if (justPressed.pause) {
+        if (gameState === STATE_PLAYING || gameState === STATE_PAUSED) {
+            playSound(sfxUiClick);
+            togglePause();
+            return;
+        }
+    }
+
+    // 4. Non-Playing Screens (Splash, Pause, Level Complete, Victory, Game Over)
+    if (gameState !== STATE_PLAYING) {
+        if (gameState === STATE_PAUSED && justPressed.menuBack) {
+            playSound(sfxUiClick);
+            resumeGame();
+            return;
+        }
+
+        const dirHeld = actions.menuUp || actions.menuDown || actions.menuLeft || actions.menuRight;
+        const dirJust = justPressed.menuUp || justPressed.menuDown || justPressed.menuLeft || justPressed.menuRight;
+        const step = (actions.menuDown || actions.menuRight) ? 1 : -1;
+
+        if (dirJust) {
+            moveMenuFocus(step);
+            gpState.holdTimer = 0;
+            gpState.repeatTimer = 0;
+        } else if (dirHeld) {
+            gpState.holdTimer += dt;
+            if (gpState.holdTimer >= 0.36) {
+                gpState.repeatTimer += dt;
+                if (gpState.repeatTimer >= 0.15) {
+                    gpState.repeatTimer = 0;
+                    moveMenuFocus(step);
+                }
+            }
+        } else {
+            gpState.holdTimer = 0;
+            gpState.repeatTimer = 0;
+        }
+
+        if (justPressed.menuConfirm) {
+            activateFocusedMenuElement();
+        }
+        return;
+    }
+
+    // 5. Active Gameplay Controls
+    gpState.shootDown = actions.shoot;
+    if (justPressed.grenade) {
+        fireGrenade();
+    }
+    if (justPressed.autoAim) {
+        autoAimEnabled = !autoAimEnabled;
+        updateAutoAimIndicator();
+    }
+}
+
+// Initialize focus and start persistent master loop immediately
+syncMenuFocus();
+updateGamepadBadges(0);
+loopStarted = true;
+lastTime = performance.now();
+requestAnimationFrame(gameLoop);
+

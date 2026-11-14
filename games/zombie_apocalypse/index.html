@@ -12,7 +12,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Fredoka+One&family=Outfit:wght@400;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=4">
+    <script src="/flask_sync.js"></script>
 </head>
 
 <body>
@@ -78,20 +79,41 @@
                             </div>
                         </div>
                     </div>
-                    <div id="level-badge">
-                        <span id="level-label">LEVEL 1</span>
-                        <span id="level-name-label">CITY STREETS</span>
-                    </div>
-                    <div id="health-container">
-                        <div id="health-bar">
-                            <div id="health-bar-fill"></div>
-                            <div id="health-bar-glow"></div>
+                    <div id="hud-center-cluster">
+                        <div id="level-badge">
+                            <span id="level-label">LEVEL 1</span>
+                            <span id="level-name-label">CITY STREETS</span>
                         </div>
-                        <span id="health-text">HP: 100%</span>
+                        <div id="hud-score-cluster">
+                            <div class="hud-score-pill">
+                                <span class="hud-mini-label">SCORE</span>
+                                <span id="hud-score-val" class="hud-mini-val">0</span>
+                            </div>
+                            <div class="hud-score-pill">
+                                <span class="hud-mini-label">BEST</span>
+                                <span id="hud-best-val" class="hud-mini-val">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="hud-right-cluster">
+                        <div id="health-container">
+                            <div id="health-bar">
+                                <div id="health-bar-fill"></div>
+                                <div id="health-bar-glow"></div>
+                            </div>
+                            <span id="health-text">HP: 100%</span>
+                        </div>
+                        <div id="hud-action-btns">
+                            <button id="hud-info-btn" class="hud-icon-btn" title="How to Play & Info (I)" aria-label="Game Info">&#8505;</button>
+                            <button id="hud-pause-btn" class="hud-icon-btn" title="Pause Game (Esc / P)" aria-label="Pause Game">&#9208;</button>
+                        </div>
                     </div>
                 </div>
                 <div id="hud-bottom">
-                    <div id="auto-aim-indicator">AUTO-AIM: ON</div>
+                    <div class="hud-bottom-left-pills">
+                        <div id="auto-aim-indicator">AUTO-AIM: ON</div>
+                        <div id="hud-gamepad-badge" class="gamepad-badge">🎮 No Pad</div>
+                    </div>
                     <div id="coins-container" class="hud-panel">
                         <svg viewBox="0 0 24 24" class="hud-icon coin-icon spinning-coin-icon">
                             <circle cx="12" cy="12" r="10" fill="#ffd700" stroke="#b8860b" stroke-width="2" />
@@ -127,79 +149,89 @@
                 <canvas id="minimap" width="240" height="200"></canvas>
             </div>
 
+            <!-- SPLASH / START SCREEN -->
             <div id="intro-screen" class="overlay-screen">
-                <div class="overlay-content">
+                <div class="overlay-content splash-content">
                     <h1 class="glitch-title" data-text="ZOMBIE APOCALYPSE">Z🧟MBIE APOCALYPSE</h1>
                     <p class="subtitle">A 2D Apocalyptic Survival Shooter</p>
+                    <div id="splash-gamepad-badge" class="gamepad-badge splash-pad-badge">🎮 No Pad (Plug &amp; Press)</div>
                     <div class="instructions-panel">
-                        <h2>Controls</h2>
+                        <h2>Quick Controls</h2>
                         <ul>
                             <li><span class="key">W</span><span class="key">A</span><span class="key">S</span><span
-                                    class="key">D</span> / <span class="key">&#8593;</span><span
-                                    class="key">&#8595;</span><span class="key">&#8592;</span><span
-                                    class="key">&#8594;</span> &nbsp; Move Leo</li>
-                            <li><span class="key">Space</span> &nbsp; Shoot (Infinite Ammo)</li>
-                            <li><span class="key">E</span> / <span class="key">G</span> &nbsp; Throw Grenade <span
-                                    class="lock-hint">(Unlocks at 50 Coins)</span></li>
-                            <li><span class="key">Shift</span> &nbsp; Toggle Auto-Aim <span class="lock-hint">(Default:
-                                    ON)</span></li>
-                            <li><span class="key">Esc</span> / <span class="key">P</span> &nbsp; Pause Menu</li>
+                                    class="key">D</span> / <span class="key">L-Stick</span> &nbsp; Move Leo</li>
+                            <li><span class="key">Space</span> / <span class="key">Btn 1</span> &nbsp; Shoot (Infinite Ammo)</li>
+                            <li><span class="key">E</span> / <span class="key">G</span> / <span class="key">Btn 2</span> &nbsp; Throw Grenade <span
+                                    class="lock-hint">(+1 per 50 Coins)</span></li>
+                            <li><span class="key">Shift</span> / <span class="key">Btn 4</span> &nbsp; Toggle Auto-Aim <span class="lock-hint">(R-Stick Aim when OFF)</span></li>
+                            <li><span class="key">Esc</span> / <span class="key">P</span> / <span class="key">Start</span> &nbsp; Pause Menu</li>
                         </ul>
                         <div class="mission-brief">
                             <span class="key-gold">&#128273;</span> Collect all <strong>4 Keys</strong> per level to
                             advance &mdash; 3 levels total!
                         </div>
                     </div>
-                    <button id="start-btn" class="glow-btn">START HUNTING</button>
-                    <button id="highscores-btn" class="glow-btn secondary-btn"
-                        style="margin-top:12px;">HIGHSCORES</button>
+                    <div class="splash-actions">
+                        <button id="start-btn" class="glow-btn">PLAY GAME</button>
+                        <div class="splash-secondary-row">
+                            <button id="highscores-btn" class="glow-btn secondary-btn">HIGH SCORES</button>
+                            <button id="info-btn" class="glow-btn secondary-btn icon-action-btn" title="How to Play &amp; Info (I)" aria-label="How to Play and Information">&#8505; HOW TO PLAY</button>
+                        </div>
+                    </div>
                 </div>
+                <!-- Mandatory bottom-right version badge -->
+                <div class="version-tag" id="game-version">v1.3.0</div>
             </div>
+
+            <!-- PAUSE MENU -->
             <div id="pause-screen" class="overlay-screen hidden">
-                <div class="overlay-content">
+                <div class="overlay-content pause-content">
                     <h2 class="level-complete-title"
-                        style="color: #38bdf8; text-shadow: 0 0 20px rgba(56,189,248,0.6);">PAUSED</h2>
+                        style="color: #38bdf8; text-shadow: 0 0 20px rgba(56,189,248,0.6);">GAME PAUSED</h2>
                     <p class="death-subtitle">Take a breather, survivor.</p>
-                    <div class="stats-panel">
+                    <div class="stats-panel compact-stats">
                         <div class="stat-row"><span>Zombies Slain:</span><span id="pause-stat-zombies">0</span></div>
-                        <div class="stat-row"><span>Coins:</span><span id="pause-stat-coins">0</span></div>
-                        <div class="stat-row"><span>Time:</span><span id="pause-stat-time">0s</span></div>
-                        <div class="stat-row"><span>Lives:</span><span id="pause-stat-lives">0</span></div>
+                        <div class="stat-row"><span>Total Score / Coins:</span><span id="pause-stat-coins">0</span></div>
+                        <div class="stat-row"><span>Time Elapsed:</span><span id="pause-stat-time">0s</span></div>
+                        <div class="stat-row"><span>Lives Remaining:</span><span id="pause-stat-lives">0</span></div>
                     </div>
 
                     <div class="settings-panel">
                         <div class="setting-row">
                             <span>Sound Effects</span>
-                            <div class="toggle-switch on" id="sfx-toggle">
-                                <div class="toggle-knob"></div>
-                            </div>
+                            <button type="button" class="toggle-switch on" id="sfx-toggle" role="switch" aria-checked="true" aria-label="Toggle Sound Effects">
+                                <span class="toggle-knob"></span>
+                            </button>
                         </div>
                         <div class="setting-row">
                             <span>Music</span>
-                            <div class="toggle-switch on" id="music-toggle">
-                                <div class="toggle-knob"></div>
-                            </div>
+                            <button type="button" class="toggle-switch on" id="music-toggle" role="switch" aria-checked="true" aria-label="Toggle Music">
+                                <span class="toggle-knob"></span>
+                            </button>
                         </div>
                     </div>
 
-                    <button id="pause-continue-btn" class="glow-btn"
-                        style="background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%); box-shadow: 0 0 15px rgba(56,189,248,0.3); margin-bottom: 12px;">RESUME
-                        GAME</button>
-                    <button id="pause-highscore-btn" class="glow-btn secondary-btn" style="margin-bottom: 12px;">HIGH
-                        SCORES</button>
-                    <button id="pause-menu-btn" class="glow-btn secondary-btn">MAIN MENU</button>
+                    <div class="pause-actions-grid">
+                        <button id="pause-continue-btn" class="glow-btn resume-btn">RESUME GAME</button>
+                        <button id="pause-restart-btn" class="glow-btn secondary-btn">RESTART LEVEL</button>
+                        <div class="pause-sub-row">
+                            <button id="pause-info-btn" class="glow-btn secondary-btn">&#8505; HOW TO PLAY</button>
+                            <button id="pause-highscore-btn" class="glow-btn secondary-btn">HIGH SCORES</button>
+                        </div>
+                        <button id="pause-menu-btn" class="glow-btn danger-btn">QUIT TO MENU</button>
+                    </div>
                 </div>
             </div>
 
-
+            <!-- LEVEL COMPLETE SCREEN -->
             <div id="level-complete-screen" class="overlay-screen hidden">
                 <div class="overlay-content">
                     <h2 class="level-complete-title">LEVEL COMPLETE!</h2>
                     <p id="level-complete-subtitle" class="death-subtitle"></p>
                     <div class="stats-panel">
                         <div class="stat-row"><span>Zombies Slain:</span><span id="lc-stat-zombies">0</span></div>
-                        <div class="stat-row"><span>Coins Earned:</span><span id="lc-stat-coins">0</span></div>
-                        <div class="stat-row"><span>Time:</span><span id="lc-stat-time">0s</span></div>
+                        <div class="stat-row"><span>Total Score / Coins:</span><span id="lc-stat-coins">0</span></div>
+                        <div class="stat-row"><span>Zone Time:</span><span id="lc-stat-time">0s</span></div>
                     </div>
                     <button id="next-level-btn" class="glow-btn level-btn" style="margin-bottom:12px;">NEXT LEVEL
                         &#8594;</button>
@@ -207,33 +239,39 @@
                 </div>
             </div>
 
+            <!-- VICTORY SCREEN -->
             <div id="win-screen" class="overlay-screen hidden">
                 <div class="overlay-content">
                     <h2 class="win-title">&#127942; VICTORY!</h2>
                     <p class="death-subtitle">Leo survived all three zones. The apocalypse is over &mdash; for now.</p>
+                    <div id="win-new-hs-badge" class="new-hs-banner hidden">🎉 NEW HIGH SCORE! 🎉</div>
                     <div class="stats-panel">
-                        <div class="stat-row"><span>Total Zombies Slain:</span><span id="win-stat-zombies">0</span>
-                        </div>
-                        <div class="stat-row"><span>Total Coins:</span><span id="win-stat-coins">0</span></div>
-                        <div class="stat-row"><span>Total Time:</span><span id="win-stat-time">0s</span></div>
+                        <div class="stat-row"><span>Final Score (Coins):</span><span id="win-stat-coins">0</span></div>
+                        <div class="stat-row"><span>Total Zombies Slain:</span><span id="win-stat-zombies">0</span></div>
+                        <div class="stat-row"><span>Zones Cleared:</span><span id="win-stat-zones">3 / 3</span></div>
+                        <div class="stat-row"><span>Final Zone Time:</span><span id="win-stat-time">0s</span></div>
                     </div>
-                    <button id="win-restart-btn" class="glow-btn" style="margin-bottom:12px;">PLAY AGAIN</button>
+                    <button id="win-restart-btn" class="glow-btn" style="margin-bottom:10px;">PLAY AGAIN</button>
+                    <button id="win-highscore-btn" class="glow-btn secondary-btn" style="margin-bottom:10px;">HIGH SCORES</button>
                     <button id="win-menu-btn" class="glow-btn secondary-btn">MAIN MENU</button>
                 </div>
             </div>
 
+            <!-- GAME OVER (DEFEAT) SCREEN -->
             <div id="game-over-screen" class="overlay-screen hidden">
                 <div class="overlay-content">
                     <h2 class="death-title">MISSION FAILED</h2>
                     <p class="death-subtitle">Leo was overrun by the horde.</p>
+                    <div id="gameover-new-hs-badge" class="new-hs-banner hidden">🎉 NEW HIGH SCORE! 🎉</div>
                     <div class="stats-panel">
+                        <div class="stat-row"><span>Final Score (Coins):</span><span id="stat-coins">0</span></div>
+                        <div class="stat-row"><span>Highest Zone:</span><span id="stat-zone">Zone 1</span></div>
                         <div class="stat-row"><span>Zombies Terminated:</span><span id="stat-zombies">0</span></div>
-                        <div class="stat-row"><span>Coins Collected:</span><span id="stat-coins">0</span></div>
                         <div class="stat-row"><span>Time Survived:</span><span id="stat-time">0.0s</span></div>
                     </div>
-                    <button id="restart-btn" class="glow-btn restart-btn">REDEPLOY</button>
-                    <button id="main-menu-btn" class="glow-btn secondary-btn" style="margin-top:12px;">MAIN
-                        MENU</button>
+                    <button id="restart-btn" class="glow-btn restart-btn" style="margin-bottom:10px;">PLAY AGAIN</button>
+                    <button id="gameover-highscore-btn" class="glow-btn secondary-btn" style="margin-bottom:10px;">HIGH SCORES</button>
+                    <button id="main-menu-btn" class="glow-btn secondary-btn">MAIN MENU</button>
                 </div>
             </div>
 
@@ -248,29 +286,137 @@
                 </div>
             </div>
 
-            <div id="highscore-modal" class="overlay-screen hidden">
-                <div class="overlay-content">
-                    <h2 class="death-title" style="color:#fbbf24;text-shadow:0 0 15px rgba(251,191,36,0.6);">&#127942;
-                        HIGH SCORES</h2>
-                    <p class="death-subtitle">Top zombie hunters</p>
-                    <ol id="highscore-list" class="highscore-list"></ol>
-                    <button id="highscore-close" class="glow-btn" style="margin-top:20px;">CLOSE</button>
+            <!-- INFORMATION & HOW TO PLAY MODAL -->
+            <div id="info-modal" class="overlay-screen hidden" role="dialog" aria-modal="true" aria-labelledby="info-modal-title" style="z-index:25;">
+                <div class="overlay-content info-modal-card">
+                    <div class="modal-header-row">
+                        <h2 id="info-modal-title" class="info-title">&#8505; GAME GUIDE &amp; INFO</h2>
+                        <button id="info-close-top-btn" class="close-icon-btn" aria-label="Close Guide">&#10005;</button>
+                    </div>
+                    <div id="info-modal-body" class="modal-body-scrollable">
+                        <div class="info-meta-bar">
+                            <span class="info-badge">Version <strong id="info-version-text">v1.3.0</strong></span>
+                            <span class="info-badge">3 Campaign Zones</span>
+                            <span class="info-badge">Gamepad &amp; Keyboard</span>
+                        </div>
+
+                        <section class="info-section">
+                            <h3>Story &amp; Premise</h3>
+                            <p>The nefarious Zombie King has unleashed a glowing undead plague across Leo's hometown! Armed with his trusty blaster, flashlight, and grenades, Leo must fight through the <strong>City Streets</strong>, cross the foggy <strong>Countryside</strong>, and storm the <strong>Castle Interior</strong> to end the apocalypse.</p>
+                        </section>
+
+                        <section class="info-section">
+                            <h3>How to Play &amp; Scoring</h3>
+                            <ul class="info-bullet-list">
+                                <li><strong>Escape the Zone:</strong> Search the map and collect all <strong>4 Golden Keys (&#128273;)</strong> (+100 Score each) to unlock the Escape Gate on the eastern border. Clearing all zombies in a zone reveals any remaining keys on the minimap!</li>
+                                <li><strong>Coins &amp; Grenades:</strong> Every zombie slain drops a Gold Coin (+1 Score). Every <strong>50 Coins</strong> automatically grants <strong>+1 Grenade</strong> (up to 10).</li>
+                                <li><strong>Smash &amp; Loot:</strong> Shoot crates, bins, cars, and chests to uncover temporary power-ups:
+                                    <span class="pu-tag">🔫 Mega Bullets</span>
+                                    <span class="pu-tag">🛡️ Shield (90% DR)</span>
+                                    <span class="pu-tag">⚡ Double Shot</span>
+                                    <span class="pu-tag">🧲 Coin Magnet</span>
+                                    <span class="pu-tag">❤️ Extra Heart</span>
+                                </li>
+                            </ul>
+                        </section>
+
+                        <section class="info-section">
+                            <h3>Controls Reference</h3>
+                            <table class="controls-table">
+                                <thead>
+                                    <tr>
+                                        <th>Action</th>
+                                        <th>Keyboard &amp; Mouse</th>
+                                        <th>Gamepad Controller</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Move Leo</td>
+                                        <td><span class="key">WASD</span> / <span class="key">Arrows</span></td>
+                                        <td>Left Stick / D-Pad</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Shoot Blaster</td>
+                                        <td><span class="key">Space</span> / <span class="key">Left Click</span></td>
+                                        <td>Button 1 (A/Cross) / R2</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Throw Grenade</td>
+                                        <td><span class="key">E</span> / <span class="key">G</span></td>
+                                        <td>Button 2 (B/Circle) / R1</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Toggle Auto-Aim</td>
+                                        <td><span class="key">Shift</span></td>
+                                        <td><strong>Button 4</strong> (Y/Triangle)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Direction of Fire (Auto-Aim OFF)</td>
+                                        <td>Mouse Cursor</td>
+                                        <td><strong>Right Stick</strong> (Player Rotation)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Menu Confirm</td>
+                                        <td><span class="key">Enter</span> / <span class="key">Space</span></td>
+                                        <td><strong>Button 3 (Blue)</strong> / Btn 1</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pause / Resume</td>
+                                        <td><span class="key">Esc</span> / <span class="key">P</span></td>
+                                        <td><strong>Start Button</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    </div>
+                    <button id="info-close-btn" class="glow-btn" style="margin-top:14px;">GOT IT!</button>
                 </div>
             </div>
 
-            <div id="name-entry-overlay" class="overlay-screen hidden" style="z-index:30;">
+            <!-- HIGH SCORES LEADERBOARD MODAL -->
+            <div id="highscore-modal" class="overlay-screen hidden" role="dialog" aria-modal="true" style="z-index:25;">
+                <div class="overlay-content hs-modal-card">
+                    <div class="modal-header-row">
+                        <h2 class="death-title" style="color:#fbbf24;text-shadow:0 0 15px rgba(251,191,36,0.6);font-size:42px;margin-bottom:0;">&#127942; HIGH SCORES</h2>
+                        <button id="highscore-close-top" class="close-icon-btn" aria-label="Close High Scores">&#10005;</button>
+                    </div>
+                    <p class="death-subtitle" style="margin-bottom:14px;">Top 10 Zombie Hunters</p>
+                    <div class="hs-table-wrapper">
+                        <table class="hs-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Hunter</th>
+                                    <th>Score</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="highscore-tbody"></tbody>
+                        </table>
+                    </div>
+                    <button id="highscore-close" class="glow-btn" style="margin-top:16px;">CLOSE</button>
+                </div>
+            </div>
+
+            <!-- NEW HIGH SCORE NAME ENTRY MODAL -->
+            <div id="name-entry-overlay" class="overlay-screen hidden" role="dialog" aria-modal="true" style="z-index:30;">
                 <div class="overlay-content">
-                    <h2 class="death-title" style="color:#fbbf24;font-size:28px;">NEW HIGH SCORE!</h2>
-                    <p class="death-subtitle" style="margin-bottom:20px;">Enter your name for the board</p>
-                    <input id="player-name-input" type="text" maxlength="20" placeholder="Your name..."
-                        class="name-input" />
-                    <button id="name-submit-btn" class="glow-btn" style="margin-top:14px;">SUBMIT</button>
+                    <h2 class="death-title" style="color:#fbbf24;font-size:36px;">🎉 NEW HIGH SCORE! 🎉</h2>
+                    <p class="final-score-banner">Your Score: <strong id="entry-score-num">0</strong></p>
+                    <p class="death-subtitle" style="margin-bottom:14px;">Enter your Call Sign (Max 10 chars):</p>
+                    <form id="score-entry-form">
+                        <input id="player-name-input" type="text" maxlength="10" placeholder="LEO"
+                            class="name-input" autocomplete="off" />
+                        <p class="gamepad-name-hint">🎮 Gamepad: D-Pad ◀ ▶ cycles call signs &bull; Button 3 saves</p>
+                        <button id="name-submit-btn" type="submit" class="glow-btn" style="margin-top:14px;">SAVE SCORE</button>
+                    </form>
                 </div>
             </div>
         </div>
     </main>
-    <script src="levels.js?v=2"></script>
-    <script src="game.js?v=2"></script>
+    <script src="levels.js?v=4"></script>
+    <script src="game.js?v=4"></script>
 </body>
 
 </html>

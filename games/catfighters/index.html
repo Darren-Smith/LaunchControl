@@ -12,6 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="style.css">
+    <script src="/flask_sync.js"></script>
 </head>
 <body>
   <div id="gameWrapper" class="game-wrapper">
@@ -19,10 +20,11 @@
     <header class="top-nav" id="topNav">
       <div class="nav-left">
         <span class="game-brand">🐾 CAT FIGHTERS</span>
+        <span id="gamepadStatusBadge" class="nav-badge gamepad-badge" title="Connect up to 2 USB/Bluetooth game controllers and press any button">🎮 No Pad (Plug & Press)</span>
       </div>
       <div class="nav-right">
         <button id="btnMuteToggle" class="nav-btn" aria-label="Toggle Sound">🔊 Sound: ON</button>
-        <button id="btnPauseToggle" class="nav-btn" aria-label="Pause Game">⏸ Pause [P]</button>
+        <button id="btnPauseToggle" class="nav-btn" aria-label="Pause Game">⏸ Pause [P / Start]</button>
       </div>
     </header>
 
@@ -76,9 +78,12 @@
           <footer class="controls-hint-bar">
             <span><strong>P1:</strong> A/D Move, W Jump, 1-6 Attacks</span>
             <span class="divider">|</span>
-            <span><strong>P2:</strong> ←/→ Move, ↑ Jump, Numpad 1-6 (or Laptop: U,I,O,P,[,])</span>
+            <span><strong>P2:</strong> ←/→ Move, ↑ Jump, Num 1-6 (or U,I,O,P,[,])</span>
+            <span class="divider">|</span>
+            <span><strong>🎮 Pad:</strong> Stick/D-Pad Move &amp; Jump, Btns 1-4 + R1/R2 Attacks</span>
           </footer>
         </div>
+        <div id="game-version" class="version-tag" style="position:absolute;bottom:10px;right:14px;z-index:60;font-family:monospace;font-size:12px;color:rgba(255,255,255,0.65);background:rgba(0,0,0,0.35);padding:2px 8px;border-radius:4px;pointer-events:none;user-select:none;">v1.1.2</div>
       </section>
 
       <!-- Game Over / Victory & Defeat Overlay -->
@@ -121,12 +126,16 @@
     <!-- Bottom Controls Cheat-Sheet Footer -->
     <footer class="bottom-cheat-sheet">
       <div class="cheat-col">
-        <span class="cheat-header red-accent">PLAYER 1 CONTROLS:</span>
-        <span class="cheat-detail">Move: <code>A</code> / <code>D</code> | Jump: <code>W</code> | Attacks: <code>1</code> (Poo) <code>2</code> (Hairball) <code>3</code> (Scratch) <code>4</code> (Litter) <code>5</code> (Poop Bomb) <code>6</code> (Scramble)</span>
+        <span class="cheat-header red-accent">PLAYER 1 (KEYBOARD / PAD 1):</span>
+        <span class="cheat-detail">Move: <code>A</code>/<code>D</code> | Jump: <code>W</code> | Attacks: <code>1</code> (Poo) <code>2</code> (Hairball) <code>3</code> (Scratch) <code>4</code> (Litter) <code>5</code> (Poop Bomb) <code>6</code> (Scramble)</span>
       </div>
       <div class="cheat-col">
-        <span class="cheat-header blue-accent">PLAYER 2 CONTROLS:</span>
-        <span class="cheat-detail">Move: <code>←</code> / <code>→</code> | Jump: <code>↑</code> | Attacks: <code>Num 1-6</code> (or Laptop: <code>U, I, O, P, [, ]</code>)</span>
+        <span class="cheat-header gold-accent">🎮 GAME CONTROLLERS (P1 &amp; P2):</span>
+        <span class="cheat-detail">Move/Jump: <code>Stick</code>/<code>D-Pad</code> | Attacks 1-4: <code>Btn 1-4</code> | Attack 5: <code>R1 / RB</code> | Attack 6: <code>R2 / RT</code></span>
+      </div>
+      <div class="cheat-col">
+        <span class="cheat-header blue-accent">PLAYER 2 (KEYBOARD / PAD 2):</span>
+        <span class="cheat-detail">Move: <code>←</code>/<code>→</code> | Jump: <code>↑</code> | Attacks: <code>Num 1-6</code> (or Laptop: <code>U, I, O, P, [, ]</code>)</span>
       </div>
     </footer>
   </div>
@@ -135,7 +144,7 @@
   <aside id="movelistModal" class="game-modal" aria-labelledby="movelistTitle" role="dialog">
     <div class="modal-content glass-panel">
       <div class="modal-header">
-        <h2 id="movelistTitle" class="modal-title">📖 MOVELIST & ATTACKS GUIDE</h2>
+        <h2 id="movelistTitle" class="modal-title">📖 MOVELIST &amp; CONTROLLER GUIDE</h2>
         <button class="modal-close" aria-label="Close Modal">&times;</button>
       </div>
       <div class="modal-body">
@@ -143,42 +152,42 @@
           <div class="move-card">
             <div class="move-badge">ATTACK 1</div>
             <h3 class="move-name">💩 POO ATTACK</h3>
-            <p class="move-keys">P1: <code>1</code> | P2: <code>Num 1</code> / <code>U</code></p>
+            <p class="move-keys">P1: <code>1</code> | P2: <code>Num 1</code>/<code>U</code> | 🎮 Pad: <code>Btn 1 (A / ✕)</code></p>
             <p class="move-desc">The cat whips around 180°, raises tail high into the air, and launches a comical flying poop projectile straight forward!</p>
           </div>
 
           <div class="move-card special-status">
             <div class="move-badge green-badge">ATTACK 2 (ROOT)</div>
             <h3 class="move-name">🧶 HAIRBALL ATTACK</h3>
-            <p class="move-keys">P1: <code>2</code> | P2: <code>Num 2</code> / <code>I</code></p>
+            <p class="move-keys">P1: <code>2</code> | P2: <code>Num 2</code>/<code>I</code> | 🎮 Pad: <code>Btn 2 (B / ○)</code></p>
             <p class="move-desc">Hacks up a sticky, slimy green hairball. When it hits, it completely <strong>sticks the enemy in place for 5 seconds</strong> (cannot move or jump)!</p>
           </div>
 
           <div class="move-card">
             <div class="move-badge">ATTACK 3</div>
             <h3 class="move-name">🐾 FURIOUS SCRATCH</h3>
-            <p class="move-keys">P1: <code>3</code> | P2: <code>Num 3</code> / <code>O</code></p>
+            <p class="move-keys">P1: <code>3</code> | P2: <code>Num 3</code>/<code>O</code> | 🎮 Pad: <code>Btn 3 (X / □)</code></p>
             <p class="move-desc">Rapid lightning-fast double claw swipe with glowing slash trails. Great close-range combo starter.</p>
           </div>
 
           <div class="move-card">
             <div class="move-badge">ATTACK 4</div>
             <h3 class="move-name">📦 LITTER THROW</h3>
-            <p class="move-keys">P1: <code>4</code> | P2: <code>Num 4</code> / <code>P</code></p>
+            <p class="move-keys">P1: <code>4</code> | P2: <code>Num 4</code>/<code>P</code> | 🎮 Pad: <code>Btn 4 (Y / △)</code></p>
             <p class="move-desc">Cat scoops into the litter box and flings a shotgun spread of 5 clumping litter pebbles covering a wide arc.</p>
           </div>
 
           <div class="move-card special-status">
             <div class="move-badge purple-badge">ATTACK 5 (POISON)</div>
             <h3 class="move-name">💣 POOP GRENADE</h3>
-            <p class="move-keys">P1: <code>5</code> | P2: <code>Num 5</code> / <code>[</code></p>
+            <p class="move-keys">P1: <code>5</code> | P2: <code>Num 5</code>/<code>[</code> | 🎮 Pad: <code>Top R1 / RB</code></p>
             <p class="move-desc">Lobs a bouncing, fused explosive stink-bomb. On detonation, deals blast damage and <strong>poisons the target for 10 seconds (5 damage/sec)</strong>!</p>
           </div>
 
           <div class="move-card special-move">
             <div class="move-badge gold-badge">ATTACK 6 (NEW)</div>
             <h3 class="move-name">🌪️ SCRAMBLE ATTACK</h3>
-            <p class="move-keys">P1: <code>6</code> | P2: <code>Num 6</code> / <code>]</code></p>
+            <p class="move-keys">P1: <code>6</code> | P2: <code>Num 6</code>/<code>]</code> | 🎮 Pad: <code>Top R2 / RT</code></p>
             <p class="move-desc">The cat leaps forward in a furious spinning furball toward the opponent! On hit, inflicts heavy damage and massive knockback.</p>
           </div>
         </div>

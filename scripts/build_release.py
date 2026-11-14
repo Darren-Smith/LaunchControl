@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Build & Release Pipeline for Launch Control.
 
-Compiles standalone executable bundle using PyInstaller, embeds all assets,
-creates .tar.gz distribution package, generates sha256 checksums, and prepares
-release metadata.
+Automatically syncs the latest game files and metadata from AntiGravityProjects
+and LaunchControl, compiles the standalone executable bundle using PyInstaller,
+embeds all assets, creates .tar.gz distribution package, and generates SHA256SUMS.
 """
 import argparse
 import hashlib
@@ -16,8 +16,20 @@ import tarfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+PROJECTS_ROOT = ROOT.parent
+LAUNCH_CONTROL_SRC = PROJECTS_ROOT / "LaunchControl"
 DIST_DIR = ROOT / "dist" / "LaunchControl"
 RELEASE_DIR = ROOT / "release"
+
+SKIP_SYNC_NAMES = {
+    ".git",
+    ".venv",
+    "venv",
+    "node_modules",
+    "__pycache__",
+    ".pytest_cache",
+    "launch_error.log",
+}
 
 
 def sha256_file(path: Path) -> str:
@@ -28,10 +40,100 @@ def sha256_file(path: Path) -> str:
     return h.hexdigest()
 
 
+def sync_from_source():
+    """Sync latest game files and LaunchControl metadata into LaunchControlDist."""
+    print("\n-> Syncing latest LaunchControl metadata & game files from AntiGravityProjects...")
+    src_games_file = LAUNCH_CONTROL_SRC / "games.json"
+    if not src_games_file.exists():
+        print(f"   [!] {src_games_file} not found, skipping source sync.")
+        return
+
+    # Sync version.json if newer in LaunchControl
+    src_ver_file = LAUNCH_CONTROL_SRC / "version.json"
+    if src_ver_file.exists():
+        try:
+            src_ver = json.loads(src_ver_file.read_text(encoding="utf-8"))
+            dst_ver_file = ROOT / "version.json"
+            dst_ver = json.loads(dst_ver_file.read_text(encoding="utf-8")) if dst_ver_file.exists() else {}
+            dst_ver["version"] = src_ver.get("version", dst_ver.get("version", "0.3.0"))
+            dst_ver["notes"] = src_ver.get("notes", dst_ver.get("notes", ""))
+            dst_ver_file.write_text(json.dumps(dst_ver, indent=2) + "\n", encoding="utf-8")
+        except Exception as e:
+            print(f"   [!] Warning syncing version.json: {e}")
+
+    src_games = json.loads(src_games_file.read_text(encoding="utf-8"))
+    dist_games_file = ROOT / "games.json"
+    existing_dist_games = []
+    if dist_games_file.exists():
+        try:
+            existing_dist_games = json.loads(dist_games_file.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+
+    existing_by_title = {g.get("title", "").lower(): g for g in existing_dist_games}
+    updated_dist_games = []
+
+    for sg in src_games:
+        src_dir = Path(sg.get("dir", ""))
+        if not src_dir.exists():
+            continue
+
+        title_key = sg.get("title", "").lower()
+        prev = existing_by_title.get(title_key, {})
+
+        # Keep existing dist slug/dir if present, otherwise derive clean folder slug
+        rel_dir = prev.get("dir") or f"games/{src_dir.name.lower()}"
+        dest_dir = ROOT / rel_dir
+        dest_dir.parent.mkdir(parents=True, exist_ok=True)
+
+        # Copy latest game files (excluding .venv, venv, logs, etc.)
+        if dest_dir.exists():
+            shutil.rmtree(dest_dir)
+        shutil.copytree(
+            src_dir,
+            dest_dir,
+            ignore=lambda d, names: [n for n in names if n in SKIP_SYNC_NAMES or n.startswith(".git")],
+        )
+
+        # Determine entry point (server.py or app.py)
+        entry = "server.py"
+        if (dest_dir / "app.py").exists() and not (dest_dir / "server.py").exists():
+            entry = "app.py"
+        elif prev.get("entry") and (dest_dir / prev["entry"]).exists():
+            entry = prev["entry"]
+
+        game_type = "flask" if (dest_dir / entry).exists() else "static"
+
+        dist_entry = {
+            "id": prev.get("id") or sg.get("id") or src_dir.name.lower(),
+            "title": sg.get("title", src_dir.name),
+            "description": sg.get("description", ""),
+            "dir": rel_dir,
+            "type": game_type,
+            "port": int(sg.get("port", prev.get("port", 8000))),
+            "color": sg.get("color", prev.get("color", "#62a0ea")),
+            "icon": sg.get("icon", prev.get("icon", "🎮")),
+            "version": sg.get("version", prev.get("version", "1.0.0")),
+            "released": sg.get("released", prev.get("released", "2026-11-07")),
+        }
+        if game_type == "flask":
+            dist_entry["entry"] = entry
+
+        updated_dist_games.append(dist_entry)
+        print(f"   Synced {dist_entry['title']} -> {rel_dir} ({game_type}: {entry}, v{dist_entry['version']})")
+
+    dist_games_file.write_text(json.dumps(updated_dist_games, indent=4) + "\n", encoding="utf-8")
+    print(f"-> Updated {dist_games_file} with {len(updated_dist_games)} games.")
+
+
 def main():
     ap = argparse.ArgumentParser(description="Build Launch Control Distribution Release")
     ap.add_argument("--skip-pyinstaller", action="store_true", help="Skip recompiling binary")
+    ap.add_argument("--skip-sync", action="store_true", help="Skip syncing latest game files from AntiGravityProjects")
     args = ap.parse_args()
+
+    if not args.skip_sync:
+        sync_from_source()
 
     v_file = ROOT / "version.json"
     v_data = json.loads(v_file.read_text())

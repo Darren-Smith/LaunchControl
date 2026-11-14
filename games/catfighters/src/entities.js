@@ -172,6 +172,10 @@ class CatFighter {
     window.particles.createDamageNumber(this.x, this.y - this.height, `-${amount}`);
     window.particles.triggerShake(amount > 16 ? 9 : 5);
 
+    if (window.input && !this.isCPU) {
+      window.input.vibrate(this.playerNumber, amount > 16 ? 180 : 100, 0.4, amount > 16 ? 0.85 : 0.5);
+    }
+
     if (this.health <= 0) {
       this.die();
     }
@@ -189,6 +193,9 @@ class CatFighter {
     this.stuckTimer = 0;
     window.audio.playKO();
     window.particles.triggerShake(16);
+    if (window.input && !this.isCPU) {
+      window.input.vibrate(this.playerNumber, 350, 0.8, 1.0);
+    }
   }
 
   triggerWin() {

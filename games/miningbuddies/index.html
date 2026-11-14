@@ -3,52 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diamond Defenders</title>
+    <title>Mining Buddies: Goblin Mine</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="/flask_sync.js"></script>
 </head>
 <body>
-    <div id="game-container">
-        <!-- Background elements for aesthetic -->
-        <div class="bg-gradient"></div>
-        <div class="particles"></div>
-
-        <div id="ui-layer">
-            <div id="top-bar">
-                <div class="stats-panel fighter-stats">
-                    <h2>Fighter</h2>
-                    <div class="health-bar-container">
-                        <div id="fighter-health-fill" class="health-fill"></div>
-                    </div>
+    <div id="game-wrapper">
+        <!-- Top HUD Bar (Docked above canvas so it never obscures gameplay) -->
+        <div id="hud" class="hud-bar hidden">
+            <!-- Miner 1 (Left Side / WASD) -->
+            <div class="stats-panel miner1-stats">
+                <div class="panel-header">
+                    <span class="miner-badge m1-badge">⛏️ MINER 1 (WASD + Space)</span>
+                    <span id="miner1-hp-text" class="hp-text">100/100</span>
                 </div>
-                
-                <div class="goal-panel">
+                <div class="health-bar-container">
+                    <div id="miner1-health-fill" class="health-fill m1-fill"></div>
+                </div>
+            </div>
+
+            <!-- Center Goal & Upgrades Panel -->
+            <div class="goal-panel">
+                <div class="goal-top-row">
                     <div class="diamond-count">
                         <span class="diamond-icon">💎</span>
                         <span id="diamond-counter">0 / 1000</span>
                     </div>
-                    <div class="goal-text">Defeat the Stone Boss!</div>
+                    <div class="score-pill">
+                        <span class="score-label">SCORE</span>
+                        <span id="hud-score">0</span>
+                    </div>
+                    <div class="hud-buttons">
+                        <button id="hud-info-btn" class="hud-icon-btn" title="How to Play (I)" aria-label="Information">ℹ</button>
+                        <button id="hud-pause-btn" class="hud-icon-btn" title="Pause Game (Esc / P)" aria-label="Pause">⏸</button>
+                    </div>
                 </div>
-
-                <div class="stats-panel miner-stats">
-                    <h2>Miner</h2>
-                    <div class="upgrades">
-                        <div id="upgrade-drill1" class="upgrade-icon locked">Drill 1</div>
-                        <div id="upgrade-drill2" class="upgrade-icon locked">Drill 2</div>
-                        <div id="upgrade-robot" class="upgrade-icon locked">Robot</div>
+                <div id="goal-text" class="goal-text">Mine 50 💎 to unlock Drill I — Both Miners Smash Rocks &amp; Monsters!</div>
+                <div class="upgrades-strip">
+                    <div id="upgrade-drill1" class="upgrade-chip locked">50💎 Drill I</div>
+                    <div id="upgrade-drill2" class="upgrade-chip locked">100💎 Drill II</div>
+                    <div id="upgrade-robot" class="upgrade-chip locked">150💎 Auto-Bot</div>
+                    <div id="upgrade-drill3" class="upgrade-chip locked">300💎 Plasma III</div>
+                    <div id="upgrade-overdrive" class="upgrade-chip locked">500💎 Overdrive</div>
+                </div>
+                <!-- Boss Health Bar (Appears when Stone Golem spawns) -->
+                <div id="boss-bar-wrap" class="boss-bar-wrap hidden">
+                    <span class="boss-bar-label">👹 GOBLIN STONE COLOSSUS</span>
+                    <div class="boss-bar-track">
+                        <div id="boss-health-fill" class="boss-health-fill"></div>
                     </div>
                 </div>
             </div>
 
-            <div id="notifications" class="hidden">
-                <h1 id="notification-text">Game Over</h1>
-                <button id="restart-btn" class="glass-btn">Play Again</button>
+            <!-- Miner 2 (Right Side / Arrows) -->
+            <div class="stats-panel miner2-stats">
+                <div class="panel-header">
+                    <span class="miner-badge m2-badge">⛏️ MINER 2 (Arrows + Enter)</span>
+                    <span id="miner2-hp-text" class="hp-text">100/100</span>
+                </div>
+                <div class="health-bar-container">
+                    <div id="miner2-health-fill" class="health-fill m2-fill"></div>
+                </div>
             </div>
         </div>
 
-        <canvas id="gameCanvas"></canvas>
+        <!-- Main Canvas Stage -->
+        <div id="canvas-stage">
+            <canvas id="gameCanvas" width="1200" height="700"></canvas>
+            <!-- Floating Upgrade Banner -->
+            <div id="upgrade-toast" class="upgrade-toast hidden">⛏️ DRILL I UNLOCKED!</div>
+        </div>
+
+        <!-- UI Modal Layer -->
+        <div id="ui-layer">
+            <!-- 1. SPLASH / START SCREEN -->
+            <div id="splash-screen" class="modal-screen active">
+                <div class="modal-card splash-card">
+                    <div class="lantern-badge">🔥 DEEP GOBLIN CAVERNS 🔥</div>
+                    <h1 class="game-title">MINING BUDDIES</h1>
+                    <p class="game-subtitle">Co-Op Goblin Mine &amp; Monster Defense</p>
+
+                    <div class="splash-Loadout-grid">
+                        <div class="loadout-box m1-box">
+                            <h3>👷 Miner 1 (Amber)</h3>
+                            <p><strong>Move:</strong> WASD / Left Stick</p>
+                            <p><strong>Strike Rock &amp; Foe:</strong> Space / Btn 1</p>
+                        </div>
+                        <div class="loadout-box m2-box">
+                            <h3>👷 Miner 2 (Cyan)</h3>
+                            <p><strong>Move:</strong> Arrow Keys / Right Stick</p>
+                            <p><strong>Strike Rock &amp; Foe:</strong> Enter / R1 / Btn 2</p>
+                        </div>
+                    </div>
+
+                    <p class="splash-tip">
+                        Both miners roam the entire cavern, crack diamond &amp; gold ore boulders, and smash Goblin Rock Monsters! Collect <strong>1,000 💎</strong> and defeat the <strong>Stone Colossus</strong> to win!
+                    </p>
+
+                    <div class="menu-actions">
+                        <button id="btn-play" class="ui-btn primary" data-nav="splash">⛏️ Enter the Mine</button>
+                        <button id="btn-high-scores" class="ui-btn" data-nav="splash">🏆 High Scores</button>
+                        <button id="btn-info" class="ui-btn" data-nav="splash" title="How to Play &amp; Info">ℹ How to Play</button>
+                    </div>
+                </div>
+                <!-- Mandatory bottom-right version badge -->
+                <div class="version-tag" id="game-version">v2.0.1</div>
+            </div>
+
+            <!-- 2. PAUSE MENU MODAL -->
+            <div id="pause-modal" class="modal-screen hidden" role="dialog" aria-modal="true">
+                <div class="modal-card menu-card">
+                    <h2>⏸ Expedition Paused</h2>
+                    <div class="pause-menu-actions">
+                        <button id="btn-pause-resume" class="ui-btn primary" data-nav="pause">▶ Resume Mining</button>
+                        <button id="btn-pause-restart" class="ui-btn" data-nav="pause">🔄 Restart Expedition</button>
+                        <div class="setting-row">
+                            <span>🔊 Sound Effects</span>
+                            <button id="toggle-sfx" class="toggle-btn on" data-nav="pause">ON</button>
+                        </div>
+                        <div class="setting-row">
+                            <span>🎵 Cavern Ambience</span>
+                            <button id="toggle-music" class="toggle-btn on" data-nav="pause">ON</button>
+                        </div>
+                        <button id="btn-pause-info" class="ui-btn" data-nav="pause">ℹ How to Play &amp; Controls</button>
+                        <button id="btn-pause-scores" class="ui-btn" data-nav="pause">🏆 High Scores</button>
+                        <button id="btn-pause-quit" class="ui-btn danger" data-nav="pause">🚪 Quit to Title</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. INFORMATION & HOW-TO-PLAY MODAL -->
+            <div id="info-modal" class="modal-screen hidden" role="dialog" aria-modal="true">
+                <div class="modal-card info-card">
+                    <div class="modal-header">
+                        <h2>📖 Miner's Field Guide</h2>
+                        <button class="close-modal-btn" id="btn-info-close" data-nav="info" aria-label="Close">✕</button>
+                    </div>
+                    <div class="modal-body scrollable">
+                        <div class="info-meta">
+                            <span class="badge">Build <span class="info-version-text">v2.0.1</span></span>
+                            <span class="badge">1–2 Players Co-Op</span>
+                        </div>
+
+                        <section class="info-section">
+                            <h3>Objective &amp; Goblin Mine Mechanics</h3>
+                            <p>Venture into the flickering lantern-lit Goblin Mines! <strong>Both Miner 1 and Miner 2 carry heavy pickaxes/drills</strong> that can shatter diamond-bearing rocks <em>and</em> bash invading Rock Goblins.</p>
+                            <ul>
+                                <li><strong>Ore &amp; Minecarts:</strong> Standard slate rocks yield <strong>1 💎</strong>, rich Gold-Vein boulders yield <strong>4 💎</strong>, and Crystal Clusters near the rail carts yield <strong>6 💎</strong>.</li>
+                                <li><strong>Upgrades:</strong> Unlock shared upgrades at <strong>50 💎</strong> (Drill I), <strong>100 💎</strong> (Drill II), <strong>150 💎</strong> (Clockwork Auto-Bot), <strong>300 💎</strong> (Plasma Drill III), and <strong>500 💎</strong> (Minecart Overdrive).</li>
+                                <li><strong>Buddy Revive:</strong> If a miner hits 0 HP, they drop to one knee for 5 seconds (or stand up twice as fast if their buddy stands nearby). The run only ends if both miners are downed at once!</li>
+                                <li><strong>Victory:</strong> Defeat the <strong>Goblin Stone Colossus</strong> (spawns at 200 💎) AND fill the minecart quota of <strong>1,000 💎</strong>!</li>
+                            </ul>
+                        </section>
+
+                        <section class="info-section">
+                            <h3>Controls Reference</h3>
+                            <table class="controls-table">
+                                <thead>
+                                    <tr><th>Action</th><th>Miner 1 (Amber)</th><th>Miner 2 (Cyan)</th><th>Gamepad (1 or 2 Pads)</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Move</td><td><code>W A S D</code></td><td><code>Arrow Keys</code></td><td>L-Stick / D-Pad (Pad 2 or R-Stick)</td></tr>
+                                    <tr><td>Swing Pick / Drill</td><td><code>Space</code></td><td><code>Enter</code> / <code>/</code></td><td>Btn 1 / Btn 3 / R1 / R2</td></tr>
+                                    <tr><td>Pause / Resume</td><td colspan="2"><code>Escape</code> or <code>P</code></td><td><code>Start</code> Button</td></tr>
+                                    <tr><td>Field Guide</td><td colspan="2"><code>I</code> or <code>?</code></td><td>Select /HUD Button</td></tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. HIGH SCORE NAME ENTRY MODAL -->
+            <div id="score-entry-modal" class="modal-screen hidden" role="dialog" aria-modal="true">
+                <div class="modal-card menu-card">
+                    <h2>🎉 New Mine Record! 🎉</h2>
+                    <p class="final-score-display">Expedition Score: <strong id="entry-score-num">0</strong></p>
+                    <form id="score-entry-form">
+                        <label for="player-name-input">Enter Both Miners' Names (e.g. Amy and Joe):</label>
+                        <input type="text" id="player-name-input" maxlength="20" placeholder="Amy and Joe" required autocomplete="off" />
+                        <div class="entry-actions">
+                            <button type="submit" id="btn-save-score" class="ui-btn primary" data-nav="entry">💾 Save Record</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 5. HIGH SCORES LEADERBOARD MODAL -->
+            <div id="scores-modal" class="modal-screen hidden" role="dialog" aria-modal="true">
+                <div class="modal-card scores-card">
+                    <div class="modal-header">
+                        <h2>🏆 Guild Hall Leaderboard</h2>
+                        <button class="close-modal-btn" id="btn-scores-close" data-nav="scores" aria-label="Close">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="scores-table">
+                            <thead>
+                                <tr><th>Rank</th><th>Miners</th><th>Score</th><th>Diamonds</th><th>Date</th></tr>
+                            </thead>
+                            <tbody id="scores-tbody"></tbody>
+                        </table>
+                    </div>
+                    <div class="modal-actions">
+                        <button id="btn-scores-back" class="ui-btn primary" data-nav="scores">Back</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. VICTORY / GAME OVER MODAL -->
+            <div id="game-over-modal" class="modal-screen hidden" role="dialog" aria-modal="true">
+                <div class="modal-card gameover-card">
+                    <h1 id="notification-text">VICTORY!</h1>
+                    <p id="gameover-subtitle" class="gameover-subtitle">The Goblin Mine's riches are yours!</p>
+
+                    <div class="stats-summary">
+                        <div class="summary-row"><span>Final Score</span> <strong id="summary-score">0</strong></div>
+                        <div class="summary-row"><span>Diamonds Mined</span> <strong id="summary-diamonds">0 / 1000</strong></div>
+                        <div class="summary-row"><span>Rock Monsters Smashed</span> <strong id="summary-kills">0</strong></div>
+                        <div class="summary-row"><span>Expedition Time</span> <strong id="summary-time">0:00</strong></div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button id="restart-btn" class="ui-btn primary" data-nav="gameover">⛏️ Play Again</button>
+                        <button id="btn-gameover-scores" class="ui-btn" data-nav="gameover">🏆 High Scores</button>
+                        <button id="btn-gameover-menu" class="ui-btn" data-nav="gameover">🚪 Main Menu</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="module" src="js/main.js"></script>

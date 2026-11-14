@@ -1,5 +1,5 @@
 {
-  "version": "0.2.1",
+  "version": "1.1.0",
   "commit": "",
-  "notes": "Hide edit button on bundled games in release build; guard command handling and port-9000 root check."
+  "notes": "Launch Control v1.1.0: Added CharaGen (2D Character Studio) and Survival (Top-down room adventure). Includes 17 full games, updated game versioning, optimized asset footprints, and persistent user save state isolation."
 }

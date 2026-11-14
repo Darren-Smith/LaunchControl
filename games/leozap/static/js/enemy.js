@@ -17,13 +17,13 @@ export default class Enemy {
         // Behaviour flags
         this.bounceOffAll = false; // Flies: bounce all four walls, never leave screen
         this.crossesScreen = false; // Space Cows: enter from side & exit the other
-        this.shootsBack = false; // Alien King: fires projectiles at player
+        this.shootsBack = false; // Alien Knight & Alien King (Boss): fire projectiles at player
 
         // Fly direction-nudge timer
         this.dirTimer = 0;
         this.dirInterval = 2000 + Math.random() * 2000;
 
-        // Alien King shoot timer
+        // Alien Knight / Alien King (Boss) shoot timer
         this.shootTimer = 0;
         this.shootInterval = 2500; // ms between shots
 
@@ -77,7 +77,14 @@ export default class Enemy {
                 break;
 
             case 'boss':
-                this.image.src = 'assets/images/boss.png';
+                // Alien King (Boss) — supports alien_king.png or boss.png
+                this.image.onerror = () => {
+                    if (!this._triedBossFallback) {
+                        this._triedBossFallback = true;
+                        this.image.src = 'assets/images/boss.png';
+                    }
+                };
+                this.image.src = 'assets/images/alien_king.png';
                 this.speedY = 0.5;
                 this.speedX = 1.2;
                 this.health = 50;
@@ -85,9 +92,11 @@ export default class Enemy {
                 this.damage = 40;
                 this.width = 128;
                 this.height = 128;
+                this.shootsBack = true;
+                this.shootInterval = 3000; // 6-bullet purple arc spray every 3 seconds
                 break;
 
-            // ── NEW: Slow Fly ───────────────────────────────────────────────
+            // ── Slow Fly ────────────────────────────────────────────────────
             // Small damage. Buzzes in loops. Bounces all walls. Never leaves screen.
             case 'slow_fly':
                 this.image.src = 'assets/images/slow_fly.png';
@@ -102,7 +111,7 @@ export default class Enemy {
                 this.dirInterval = 2000 + Math.random() * 2000;
                 break;
 
-            // ── NEW: Fast Fly ───────────────────────────────────────────────
+            // ── Fast Fly ────────────────────────────────────────────────────
             // Same as slow fly but zippier & harder to hit.
             case 'fast_fly':
                 this.image.src = 'assets/images/fast_fly.png';
@@ -117,10 +126,10 @@ export default class Enemy {
                 this.dirInterval = 800 + Math.random() * 1200;
                 break;
 
-            // ── NEW: Alien King ─────────────────────────────────────────────
-            // Bounces side-to-side as it descends. Shoots projectiles at the player.
-            case 'alien_king':
-                this.image.src = 'assets/images/alien_king.png';
+            // ── Alien Knight (formerly Alien King) ──────────────────────────
+            // Bounces side-to-side as it descends. Shoots single projectiles at the player.
+            case 'alien_knight':
+                this.image.src = 'assets/images/alien_knight.png';
                 this.width = 96;
                 this.height = 96;
                 this.speedY = 0.7;
@@ -132,7 +141,7 @@ export default class Enemy {
                 this.shootInterval = 2200;
                 break;
 
-            // ── NEW: Space Cow ──────────────────────────────────────────────
+            // ── Space Cow ───────────────────────────────────────────────────
             // Enters from left or right and plods across the screen.
             // Spawn x < 0  → moving right;  spawn x > canvas.width → moving left.
             case 'space_cow':
@@ -148,7 +157,7 @@ export default class Enemy {
                 this.speedY = 0;
                 break;
 
-            // ── NEW: Blob Alien ─────────────────────────────────────────────
+            // ── Blob Alien ──────────────────────────────────────────────────
             // ~25% screen width. Drops slowly from top. Tanky, excellent points.
             case 'blob_alien':
                 this.image.src = 'assets/images/blob_alien.png';
@@ -171,7 +180,7 @@ export default class Enemy {
     /**
      * @param {number}      deltaTime
      * @param {HTMLCanvasElement} canvas
-     * @param {Player|null} player    — needed for Alien King targeting
+     * @param {Player|null} player    — needed for Alien Knight & Alien King (Boss) targeting
      * @param {Array}       enemyBullets — shared list managed by LevelManager
      */
     update(deltaTime, canvas, player, enemyBullets) {
@@ -196,8 +205,8 @@ export default class Enemy {
             }
         }
 
-        // ── Alien King: side-bounce + shooting ───────────────────────────
-        if (this.type === 'alien_king') {
+        // ── Alien Knight: side-bounce + single aimed shot ────────────────
+        if (this.type === 'alien_knight') {
             if (this.x <= 0 || this.x + this.width >= canvas.width) {
                 this.speedX *= -1;
             }
@@ -211,10 +220,18 @@ export default class Enemy {
             }
         }
 
-        // ── Boss side-bounce ─────────────────────────────────────────────
+        // ── Alien King (Boss): side-bounce + 6-bullet purple arc spray ───
         if (this.type === 'boss') {
             if (this.x <= 0 || this.x + this.width >= canvas.width) {
                 this.speedX *= -1;
+            }
+
+            if (player && enemyBullets) {
+                this.shootTimer += deltaTime;
+                if (this.shootTimer >= this.shootInterval) {
+                    this.shootTimer = 0;
+                    this._fireSprayAtPlayer(player, enemyBullets);
+                }
             }
         }
 
@@ -237,7 +254,7 @@ export default class Enemy {
             }
         } else {
             // Standard enemies fall down; side-bounce where applicable
-            if (this.type !== 'boss' && this.type !== 'alien_king') {
+            if (this.type !== 'boss' && this.type !== 'alien_knight') {
                 if (this.x <= 0 || this.x + this.width >= canvas.width) {
                     this.speedX *= -1;
                 }
@@ -248,7 +265,7 @@ export default class Enemy {
         }
     }
 
-    /** Spawn a projectile aimed at the player */
+    /** Alien Knight: Spawn a single projectile aimed at the player */
     _fireAtPlayer(player, enemyBullets) {
         const cx = this.x + this.width / 2;
         const cy = this.y + this.height;
@@ -265,8 +282,45 @@ export default class Enemy {
             dx: ((tx - cx) / dist) * speed,
             dy: ((ty - cy) / dist) * speed,
             damage: 10,
+            color: '#ff4400',
+            glowColor: '#ff8800',
             markedForDeletion: false
         });
+
+        window.SoundManager?.play('alienShoot');
+    }
+
+    /** Alien King (Boss): Fire 6 purple bullets in an arc toward the player's current location */
+    _fireSprayAtPlayer(player, enemyBullets) {
+        const cx = this.x + this.width / 2;
+        const cy = this.y + this.height * 0.85;
+        const tx = player.x + player.width / 2;
+        const ty = player.y + player.height / 2;
+        const baseAngle = Math.atan2(ty - cy, tx - cx);
+
+        const bulletCount = 6;
+        const totalArcDeg = 60; // 60° total fan (12° between each of the 6 bullets)
+        const startOffsetDeg = -totalArcDeg / 2;
+        const stepDeg = totalArcDeg / (bulletCount - 1);
+        const speed = 3.2;
+
+        for (let i = 0; i < bulletCount; i++) {
+            const offsetRad = (startOffsetDeg + i * stepDeg) * (Math.PI / 180);
+            const angle = baseAngle + offsetRad;
+            enemyBullets.push({
+                x: cx - 6,
+                y: cy - 6,
+                width: 12,
+                height: 12,
+                dx: Math.cos(angle) * speed,
+                dy: Math.sin(angle) * speed,
+                damage: 12,
+                color: '#b829ff',
+                glowColor: '#e066ff',
+                shape: 'orb',
+                markedForDeletion: false
+            });
+        }
 
         window.SoundManager?.play('alienShoot');
     }
@@ -275,13 +329,22 @@ export default class Enemy {
 
     draw(ctx) {
         if (this.image.complete && this.image.naturalWidth !== 0) {
-            ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+            if (this.type === 'space_cow' && this.speedX > 0) {
+                // space_cow.png faces left by default; mirror horizontally when travelling right
+                ctx.save();
+                ctx.translate(this.x + this.width, this.y);
+                ctx.scale(-1, 1);
+                ctx.drawImage(this.image, 0, 0, this.width, this.height);
+                ctx.restore();
+            } else {
+                ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+            }
         } else {
             this._drawPlaceholder(ctx);
         }
 
         // Health bars for tough / boss enemies
-        if (['boss', 'blob_alien', 'alien_king', 'blue_troll'].includes(this.type)) {
+        if (['boss', 'blob_alien', 'alien_knight', 'blue_troll'].includes(this.type)) {
             this._drawHealthBar(ctx);
         }
     }
@@ -292,10 +355,10 @@ export default class Enemy {
             red_martian: '#ff4444',
             green_alien: '#44ff66',
             blue_troll: '#4466ff',
-            boss: '#c0c0c0',
+            boss: '#cc00ff',
             slow_fly: '#aaff00',
             fast_fly: '#ffaa00',
-            alien_king: '#cc00ff',
+            alien_knight: '#6688cc',
             space_cow: '#d4a35a',
             blob_alien: '#00ddaa',
         };
@@ -326,12 +389,18 @@ export default class Enemy {
             ctx.ellipse(this.x + this.width * 0.85, this.y + this.height * 0.3,
                 this.width * 0.2, this.height * 0.15, 0.4, 0, Math.PI * 2);
             ctx.fill();
-        } else if (this.type === 'alien_king') {
-            // Crown silhouette
+        } else if (this.type === 'alien_knight') {
+            // Armored Knight helmet & visor silhouette
+            ctx.fillRect(this.x + 10, this.y + this.height * 0.2, this.width - 20, this.height * 0.7);
+            ctx.fillStyle = '#00ffcc';
+            ctx.fillRect(this.x + 22, this.y + this.height * 0.38, this.width - 44, 10);
+        } else if (this.type === 'boss') {
+            // Alien King crown silhouette
             ctx.fillRect(this.x + 8, this.y + this.height * 0.3, this.width - 16, this.height * 0.6);
-            ctx.fillRect(this.x + this.width * 0.15, this.y, 8, this.height * 0.35);
-            ctx.fillRect(this.x + this.width * 0.45, this.y - 8, 10, this.height * 0.4);
-            ctx.fillRect(this.x + this.width * 0.75, this.y, 8, this.height * 0.35);
+            ctx.fillStyle = '#ffd700';
+            ctx.fillRect(this.x + this.width * 0.15, this.y, 12, this.height * 0.35);
+            ctx.fillRect(this.x + this.width * 0.45, this.y - 8, 14, this.height * 0.4);
+            ctx.fillRect(this.x + this.width * 0.75, this.y, 12, this.height * 0.35);
         } else if (this.type === 'space_cow') {
             ctx.fillRect(this.x, this.y + this.height * 0.2, this.width, this.height * 0.6);
             // Spots

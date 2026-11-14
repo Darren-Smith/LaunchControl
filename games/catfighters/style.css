@@ -76,12 +76,43 @@ body {
   border-bottom: 1px solid var(--panel-border);
 }
 
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
 .game-brand {
   font-family: var(--font-arcade);
   font-size: 14px;
   letter-spacing: 1.5px;
   color: var(--accent-gold);
   text-shadow: 0 0 10px rgba(255, 214, 0, 0.5);
+}
+
+.gamepad-badge {
+  font-family: var(--font-arcade);
+  font-size: 9px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: var(--text-muted);
+  transition: var(--transition-fast);
+}
+
+.gamepad-badge.connected-1 {
+  background: rgba(0, 230, 118, 0.15);
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+  box-shadow: 0 0 10px rgba(0, 230, 118, 0.3);
+}
+
+.gamepad-badge.connected-2 {
+  background: rgba(255, 214, 0, 0.18);
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+  box-shadow: 0 0 12px rgba(255, 214, 0, 0.35);
 }
 
 .nav-right {
@@ -806,6 +837,7 @@ body {
 }
 
 .cheat-header.red-accent { color: var(--p1-red); }
+.cheat-header.gold-accent { color: var(--accent-gold); }
 .cheat-header.blue-accent { color: var(--p2-blue); }
 
 .cheat-detail {
@@ -817,6 +849,23 @@ body {
   padding: 1px 4px;
   border-radius: 3px;
   color: #fff;
+}
+
+/* ==========================================================================
+   Controller Menu Focus & Gameplay Cursor Hiding
+   ========================================================================== */
+
+body.hide-cursor,
+body.hide-cursor * {
+  cursor: none !important;
+}
+
+.gamepad-focus {
+  outline: 3px solid var(--accent-gold) !important;
+  outline-offset: 2px;
+  box-shadow: 0 0 18px rgba(255, 214, 0, 0.75), 0 0 6px #ffffff !important;
+  transform: translateY(-2px) scale(1.02);
+  z-index: 2;
 }
 
 /* ==========================================================================

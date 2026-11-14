@@ -316,12 +316,94 @@ function wrapEntityBounds(entity) {
     if (entity.position.z < -bound) entity.position.z += bound * 2;
 }
 
+
+// Gamepad Controller Support
+const gpBadge = document.createElement('div');
+gpBadge.id = 'gp-badge';
+gpBadge.className = 'gp-status-badge';
+gpBadge.style.cssText = 'position:fixed;bottom:10px;left:14px;';
+gpBadge.textContent = '🎮 No Pad (Plug & Press)';
+document.body.appendChild(gpBadge);
+
+const pauseBanner = document.createElement('div');
+pauseBanner.id = 'pause-banner';
+pauseBanner.style.cssText = 'display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);color:#fff;font-family:sans-serif;z-index:100;align-items:center;justify-content:center;flex-direction:column;gap:12px;';
+pauseBanner.innerHTML = '<h1 style="font-size:48px;margin:0;">PAUSED</h1><p style="font-size:18px;opacity:0.85;">Press Start or Button 3 to Resume</p>';
+document.body.appendChild(pauseBanner);
+
+let gpMoveX = 0;
+let gpMoveZ = 0;
+let prevGpAttack = false;
+let prevGpPause = false;
+let prevGpConfirm = false;
+
+function isGpBtn(gp, idx) {
+    return Boolean(gp && gp.buttons && gp.buttons[idx] && (gp.buttons[idx].pressed || gp.buttons[idx].value > 0.3));
+}
+
+function pollWoodlandGamepad() {
+    const pads = navigator.getGamepads ? Array.from(navigator.getGamepads()).filter(Boolean) : [];
+    if (pads.length === 0) {
+        gpBadge.textContent = '🎮 No Pad (Plug & Press)';
+        gpBadge.classList.remove('connected');
+    } else {
+        gpBadge.textContent = '🎮 Controller Ready (Stick: Move • Btn 1-4/R1: Attack • Start: Pause)';
+        gpBadge.classList.add('connected');
+    }
+
+    const isPlaying = !gameState.isGameOver && !gameState.isPaused;
+    document.body.classList.toggle('hide-cursor', isPlaying);
+
+    if (gameState.isGameOver && restartBtn) {
+        restartBtn.classList.add('gamepad-focus');
+    }
+
+    gpMoveX = 0;
+    gpMoveZ = 0;
+    const gp = pads[0];
+    if (!gp) return;
+
+    const DZ = 0.32;
+    const ax0 = gp.axes[0] || 0;
+    const ax1 = gp.axes[1] || 0;
+    if (Math.abs(ax0) > DZ) gpMoveX = ax0;
+    else if (isGpBtn(gp, 14)) gpMoveX = -1;
+    else if (isGpBtn(gp, 15)) gpMoveX = 1;
+
+    if (Math.abs(ax1) > DZ) gpMoveZ = ax1;
+    else if (isGpBtn(gp, 12)) gpMoveZ = -1;
+    else if (isGpBtn(gp, 13)) gpMoveZ = 1;
+
+    const attackBtn = isGpBtn(gp, 0) || isGpBtn(gp, 1) || isGpBtn(gp, 2) || isGpBtn(gp, 3) || isGpBtn(gp, 5) || isGpBtn(gp, 7);
+    const confirmBtn = isGpBtn(gp, 2) || isGpBtn(gp, 0);
+    const pauseBtn = isGpBtn(gp, 9) || isGpBtn(gp, 8);
+
+    if (pauseBtn && !prevGpPause && !gameState.isGameOver) {
+        gameState.isPaused = !gameState.isPaused;
+        pauseBanner.style.display = gameState.isPaused ? 'flex' : 'none';
+    } else if (gameState.isPaused && confirmBtn && !prevGpConfirm) {
+        gameState.isPaused = false;
+        pauseBanner.style.display = 'none';
+    } else if (gameState.isGameOver && confirmBtn && !prevGpConfirm) {
+        resetGame();
+    } else if (!gameState.isGameOver && !gameState.isPaused && attackBtn && !prevGpAttack && !isAttacking) {
+        isAttacking = true;
+        attackTimer = 0.2;
+        performAttack();
+    }
+
+    prevGpAttack = attackBtn;
+    prevGpConfirm = confirmBtn;
+    prevGpPause = pauseBtn;
+}
+
 function animate() {
     requestAnimationFrame(animate);
     
     const delta = clock.getDelta();
+    pollWoodlandGamepad();
 
-    if (!gameState.isGameOver) {
+    if (!gameState.isGameOver && !gameState.isPaused) {
         // Player Movement
         const speed = 10 * delta;
         let moveX = 0;
@@ -331,6 +413,8 @@ function animate() {
         if (keys.s) moveZ += 1;
         if (keys.a) moveX -= 1;
         if (keys.d) moveX += 1;
+        if (gpMoveX !== 0) moveX = gpMoveX;
+        if (gpMoveZ !== 0) moveZ = gpMoveZ;
         
         if (moveX !== 0 || moveZ !== 0) {
             const moveDir = new THREE.Vector3(moveX, 0, moveZ).normalize();
