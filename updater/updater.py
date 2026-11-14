@@ -76,14 +76,19 @@ class UpdateService:
         remote_ver = tag.lstrip("v")
         has_update = parse_semver(remote_ver) > parse_semver(cur_ver)
 
-        # Locate tar.gz asset
+        # Locate release asset (.zip on Windows, .tar.gz on Linux)
+        target_ext = ".zip" if sys.platform.startswith("win") else ".tar.gz"
+        fallback_ext = ".tar.gz" if sys.platform.startswith("win") else ".zip"
         assets = release.get("assets", [])
         asset_url = None
-        for a in assets:
-            name = a.get("name", "")
-            if name.endswith(".tar.gz"):
-                # For private repos, use the API asset download url or browser_download_url
-                asset_url = a.get("url") if self.token else a.get("browser_download_url")
+
+        for ext in (target_ext, fallback_ext):
+            for a in assets:
+                name = a.get("name", "")
+                if name.endswith(ext):
+                    asset_url = a.get("url") if self.token else a.get("browser_download_url")
+                    break
+            if asset_url:
                 break
 
         return {
@@ -117,10 +122,15 @@ class UpdateService:
                     progress_callback(downloaded, total_size)
 
     def apply_update(self, archive_path: Path, new_version: str, notes: str):
+        import zipfile
         with tempfile.TemporaryDirectory() as stage_dir:
             stage_path = Path(stage_dir)
-            with tarfile.open(archive_path, "r:gz") as tar:
-                tar.extractall(path=stage_path)
+            if archive_path.name.endswith(".zip"):
+                with zipfile.ZipFile(archive_path, "r") as zf:
+                    zf.extractall(path=stage_path)
+            else:
+                with tarfile.open(archive_path, "r:gz") as tar:
+                    tar.extractall(path=stage_path)
 
             # Locate root of extracted archive (may be top-level or inside a folder)
             extracted_items = list(stage_path.iterdir())
@@ -303,10 +313,15 @@ class UpdaterGUI:
 
     def launch_app(self):
         launcher_py = self.service.app_dir / "launchcontrol.py"
-        launcher_bin = self.service.app_dir / "launchcontrol"
+        launcher_bin = self.service.app_dir / ("launchcontrol.exe" if sys.platform.startswith("win") else "launchcontrol")
 
         cmd = [str(launcher_bin)] if launcher_bin.exists() else [sys.executable, str(launcher_py)]
-        subprocess.Popen(cmd, cwd=str(self.service.app_dir), start_new_session=True)
+        popen_kwargs = {"cwd": str(self.service.app_dir)}
+        if sys.platform.startswith("win"):
+            popen_kwargs["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP
+        else:
+            popen_kwargs["start_new_session"] = True
+        subprocess.Popen(cmd, **popen_kwargs)
         self.root.destroy()
 
 
@@ -320,8 +335,8 @@ def main():
 
     service = UpdateService(app_dir=args.app_dir, repo=args.repo, token=args.token, api_url=args.api_url)
 
-    # CLI check mode if no DISPLAY available
-    if not os.environ.get("DISPLAY"):
+    # CLI check mode if no DISPLAY available (POSIX only, Windows handles GUI without DISPLAY)
+    if not sys.platform.startswith("win") and not os.environ.get("DISPLAY"):
         print("[Updater] No GUI display detected. Running CLI check...")
         try:
             info = service.check_for_update()

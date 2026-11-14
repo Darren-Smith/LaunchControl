@@ -19,10 +19,16 @@ def get_app_root() -> Path:
 
 
 def get_user_data_dir() -> Path:
-    """Return the user data directory (~/.local/share/LaunchControl), with graceful fallback."""
-    xdg = os.environ.get("XDG_DATA_HOME")
-    base = Path(xdg) if xdg else Path.home() / ".local" / "share"
-    d = base / "LaunchControl"
+    """Return the user data directory (~/.local/share/LaunchControl on Linux, %APPDATA%/LaunchControl on Windows)."""
+    if sys.platform.startswith("win"):
+        appdata = os.environ.get("APPDATA")
+        base = Path(appdata) if appdata else Path.home() / "AppData" / "Roaming"
+        d = base / "LaunchControl"
+    else:
+        xdg = os.environ.get("XDG_DATA_HOME")
+        base = Path(xdg) if xdg else Path.home() / ".local" / "share"
+        d = base / "LaunchControl"
+
     try:
         d.mkdir(parents=True, exist_ok=True)
     except OSError:

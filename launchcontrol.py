@@ -36,6 +36,13 @@ if len(sys.argv) >= 3 and sys.argv[1] == "--run-game":
     gameserver.main()
     sys.exit(0)
 
+# If invoked with --run-updater, act as the standalone updater
+if len(sys.argv) >= 2 and sys.argv[1] == "--run-updater":
+    from updater import updater
+    sys.argv = [sys.argv[0]] + sys.argv[2:]
+    updater.main()
+    sys.exit(0)
+
 from flask import Flask, jsonify, request, send_from_directory
 
 app = Flask(__name__, static_folder=str(get_app_root() / "static"))
@@ -233,14 +240,18 @@ def api_launch(game_id):
             cmd = [sys.executable, str(entry_script), "--run-game", gid]
 
         print(f"[Launcher] Launching {game.get('title')} via {cmd} in {game_dir}...")
-        proc = subprocess.Popen(
-            cmd,
-            cwd=str(game_dir),
-            stdout=log_file,
-            stderr=subprocess.STDOUT,
-            start_new_session=True,
-            env=env,
-        )
+        popen_kwargs = {
+            "cwd": str(game_dir),
+            "stdout": log_file,
+            "stderr": subprocess.STDOUT,
+            "env": env,
+        }
+        if sys.platform.startswith("win"):
+            popen_kwargs["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP
+        else:
+            popen_kwargs["start_new_session"] = True
+
+        proc = subprocess.Popen(cmd, **popen_kwargs)
         running_processes[gid] = proc
 
         # Give process time to bind port
@@ -380,7 +391,27 @@ def api_select_folder():
         initial_dir = str(Path.home())
 
     zenity_bin = "/usr/bin/zenity"
-    if not os.path.exists(zenity_bin):
+    if sys.platform.startswith("win"):
+        try:
+            ps_cmd = [
+                "powershell",
+                "-NoProfile",
+                "-Command",
+                f"Add-Type -AssemblyName System.Windows.Forms; "
+                f"$f = New-Object System.Windows.Forms.FolderBrowserDialog; "
+                f"$f.SelectedPath = '{initial_dir}'; "
+                f"if ($f.ShowDialog() -eq 'OK') {{ Write-Output $f.SelectedPath }}",
+            ]
+            result = subprocess.run(ps_cmd, capture_output=True, text=True, timeout=120)
+            if result.returncode == 0:
+                selected_path = result.stdout.strip()
+                if selected_path and Path(selected_path).is_dir():
+                    details = detect_game_details(selected_path)
+                    return jsonify({"status": "success", "path": selected_path, **details})
+            return jsonify({"status": "cancelled"})
+        except Exception:
+            return jsonify({"status": "fallback", "message": "Dialog failed"}), 200
+    elif not os.path.exists(zenity_bin):
         return jsonify({"status": "fallback", "message": "Zenity not installed"}), 200
 
     env = os.environ.copy()
@@ -467,11 +498,19 @@ def api_check_update():
 
 @app.route("/api/run_updater", methods=["POST"])
 def api_run_updater():
-    updater_bin = get_app_root() / "updater" / "updater"
-    updater_py = get_app_root() / "updater" / "updater.py"
-    cmd = [str(updater_bin)] if updater_bin.exists() else [sys.executable, str(updater_py)]
+    if getattr(sys, "frozen", False):
+        cmd = [sys.executable, "--run-updater"]
+    else:
+        updater_bin = get_app_root() / "updater" / ("updater.exe" if sys.platform.startswith("win") else "updater")
+        updater_py = get_app_root() / "updater" / "updater.py"
+        cmd = [str(updater_bin)] if updater_bin.exists() else [sys.executable, str(updater_py)]
     try:
-        subprocess.Popen(cmd, cwd=str(get_app_root()), start_new_session=True)
+        popen_kwargs = {"cwd": str(get_app_root())}
+        if sys.platform.startswith("win"):
+            popen_kwargs["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP
+        else:
+            popen_kwargs["start_new_session"] = True
+        subprocess.Popen(cmd, **popen_kwargs)
         return jsonify({"status": "launched"})
     except Exception as e:
         return jsonify({"status": "error", "error": str(e)}), 500

@@ -21,6 +21,8 @@ hidden_imports = [
     'shared.gameserver',
     'updater',
     'updater.updater',
+    'tkinter',
+    'tkinter.ttk',
     'http.server',
     'socketserver',
     'importlib.util',

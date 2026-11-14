@@ -145,7 +145,9 @@ def main():
     # 1. Compile with PyInstaller
     if not args.skip_pyinstaller:
         print("\n-> Running PyInstaller for LaunchControl...")
-        pyinstaller_bin = ROOT / ".venv" / "bin" / "pyinstaller"
+        scripts_dir = "Scripts" if sys.platform.startswith("win") else "bin"
+        pyinstaller_name = "pyinstaller.exe" if sys.platform.startswith("win") else "pyinstaller"
+        pyinstaller_bin = ROOT / ".venv" / scripts_dir / pyinstaller_name
         if not pyinstaller_bin.exists():
             pyinstaller_bin = Path(shutil.which("pyinstaller") or "pyinstaller")
 
@@ -166,10 +168,15 @@ def main():
 
     # 2. Add installer, desktop file, updater, and documentation to distribution folder
     print("\n-> Adding installer assets to distribution folder...")
-    shutil.copy2(ROOT / "packaging" / "install.sh", DIST_DIR / "install.sh")
-    (DIST_DIR / "install.sh").chmod(0o755)
+    if sys.platform.startswith("win"):
+        shutil.copy2(ROOT / "packaging" / "install.bat", DIST_DIR / "install.bat")
+    else:
+        shutil.copy2(ROOT / "packaging" / "install.sh", DIST_DIR / "install.sh")
+        (DIST_DIR / "install.sh").chmod(0o755)
+        shutil.copy2(ROOT / "packaging" / "LaunchControl.desktop", DIST_DIR / "LaunchControl.desktop")
+        if (DIST_DIR / "launchcontrol").exists():
+            (DIST_DIR / "launchcontrol").chmod(0o755)
 
-    shutil.copy2(ROOT / "packaging" / "LaunchControl.desktop", DIST_DIR / "LaunchControl.desktop")
     shutil.copy2(ROOT / "version.json", DIST_DIR / "version.json")
     shutil.copy2(ROOT / "README.md", DIST_DIR / "README.md")
 
@@ -178,25 +185,43 @@ def main():
     dist_updater.mkdir(parents=True, exist_ok=True)
     shutil.copy2(ROOT / "updater" / "updater.py", dist_updater / "updater.py")
 
-    # Ensure binary execution permissions
-    (DIST_DIR / "launchcontrol").chmod(0o755)
-
-    # 3. Create compressed tarball
+    # 3. Create compressed distribution archive
     RELEASE_DIR.mkdir(parents=True, exist_ok=True)
-    archive_name = f"LaunchControl-v{ver}-linux-x86_64.tar.gz"
-    archive_path = RELEASE_DIR / archive_name
-
-    print(f"\n-> Packaging archive {archive_path.name}...")
-    with tarfile.open(archive_path, "w:gz") as tar:
-        tar.add(DIST_DIR, arcname="LaunchControl")
+    if sys.platform.startswith("win"):
+        import zipfile
+        archive_name = f"LaunchControl-v{ver}-windows-x64.zip"
+        archive_path = RELEASE_DIR / archive_name
+        print(f"\n-> Packaging archive {archive_path.name}...")
+        with zipfile.ZipFile(archive_path, "w", zipfile.ZIP_DEFLATED) as zf:
+            for root_folder, _, filenames in os.walk(DIST_DIR):
+                for fn in filenames:
+                    file_path = Path(root_folder) / fn
+                    rel_path = file_path.relative_to(DIST_DIR.parent)
+                    zf.write(file_path, arcname=str(rel_path))
+    else:
+        archive_name = f"LaunchControl-v{ver}-linux-x86_64.tar.gz"
+        archive_path = RELEASE_DIR / archive_name
+        print(f"\n-> Packaging archive {archive_path.name}...")
+        with tarfile.open(archive_path, "w:gz") as tar:
+            tar.add(DIST_DIR, arcname="LaunchControl")
 
     size_mb = archive_path.stat().st_size / (1024 * 1024)
     print(f"Package created: {archive_path.name} ({size_mb:.2f} MB)")
 
-    # 4. Generate SHA256 checksums
+    # 4. Generate/Update SHA256 checksums
     checksum = sha256_file(archive_path)
     sums_file = RELEASE_DIR / "SHA256SUMS"
-    sums_file.write_text(f"{checksum}  {archive_name}\n")
+    entries = {}
+    if sums_file.exists():
+        for line in sums_file.read_text(encoding="utf-8").splitlines():
+            parts = line.strip().split(None, 1)
+            if len(parts) == 2:
+                entries[parts[1]] = parts[0]
+    entries[archive_name] = checksum
+    sums_file.write_text(
+        "\n".join(f"{h}  {f}" for f, h in sorted(entries.items())) + "\n",
+        encoding="utf-8"
+    )
     print(f"SHA256: {checksum}")
 
     print("\n==================================================")
